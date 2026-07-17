@@ -1,0 +1,28 @@
+{
+  "name": "studio",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@datarango/api": "workspace:*",
+    "@datarango/auth": "workspace:*",
+    "@datarango/notebook": "workspace:*",
+    "@datarango/ui": "workspace:*",
+    "next": "^16.0.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@datarango/config": "workspace:*",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.0"
+  }
+}

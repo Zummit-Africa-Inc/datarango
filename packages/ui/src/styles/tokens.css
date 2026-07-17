@@ -1,0 +1,29 @@
+/*
+ * Datarango design tokens — placeholder values.
+ * The dedicated visual identity pass (FRONTEND-HANDOFF §7) replaces these;
+ * everything downstream consumes tokens, so identity lands in this one file.
+ */
+:root {
+  --dr-color-bg: #ffffff;
+  --dr-color-fg: #0a0a0a;
+  --dr-color-primary: #4f46e5;
+  --dr-color-primary-fg: #ffffff;
+  --dr-color-muted: #6b7280;
+  --dr-color-border: #e5e7eb;
+
+  --dr-radius-sm: 0.25rem;
+  --dr-radius-md: 0.5rem;
+  --dr-radius-lg: 1rem;
+
+  --dr-font-sans: ui-sans-serif, system-ui, sans-serif;
+  --dr-font-mono: ui-monospace, "Cascadia Code", monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --dr-color-bg: #0a0a0a;
+    --dr-color-fg: #f5f5f5;
+    --dr-color-muted: #9ca3af;
+    --dr-color-border: #262626;
+  }
+}
