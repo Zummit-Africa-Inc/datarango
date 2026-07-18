@@ -33,7 +33,7 @@ export default function DashboardPage() {
         <div className="grid gap-4 lg:grid-cols-3">
           {CONTINUE_LEARNING.map((course) => (
             <Link
-              className="border-border bg-card hover:border-primary-300 block rounded-2xl border p-5 transition-colors"
+              className="border-border bg-card hover:border-primary-300 block rounded-xs border p-5 transition-colors"
               href={`/learn/${course.id}`}
               key={course.id}
             >

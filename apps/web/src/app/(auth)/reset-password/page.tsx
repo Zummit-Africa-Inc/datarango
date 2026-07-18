@@ -1,12 +1,13 @@
 "use client";
 
-import { LockIcon, RotateCcwKeyIcon } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { z } from "zod";
 
-import { Button, Input, OtpInput } from "@datarango/ui";
+import { Button, Input, Label, OtpInput } from "@datarango/ui";
+
+import { AuthCard } from "@/components/auth/auth-card";
 
 type Stage = "otp" | "password";
 
@@ -34,43 +35,47 @@ const Page = () => {
 
   if (stage === "otp") {
     return (
-      <div className="bg-background flex w-125 flex-col items-center gap-y-6 rounded-lg border p-4">
-        <div className="relative grid size-22 place-items-center">
-          <div className="absolute inset-0 rounded-full border [clip-path:inset(0_0_50%_0)]" />
-          <div className="grid size-14 place-items-center rounded-full shadow-md">
-            <LockIcon />
-          </div>
-        </div>
-        <div className="text-center">
-          <h2 className="text-2xl font-semibold tracking-tight">Enter OTP</h2>
-          <p className="text-muted-foreground text-sm">Welcome back! Please sign in to continue</p>
-        </div>
-        <form className="w-full space-y-4">
-          <OtpInput onChange={(otp) => setValue("otp", otp)} value={watch().otp} length={6} />
-          <Button className="w-full" type="submit"></Button>
+      <AuthCard
+        cell="verify"
+        title="Check your email"
+        subtitle="We sent a 6-digit code to your email address. Enter it below to continue."
+      >
+        <form
+          className="space-y-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            setStage("password");
+          }}
+        >
+          <OtpInput length={6} onChange={(otp) => setValue("otp", otp)} value={watch().otp} />
+          <Button className="w-full" type="submit">
+            Continue
+          </Button>
         </form>
-      </div>
+      </AuthCard>
     );
   }
 
   return (
-    <div className="bg-background flex w-125 flex-col items-center gap-y-6 rounded-lg border p-4">
-      <div className="relative grid size-22 place-items-center">
-        <div className="absolute inset-0 rounded-full border [clip-path:inset(0_0_50%_0)]" />
-        <div className="grid size-14 place-items-center rounded-full shadow-md">
-          <RotateCcwKeyIcon />
+    <AuthCard
+      cell="reset"
+      title="Set a new password"
+      subtitle="Choose a strong password you haven't used here before."
+    >
+      <form className="space-y-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="password">New password</Label>
+          <Input autoComplete="new-password" id="password" type="password" />
         </div>
-      </div>
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">Create New Password</h2>
-        <p className="text-muted-foreground text-sm">Welcome back! Please sign in to continue</p>
-      </div>
-      <form className="w-full space-y-4">
-        <Input type="password" placeholder="New Password" />
-        <Input type="password" placeholder="Confirm New Password" />
-        <Button className="w-full" type="submit"></Button>
+        <div className="space-y-1.5">
+          <Label htmlFor="confirm-password">Confirm password</Label>
+          <Input autoComplete="new-password" id="confirm-password" type="password" />
+        </div>
+        <Button className="w-full" type="submit">
+          Set new password
+        </Button>
       </form>
-    </div>
+    </AuthCard>
   );
 };
 

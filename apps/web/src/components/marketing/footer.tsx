@@ -45,7 +45,7 @@ export const MarketingFooter = () => (
     <div className="container mx-auto grid gap-12 px-4 py-16 lg:grid-cols-6 lg:px-8">
       <div className="lg:col-span-2">
         <Logo onInk />
-      <p className="text-on-ink-muted mt-4 max-w-xs text-sm leading-relaxed">
+        <p className="text-on-ink-muted mt-4 max-w-xs text-sm leading-relaxed">
           Learn data analytics, AI and ML by doing — courses, notebooks, datasets and competitions
           in one place.
         </p>
@@ -57,7 +57,7 @@ export const MarketingFooter = () => (
             {column.links.map((link) => (
               <li key={link.label}>
                 <Link
-                  className="text-on-ink-muted hover:text-on-ink text-sm transition-colors"
+                  className="text-on-ink-muted link before:bg-on-ink-muted hover:text-on-ink text-sm transition-colors"
                   href={link.href}
                 >
                   {link.label}

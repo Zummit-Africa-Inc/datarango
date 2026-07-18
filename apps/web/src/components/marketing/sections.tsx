@@ -93,7 +93,7 @@ export const Features = () => (
     <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {FEATURES.map((feature) => (
         <StaggerItem
-          className="group border-border bg-card hover:border-primary-300 rounded-2xl border p-8 transition-colors"
+          className="group border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
           key={feature.title}
         >
           <feature.icon className="text-primary-500 size-8" strokeWidth={1.5} />
@@ -133,7 +133,7 @@ export const Showcase = () => (
         }`}
         key={item.title}
       >
-        <div className="relative aspect-4/3 w-full overflow-hidden rounded-3xl lg:w-1/2">
+        <div className="relative aspect-4/3 w-full overflow-hidden rounded-xs lg:w-1/2">
           <Image
             alt={item.title}
             className="object-cover"
@@ -143,9 +143,7 @@ export const Showcase = () => (
           />
         </div>
         <div className="w-full lg:w-1/2">
-          <h3 className="font-heading text-3xl tracking-tight lg:text-5xl">
-            {item.title}
-          </h3>
+          <h3 className="font-heading text-3xl tracking-tight lg:text-5xl">{item.title}</h3>
           <p className="text-muted-foreground mt-6 max-w-lg text-lg leading-relaxed">{item.body}</p>
           <Button asChild className="mt-8" variant="outline">
             <Link href={item.href}>{item.cta}</Link>
@@ -181,7 +179,7 @@ export const Teams = () => (
         <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
           Datarango for Teams & Schools
         </p>
-        <h2 className="font-heading mt-4 text-4xl text-on-ink tracking-tight lg:text-6xl">
+        <h2 className="font-heading text-on-ink mt-4 text-4xl tracking-tight lg:text-6xl">
           Train a team like
           <br />
           you mean it
@@ -212,10 +210,7 @@ export const Teams = () => (
         </div>
       </FadeIn>
       <FadeIn className="hidden lg:block" delay={0.15}>
-        <div
-          className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur"
-          aria-hidden
-        >
+        <div className="rounded-xs border border-white/10 bg-white/5 p-6 backdrop-blur" aria-hidden>
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold">Acme Academy — This cycle</p>
             <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs">96 active learners</span>
@@ -226,7 +221,7 @@ export const Teams = () => (
               { label: "Avg. completion", value: "64%" },
               { label: "Usage to date", value: "₦412k" },
             ].map((stat) => (
-              <div className="rounded-xl bg-white/5 p-4" key={stat.label}>
+              <div className="rounded-xs bg-white/5 p-4" key={stat.label}>
                 <p className="text-xs text-white/50">{stat.label}</p>
                 <p className="mono-data mt-1 text-2xl">{stat.value}</p>
               </div>
@@ -309,7 +304,7 @@ export const Testimonials = () => (
     <Stagger className="mt-16 grid gap-6 lg:grid-cols-3">
       {TESTIMONIALS.map((item) => (
         <StaggerItem
-          className="border-border bg-card flex flex-col rounded-2xl border p-8"
+          className="border-border bg-card flex flex-col rounded-xs border p-8"
           key={item.name}
         >
           <p className="flex-1 text-lg leading-relaxed">“{item.quote}”</p>
@@ -332,7 +327,7 @@ export const Testimonials = () => (
 
 export const FinalCta = () => (
   <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
-    <FadeIn className="border-border from-primary-50 rounded-3xl border bg-linear-to-br to-transparent px-8 py-20 text-center lg:py-28">
+    <FadeIn className="border-border from-primary-50 rounded-xs border bg-linear-to-br to-transparent px-8 py-20 text-center lg:py-28">
       <h2 className="font-heading mx-auto max-w-3xl text-4xl tracking-tight lg:text-7xl">
         Your first notebook is <span className="text-primary-500">one click</span> away
       </h2>

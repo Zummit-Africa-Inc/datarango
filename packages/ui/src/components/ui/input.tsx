@@ -24,9 +24,9 @@ function getPasswordStrength(password: string): PasswordStrength | null {
 }
 
 const strengthConfig: Record<PasswordStrength, { label: string; className: string }> = {
-  weak: { label: "Weak", className: "bg-red-100 text-red-600" },
-  fair: { label: "Fair", className: "bg-yellow-100 text-yellow-600" },
-  strong: { label: "Strong", className: "bg-green-100 text-green-600" },
+  weak: { label: "Weak", className: "bg-error-soft text-error" },
+  fair: { label: "Fair", className: "bg-warning-soft text-warning" },
+  strong: { label: "Strong", className: "bg-success-soft text-success" },
 };
 
 function Input({ className, type, ...props }: React.ComponentProps<"input">) {
@@ -52,9 +52,9 @@ function Input({ className, type, ...props }: React.ComponentProps<"input">) {
         type={isPassword && showPassword ? "text" : type}
         data-slot="input"
         className={cn(
-          "file:text-foreground input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-10 w-full min-w-0 appearance-none rounded-md border bg-transparent px-3 py-1 text-base transition-[color,box-shadow,border] duration-500 outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+          "file:text-foreground input placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-10 w-full min-w-0 appearance-none rounded-xs border bg-transparent px-3 py-1 text-base transition-[color,box-shadow,border] duration-500 outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
           "focus-visible:border-primary-400",
-          "aria-invalid:border-red-500",
+          "aria-invalid:border-error",
           "[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none",
           isPassword && "pr-24",
           isSearch && "pl-9",

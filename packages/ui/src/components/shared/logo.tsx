@@ -18,7 +18,7 @@ interface Props {
 /** Datarango logo — wordmark, or the glyph when collapsed. */
 export const Logo = ({ className, collapsed = false, onInk = false }: Props) => {
   const src = onInk ? (collapsed ? iconDark : logoDark) : collapsed ? iconLight : logoLight;
-  const sizing = collapsed ? "h-8 w-auto" : "h-7 w-auto";
+  const sizing = collapsed ? "h-6 w-auto" : "h-6 w-auto";
 
   return (
     <span className={cn("flex items-center select-none", className)}>

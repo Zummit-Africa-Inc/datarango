@@ -24,7 +24,7 @@ export default function CareersPage() {
       />
 
       <section className="container mx-auto px-4 pb-24 lg:px-8">
-        <FadeIn className="border-border bg-card mx-auto max-w-2xl rounded-3xl border p-12 text-center">
+        <FadeIn className="border-border bg-card mx-auto max-w-2xl rounded-xs border p-12 text-center">
           <BriefcaseBusiness className="text-primary-500 mx-auto size-10" strokeWidth={1.5} />
           <h2 className="font-heading mt-6 text-2xl">No open roles right now</h2>
           <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">

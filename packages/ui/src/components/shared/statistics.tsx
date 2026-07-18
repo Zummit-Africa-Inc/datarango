@@ -15,7 +15,7 @@ interface Props {
  * pill. Nothing else.
  */
 export const Statistics = ({ label, value, delta, description, icon: Icon }: Props) => (
-  <div className="bg-card border-hairline space-y-2 rounded-lg border p-4">
+  <div className="bg-card border-hairline space-y-2 rounded-xs border p-4">
     <div className="flex items-center justify-between">
       <p className="caption-upper text-muted-foreground">{label}</p>
       {Icon && <Icon className="text-muted-foreground size-4" />}

@@ -41,7 +41,7 @@ export const DatePicker = ({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "inline-flex h-9 w-full min-w-[200px] items-center justify-between gap-2 rounded-md border border-neutral-400 px-3 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "inline-flex h-9 w-full min-w-[200px] items-center justify-between gap-2 rounded-xs border border-neutral-400 px-3 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
             className,
           )}
           disabled={disabled}

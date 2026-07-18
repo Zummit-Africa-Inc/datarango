@@ -208,7 +208,7 @@ function NewsBody({ widget }: { widget: NewsWidget }) {
             href={item.url}
             target="_blank"
             rel="noreferrer"
-            className="w-64 shrink-0 space-y-2 rounded-md border p-3"
+            className="w-64 shrink-0 space-y-2 rounded-xs border p-3"
           >
             {item.imageUrl && (
               <div className="relative h-32 w-full">
@@ -252,7 +252,7 @@ function AdvertsBody({ widget }: { widget: AdvertsWidget }) {
       {widget.items.map((item) => (
         <a
           href={item.linkUrl}
-          className="relative block h-42 w-full overflow-hidden rounded-md border"
+          className="relative block h-42 w-full overflow-hidden rounded-xs border"
           key={item.id}
           rel="noreferrer"
           target="_blank"

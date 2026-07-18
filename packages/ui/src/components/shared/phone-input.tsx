@@ -69,7 +69,7 @@ export const PhoneInput = ({
       {label && <label className="text-sm font-medium">{label}</label>}
       <div
         className={cn(
-          "focus-within:border-primary-500 flex h-9 items-center rounded-md border bg-transparent px-2 transition-colors",
+          "focus-within:border-primary-500 flex h-9 items-center rounded-xs border bg-transparent px-2 transition-colors",
           isInvalid && "border-red-500 focus-within:border-red-500",
           disabled && "cursor-not-allowed opacity-50",
           className,

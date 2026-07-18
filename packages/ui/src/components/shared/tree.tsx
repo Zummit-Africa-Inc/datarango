@@ -53,7 +53,7 @@ function TreeGroup<TParent, TChild>({
   const toggle = () => setIsExpanded((prev) => !prev);
 
   return (
-    <div className={cn("overflow-hidden rounded-lg border", className)}>
+    <div className={cn("overflow-hidden rounded-xs border", className)}>
       {renderParent(parent, { isExpanded, toggle, childCount: items.length })}
       {isExpanded && (
         <div className="border-l border-gray-200" style={{ marginLeft: anchorOffset }}>

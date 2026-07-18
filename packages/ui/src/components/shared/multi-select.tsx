@@ -93,7 +93,7 @@ export const MultiSelect = ({
         <PopoverTrigger asChild disabled={disabled}>
           <button
             className={cn(
-              "mt-1 flex h-9 w-full items-center justify-between rounded-md border bg-transparent px-3 text-sm text-gray-900 capitalize transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>span]:truncate",
+              "mt-1 flex h-9 w-full items-center justify-between rounded-xs border bg-transparent px-3 text-sm text-gray-900 capitalize transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>span]:truncate",
               hasError ? "border-red-500" : "border-input",
               className,
             )}

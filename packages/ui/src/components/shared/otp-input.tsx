@@ -77,7 +77,7 @@ export const OtpInput = ({
         {values.map((value, index) => (
           <MemoizedInput
             autoComplete="one-time-code"
-            className="focus:border-primary-500 text-primary-500 flex size-14 items-center justify-center rounded-md border bg-white px-3 py-2 text-center text-lg font-medium uppercase outline-none select-none read-only:border-neutral-300 focus:border-2 disabled:border-neutral-300"
+            className="focus:border-primary-500 text-primary-500 flex size-14 items-center justify-center rounded-xs border bg-white px-3 py-2 text-center text-lg font-medium uppercase outline-none select-none read-only:border-neutral-300 focus:border-2 disabled:border-neutral-300"
             disabled={disabled}
             key={index}
             maxLength={length}

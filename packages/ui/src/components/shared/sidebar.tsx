@@ -123,7 +123,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                   {drillRoute!.hasOverview && (
                     <Link
                       className={cn(
-                        "flex items-center gap-x-2 rounded-md px-3 py-2 text-left text-sm font-medium",
+                        "flex items-center gap-x-2 rounded-xs px-3 py-2 text-left text-sm font-medium",
                         itemBase,
                         pathname === drillRoute!.href && activeClasses,
                       )}
@@ -143,7 +143,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                           return (
                             <Link
                               className={cn(
-                                "flex items-center gap-x-2 rounded-md px-3 py-2 text-left text-sm font-medium",
+                                "flex items-center gap-x-2 rounded-xs px-3 py-2 text-left text-sm font-medium",
                                 itemBase,
                                 disabled
                                   ? "text-on-ink-muted/40 pointer-events-none cursor-not-allowed"
@@ -187,7 +187,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                           const active = normalize(pathname) === route.href;
                           const hasChildren = !!route.children?.length;
                           const classes = cn(
-                            "flex w-full items-center rounded-md text-left text-sm font-medium",
+                            "flex w-full items-center rounded-xs text-left text-sm font-medium",
                             itemBase,
                             collapsed
                               ? "aspect-square w-full shrink-0 justify-center"

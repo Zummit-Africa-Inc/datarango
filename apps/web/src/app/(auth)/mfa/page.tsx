@@ -1,25 +1,27 @@
-import { FingerprintIcon } from "lucide-react";
-import React from "react";
+"use client";
 
-import { Button } from "@datarango/ui";
+import React, { useState } from "react";
+
+import { Button, OtpInput } from "@datarango/ui";
+
+import { AuthCard } from "@/components/auth/auth-card";
 
 const Page = () => {
+  const [code, setCode] = useState("");
+
   return (
-    <div className="bg-background flex w-125 flex-col items-center gap-y-6 rounded-lg border p-4">
-      <div className="relative grid size-22 place-items-center">
-        <div className="absolute inset-0 rounded-full border [clip-path:inset(0_0_50%_0)]" />
-        <div className="grid size-14 place-items-center rounded-full shadow-md">
-          <FingerprintIcon />
-        </div>
-      </div>
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">2Factor Auth</h2>
-        <p className="text-muted-foreground text-sm">Welcome back! Please sign in to continue</p>
-      </div>
-      <form className="w-full space-y-4">
-        <Button className="w-full" type="submit"></Button>
+    <AuthCard
+      cell="mfa"
+      title="Two-factor authentication"
+      subtitle="Enter the 6-digit code from your authenticator app."
+    >
+      <form className="space-y-4">
+        <OtpInput length={6} onChange={setCode} value={code} />
+        <Button className="w-full" type="submit">
+          Verify code
+        </Button>
       </form>
-    </div>
+    </AuthCard>
   );
 };
 

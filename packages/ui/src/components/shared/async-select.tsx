@@ -116,7 +116,7 @@ export const AsyncSelect = ({
                 type="button"
                 onClick={() => handleSelect(opt.value)}
                 className={cn(
-                  "hover:bg-accent flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                  "hover:bg-accent flex w-full items-center gap-2 rounded-xs px-2 py-1.5 text-sm transition-colors",
                   opt.value === value && "bg-accent",
                 )}
               >
@@ -139,7 +139,7 @@ export const AsyncSelect = ({
                 setOpen(false);
                 onAdd();
               }}
-              className="text-primary hover:bg-accent flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
+              className="text-primary hover:bg-accent flex w-full items-center gap-2 rounded-xs px-2 py-1.5 text-sm transition-colors"
             >
               <Plus className="size-3.5 shrink-0" />
               {addLabel}

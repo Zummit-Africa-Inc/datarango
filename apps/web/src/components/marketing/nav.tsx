@@ -27,7 +27,7 @@ export const MarketingNav = () => {
         <nav className="hidden items-center gap-x-8 lg:flex">
           {LINKS.map((link) => (
             <Link
-              className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
+              className="text-muted-foreground link before:bg-ink hover:text-foreground text-sm font-medium transition-colors"
               href={link.href}
               key={link.href}
             >
@@ -55,7 +55,7 @@ export const MarketingNav = () => {
         <nav className="flex flex-col gap-y-1">
           {LINKS.map((link) => (
             <Link
-              className="hover:bg-accent rounded-md px-3 py-2 text-sm font-medium"
+              className="hover:bg-accent rounded-xs px-3 py-2 text-sm font-medium"
               href={link.href}
               key={link.href}
               onClick={() => setOpen(false)}

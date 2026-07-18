@@ -45,7 +45,7 @@ export default function AboutPage() {
       />
 
       <section className="container mx-auto grid items-center gap-16 px-4 pb-24 lg:grid-cols-2 lg:px-8">
-        <FadeIn className="relative aspect-4/3 overflow-hidden rounded-3xl">
+        <FadeIn className="relative aspect-4/3 overflow-hidden rounded-xs">
           <Image
             alt="Learning at Datarango"
             className="object-cover"
@@ -55,9 +55,7 @@ export default function AboutPage() {
           />
         </FadeIn>
         <FadeIn delay={0.1}>
-          <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">
-            The story so far
-          </h2>
+          <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">The story so far</h2>
           <div className="text-muted-foreground mt-6 space-y-4 leading-relaxed">
             <p>
               We started Datarango after watching too many capable people stall between “I finished
@@ -89,7 +87,7 @@ export default function AboutPage() {
           <Stagger className="mt-14 grid gap-6 sm:grid-cols-2">
             {VALUES.map((value) => (
               <StaggerItem
-                className="border-border bg-card rounded-2xl border p-8"
+                className="border-border bg-card rounded-xs border p-8"
                 key={value.title}
               >
                 <h3 className="font-heading text-xl">{value.title}</h3>

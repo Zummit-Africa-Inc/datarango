@@ -48,7 +48,7 @@ export default function ContactPage() {
         <Stagger className="grid gap-6 lg:grid-cols-3">
           {CHANNELS.map((channel) => (
             <StaggerItem
-              className="border-border bg-card flex flex-col rounded-2xl border p-8"
+              className="border-border bg-card flex flex-col rounded-xs border p-8"
               key={channel.title}
             >
               <channel.icon className="text-primary-500 size-8" strokeWidth={1.5} />

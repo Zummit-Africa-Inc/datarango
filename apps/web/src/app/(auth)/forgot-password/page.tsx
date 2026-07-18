@@ -1,26 +1,33 @@
-import { KeyIcon } from "lucide-react";
+import Link from "next/link";
 import React from "react";
 
-import { Button, Input } from "@datarango/ui";
+import { Button, Input, Label } from "@datarango/ui";
+
+import { AuthCard } from "@/components/auth/auth-card";
 
 const Page = () => {
   return (
-    <div className="bg-background flex w-125 flex-col items-center gap-y-6 rounded-lg border p-4">
-      <div className="relative grid size-22 place-items-center">
-        <div className="absolute inset-0 rounded-full border [clip-path:inset(0_0_50%_0)]" />
-        <div className="grid size-14 place-items-center rounded-full shadow-md">
-          <KeyIcon />
+    <AuthCard
+      cell="reset"
+      title="Reset your password"
+      subtitle="Enter your account email and we'll send you a reset link."
+    >
+      <form className="space-y-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="email">Email</Label>
+          <Input autoComplete="email" id="email" placeholder="you@example.com" type="email" />
         </div>
-      </div>
-      <div className="text-center">
-        <h2 className="text-2xl font-semibold tracking-tight">Forgot Password</h2>
-        <p className="text-muted-foreground text-sm">Welcome back! Please sign in to continue</p>
-      </div>
-      <form className="w-full space-y-4">
-        <Input type="email" />
-        <Button className="w-full" type="submit"></Button>
+        <Button className="w-full" type="submit">
+          Send reset link
+        </Button>
       </form>
-    </div>
+      <p className="text-muted-foreground mt-6 text-center text-sm">
+        Remembered it?{" "}
+        <Link className="link before:bg-ink text-foreground" href="/signin">
+          Back to sign in
+        </Link>
+      </p>
+    </AuthCard>
   );
 };
 

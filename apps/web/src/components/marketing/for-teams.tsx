@@ -32,7 +32,7 @@ export const TeamsHero = () => (
         <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
           Datarango for Teams & Schools
         </p>
-        <h1 className="font-heading mt-6 text-5xl leading-[1.02] text-on-ink tracking-tight lg:text-7xl">
+        <h1 className="font-heading text-on-ink mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
           Train a team like
           <br />
           you <span className="text-primary-400">mean it</span>
@@ -62,7 +62,7 @@ export const TeamsHero = () => (
       </FadeIn>
       <div className="relative hidden perspective-[1400px] lg:block" aria-hidden>
         <TiltCard
-          className="rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur"
+          className="rounded-xs border border-white/10 bg-white/5 p-6 backdrop-blur"
           rotateX={5}
           rotateY={-10}
           float
@@ -77,7 +77,7 @@ export const TeamsHero = () => (
               { label: "Avg. completion", value: "64%" },
               { label: "Usage to date", value: "₦412k" },
             ].map((stat) => (
-              <div className="rounded-xl bg-white/5 p-4" key={stat.label}>
+              <div className="rounded-xs bg-white/5 p-4" key={stat.label}>
                 <p className="text-xs text-white/50">{stat.label}</p>
                 <p className="mono-data mt-1 text-2xl">{stat.value}</p>
               </div>
@@ -153,7 +153,7 @@ export const TeamsFeatures = () => (
     <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
       {ORG_FEATURES.map((feature) => (
         <StaggerItem
-          className="border-border bg-card hover:border-primary-300 rounded-2xl border p-8 transition-colors"
+          className="border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
           key={feature.title}
         >
           <feature.icon className="text-primary-500 size-8" strokeWidth={1.5} />
@@ -194,9 +194,7 @@ export const TeamsSteps = () => (
   <section className="border-border/60 border-y">
     <div className="container mx-auto px-4 py-24 lg:px-8">
       <FadeIn>
-        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">
-          Live in an afternoon
-        </h2>
+        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">Live in an afternoon</h2>
       </FadeIn>
       <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, index) => (
@@ -253,12 +251,12 @@ export const TeamsBilling = () => (
           </div>
         ))}
       </div>
-      <p className="text-muted-foreground border-border mt-10 rounded-xl border border-dashed p-4 text-sm">
+      <p className="text-muted-foreground border-border mt-10 rounded-xs border border-dashed p-4 text-sm">
         If your organization ever stops paying, your members keep access to every course already
         granted to them. Their learning is theirs.
       </p>
     </FadeIn>
-    <FadeIn className="relative hidden aspect-4/3 overflow-hidden rounded-3xl lg:block" delay={0.1}>
+    <FadeIn className="relative hidden aspect-4/3 overflow-hidden rounded-xs lg:block" delay={0.1}>
       <Image
         alt="A team learning together"
         className="object-cover"
@@ -274,8 +272,8 @@ export const TeamsBilling = () => (
 
 export const TeamsCta = () => (
   <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
-    <FadeIn className="bg-ink rounded-3xl px-8 py-20 text-center text-white lg:py-24">
-      <h2 className="font-heading mx-auto max-w-3xl text-4xl text-on-ink tracking-tight lg:text-6xl">
+    <FadeIn className="bg-ink rounded-xs px-8 py-20 text-center text-white lg:py-24">
+      <h2 className="font-heading text-on-ink mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
         Put your whole team on the <span className="text-primary-400">same curve</span>
       </h2>
       <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">

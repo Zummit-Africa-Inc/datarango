@@ -11,8 +11,8 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 
-import { Pagination } from "./pagination";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Pagination } from "./pagination";
 
 interface Props<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

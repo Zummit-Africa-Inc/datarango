@@ -1,5 +1,3 @@
-"use client";
-
 import type { LucideIcon } from "lucide-react";
 import Link from "next/link";
 
@@ -33,7 +31,7 @@ export const FeaturePreview = ({ eyebrow, title, lede, points, note }: Props) =>
       <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {points.map((point) => (
           <StaggerItem
-            className="border-border bg-card hover:border-primary-300 rounded-2xl border p-8 transition-colors"
+            className="border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
             key={point.title}
           >
             <point.icon className="text-primary-500 size-8" strokeWidth={1.5} />
@@ -42,12 +40,13 @@ export const FeaturePreview = ({ eyebrow, title, lede, points, note }: Props) =>
           </StaggerItem>
         ))}
       </Stagger>
-      <FadeIn className="border-border bg-card mx-auto mt-16 max-w-2xl rounded-3xl border p-10 text-center">
+      <FadeIn className="border-border bg-card mx-auto mt-16 max-w-2xl rounded-xs border p-10 text-center">
         <h2 className="font-heading text-2xl">
           Launching with the <span className="text-primary-500">platform</span>
         </h2>
         <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">
-          {note ?? "This surface goes live with the Datarango platform. Join now and you'll be first in when it opens."}
+          {note ??
+            "This surface goes live with the Datarango platform. Join now and you'll be first in when it opens."}
         </p>
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
           <Button asChild>

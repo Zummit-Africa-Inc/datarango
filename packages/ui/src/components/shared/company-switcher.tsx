@@ -17,7 +17,7 @@ interface Props {
 const TenantMark = ({ tenant, onInk }: { tenant: Tenant; onInk?: boolean }) => (
   <div
     className={cn(
-      "grid size-7 shrink-0 place-items-center rounded-md text-xs font-semibold",
+      "grid size-7 shrink-0 place-items-center rounded-xs text-xs font-semibold",
       onInk ? "bg-ink-elevated text-on-ink" : "bg-surface-strong text-foreground",
     )}
   >
@@ -71,7 +71,7 @@ export const CompanySwitcher = ({ currentTenant, tenants, onTenantChange, collap
       <PopoverContent align={collapsed ? "start" : "center"} className="p-1 sm:max-w-64">
         {tenants.map((tenant) => (
           <button
-            className="hover:bg-surface-strong flex w-full items-center gap-x-2 rounded-md p-2 transition-colors"
+            className="hover:bg-surface-strong flex w-full items-center gap-x-2 rounded-xs p-2 transition-colors"
             key={tenant.id}
             onClick={() => onTenantChange(tenant)}
             type="button"

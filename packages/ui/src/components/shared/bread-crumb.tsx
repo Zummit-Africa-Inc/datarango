@@ -102,7 +102,7 @@ const CollapsedItems = ({
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full left-0 z-20 mt-1 flex min-w-50 flex-col gap-1 rounded-md border bg-white p-2 shadow-lg">
+          <div className="absolute top-full left-0 z-20 mt-1 flex min-w-50 flex-col gap-1 rounded-xs border bg-white p-2 shadow-lg">
             {items.map((item, index) => (
               <div key={`${item.label}-${index}`}>
                 {item.href ? (

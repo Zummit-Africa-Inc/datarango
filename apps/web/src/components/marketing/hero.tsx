@@ -55,7 +55,7 @@ export const Hero = () => (
       <div className="relative hidden h-135 perspective-[1400px] lg:block" aria-hidden>
         <div className="ember-bloom absolute top-1/3 left-1/3 -z-10 size-96 rounded-full" />
         <TiltCard
-          className="bg-ink absolute top-6 left-0 w-95 rounded-2xl p-5 text-white shadow-2xl"
+          className="bg-ink absolute top-6 left-0 w-95 rounded-xs p-5 text-white shadow-2xl"
           rotateX={6}
           rotateY={-14}
           float
@@ -76,10 +76,10 @@ export const Hero = () => (
               </div>
             ))}
           </div>
-          <div className="mt-4 flex h-24 items-end gap-1.5 rounded-lg bg-white/5 p-3">
+          <div className="mt-4 flex h-24 items-end gap-1.5 rounded-xs bg-white/5 p-3">
             {CHART_BARS.map((height, index) => (
               <span
-                className="bg-primary-400 flex-1 rounded-sm"
+                className="bg-primary-400 flex-1 rounded-xs"
                 key={index}
                 style={{ height: `${height}%` }}
               />
@@ -90,7 +90,7 @@ export const Hero = () => (
           </div>
         </TiltCard>
         <TiltCard
-          className="bg-card border-border absolute top-0 right-0 w-60 rounded-2xl border p-4 shadow-xl"
+          className="bg-card border-border absolute top-0 right-0 w-60 rounded-xs border p-4 shadow-xl"
           rotateX={4}
           rotateY={10}
         >
@@ -113,7 +113,7 @@ export const Hero = () => (
           </ul>
         </TiltCard>
         <TiltCard
-          className="bg-card border-border absolute right-10 bottom-10 w-55 rounded-2xl border p-4 shadow-xl"
+          className="bg-card border-border absolute right-10 bottom-10 w-55 rounded-xs border p-4 shadow-xl"
           rotateX={-4}
           rotateY={12}
           float
@@ -130,7 +130,7 @@ export const Hero = () => (
             {Array.from({ length: 14 }, (_, index) => (
               <span
                 className={
-                  index < 12 ? "bg-primary-400 h-6 rounded-sm" : "bg-primary-100 h-6 rounded-sm"
+                  index < 12 ? "bg-primary-400 h-6 rounded-xs" : "bg-primary-100 h-6 rounded-xs"
                 }
                 key={index}
               />

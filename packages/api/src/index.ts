@@ -1,9 +1,12 @@
 /**
- * @datarango/api — typed gateway client + useApi (TanStack Query).
- *
- * Phase F0 grows this into the full unified hook (query/mutation/paginated)
- * with generated OpenAPI types and MSW mocks. Query keys are namespaced by
- * module and automatically include the active org context.
+ * @datarango/api — the only package allowed to call the gateway
+ * (FRONTEND-HANDOFF §3): typed client, useApi hooks, provider.
+ * OpenAPI-generated types and MSW mocks arrive with the backend contract.
  */
-export { createClient, ApiError } from "./client";
-export type { ApiClient, ClientConfig, Problem } from "./client";
+export { ApiError, createClient } from "./client";
+export type { ApiClient, ClientConfig, Problem, RequestOptions } from "./client";
+export { configureApi, getApi } from "./configure";
+export { ApiProvider, useOrgScope } from "./provider";
+export { useApi, useApiMutation, useApiPaginated, useApiQuery } from "./use-api";
+export type { CursorPage, QueryParams } from "./types";
+export { uuidv7 } from "./uuid";

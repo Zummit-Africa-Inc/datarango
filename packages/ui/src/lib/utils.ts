@@ -15,16 +15,24 @@ export const fromKebabCase = (value: string): string =>
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-export interface BreadcrumbItem {
-  label: string;
-  href: string;
-}
-
 /** Builds breadcrumb items from a pathname, e.g. "/courses/data-101" → Courses / Data 101. */
-export const buildBreadcrumbs = (pathname: string): BreadcrumbItem[] => {
+export const buildBreadcrumbs = (pathname: string): { label: string; href: string }[] => {
   const segments = normalize(pathname).split("/").filter(Boolean);
   return segments.map((segment, index) => ({
     label: fromKebabCase(decodeURIComponent(segment)),
     href: `/${segments.slice(0, index + 1).join("/")}`,
   }));
 };
+
+export function removeNullorUndefined<
+  T extends {
+    [K in keyof T]: T[K] | null | undefined;
+  },
+>(params: T) {
+  const cleaned = Object.fromEntries(
+    Object.entries(params).filter(
+      ([, value]) => value !== null && value !== undefined && value !== "",
+    ),
+  );
+  return cleaned as Partial<T>;
+}

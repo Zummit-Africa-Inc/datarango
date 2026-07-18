@@ -77,9 +77,9 @@ export const PricingPlans = () => (
       {PLANS.map((plan) => (
         <StaggerItem
           className={cn(
-            "flex flex-col rounded-3xl border p-8",
+            "flex flex-col rounded-xs border p-8",
             plan.highlight
-              ? "bg-ink border-transparent text-white shadow-[var(--shadow-high)]"
+              ? "bg-ink border-transparent text-white shadow-(--shadow-high)"
               : "border-border bg-card",
           )}
           key={plan.name}
