@@ -1,5 +1,6 @@
 "use client";
 
+import { toast } from "sonner";
 import {
   useInfiniteQuery,
   useMutation,
@@ -7,12 +8,11 @@ import {
   useQueryClient,
   type QueryKey,
 } from "@tanstack/react-query";
-import { toast } from "sonner";
 
-import { ApiError } from "./client";
-import { getApi } from "./configure";
-import { useOrgScope } from "./provider";
 import type { CursorPage, QueryParams } from "./types";
+import { useOrgScope } from "./provider";
+import { getApi } from "./configure";
+import { ApiError } from "./client";
 
 const scopeKey = (key: QueryKey, orgId: string | null, orgScoped: boolean): QueryKey =>
   orgScoped && orgId ? [...key, { org: orgId }] : key;
