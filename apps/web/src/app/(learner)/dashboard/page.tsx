@@ -1,0 +1,56 @@
+"use client";
+
+import { ArrowRight } from "lucide-react";
+import Link from "next/link";
+
+import { Button, Statistics, WidgetRenderer } from "@datarango/ui";
+
+import { ACTIVITY_WIDGET, CONTINUE_LEARNING, LEARNER_STATS, QUIZ_WIDGET } from "@/mock/dashboard";
+
+export default function DashboardPage() {
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {LEARNER_STATS.map((stat) => (
+          <Statistics key={stat.label} {...stat} />
+        ))}
+      </div>
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        <WidgetRenderer widget={ACTIVITY_WIDGET} />
+        <WidgetRenderer widget={QUIZ_WIDGET} />
+      </div>
+
+      <section className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="font-heading text-lg">Continue learning</h2>
+          <Button asChild size="sm" variant="ghost">
+            <Link href="/courses">
+              All courses <ArrowRight className="size-4" />
+            </Link>
+          </Button>
+        </div>
+        <div className="grid gap-4 lg:grid-cols-3">
+          {CONTINUE_LEARNING.map((course) => (
+            <Link
+              className="border-border bg-card hover:border-primary-300 block rounded-2xl border p-5 transition-colors"
+              href={`/learn/${course.id}`}
+              key={course.id}
+            >
+              <p className="text-muted-foreground text-xs">{course.source}</p>
+              <p className="font-heading mt-1">{course.title}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{course.module}</p>
+              <div className="bg-muted mt-4 h-2 rounded-full">
+                <div
+                  className="bg-primary-500 h-2 rounded-full"
+                  style={{ width: `${course.progress}%` }}
+                />
+              </div>
+              <p className="text-muted-foreground mt-2 text-xs">{course.progress}% complete</p>
+            </Link>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}

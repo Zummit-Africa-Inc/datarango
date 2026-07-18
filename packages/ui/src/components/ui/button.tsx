@@ -2,28 +2,29 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { Slot } from "radix-ui";
 import * as React from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive  dark:aria-invalid:border-destructive/50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 disabled:cursor-not-allowed",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-sm border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 disabled:cursor-not-allowed",
   {
     variants: {
       variant: {
-        default: "bg-primary-500 text-white [a]:hover:bg-primary-500/80",
-        "default-inverse": "bg-white text-primary-500 [a]:hover:bg-white/80",
+        default: "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700",
+        "default-inverse": "bg-white text-primary-600 [a]:hover:bg-white/90",
+        ink: "bg-ink text-on-ink hover:bg-ink-elevated",
         outline:
-          "border-border bg-background hover:bg-muted dark:bg-neutral-600 hover:text-foreground aria-expanded:bg-muted dark:bg-neutral-600 aria-expanded:text-foreground",
+          "border-hairline-strong bg-transparent text-foreground hover:bg-surface-strong aria-expanded:bg-surface-strong",
         secondary:
-          "bg-muted dark:bg-neutral-600 text-foreground hover:bg-muted dark:bg-neutral-600/80 aria-expanded:bg-muted dark:bg-neutral-600 aria-expanded:text-foreground",
+          "bg-surface-strong text-foreground hover:bg-hairline aria-expanded:bg-surface-strong",
         ghost:
-          "hover:bg-muted dark:bg-neutral-600 hover:text-foreground aria-expanded:bg-muted dark:bg-neutral-600 aria-expanded:text-foreground",
-        destructive: "bg-destructive/10 text-white hover:bg-destructive/20",
-        link: "text-primary underline-offset-4 hover:underline",
-        success: "bg-green-500 text-white [a]:hover:bg-green-500/80",
+          "hover:bg-surface-strong hover:text-foreground aria-expanded:bg-surface-strong aria-expanded:text-foreground",
+        destructive: "bg-destructive text-white hover:bg-destructive/90",
+        link: "text-primary-600 underline-offset-4 hover:underline",
+        success: "bg-success text-white hover:bg-success/90",
       },
       size: {
         default:
-          "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+          "h-9 gap-1.5 px-4 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
         xs: "h-6 gap-1 rounded-[min(var(--radius-md),6px)] px-2 text-xs in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
         sm: "h-7 gap-1 rounded-[min(var(--radius-md),8px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-md has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
         md: "h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",

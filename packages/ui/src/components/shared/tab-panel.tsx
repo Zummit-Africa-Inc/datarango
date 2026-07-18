@@ -3,7 +3,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import React from "react";
 
-import { cn } from "@/lib";
+import { cn } from "../../lib";
 
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   selected: string | number;

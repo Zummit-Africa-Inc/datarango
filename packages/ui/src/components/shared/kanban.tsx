@@ -24,9 +24,9 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import type { StatusVariant } from "@/columns/shared";
-import { cn } from "@/lib";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import type { StatusVariant } from "../../types";
+import { cn } from "../../lib";
 
 /** Maps StatusVariant keys to concrete dot colors for the column header indicator. */
 const VARIANT_COLORS: Record<StatusVariant, string> = {
@@ -302,9 +302,7 @@ export function Kanban<T extends KanbanItemBase>({
       grouped[col.id] = [];
     }
     for (const item of items) {
-      if (grouped[item.status]) {
-        grouped[item.status].push(item);
-      }
+      grouped[item.status]?.push(item);
     }
     return grouped;
   }, [items, columns]);

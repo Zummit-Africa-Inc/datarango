@@ -5,7 +5,7 @@ import { createElement } from "react";
 
 describe("ChartContainer", () => {
   it("ChartContainer_WhenCallerPassesStyle_ShouldKeepSeriesColorVariables", async () => {
-    const { ChartContainer } = await import("@/components/ui/chart");
+    const { ChartContainer } = await import("./chart");
 
     const props = {
       config: { voluntary: { label: "Voluntary", color: "#ea580c" } },

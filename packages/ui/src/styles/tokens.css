@@ -1,29 +1,386 @@
 /*
- * Datarango design tokens — placeholder values.
- * The dedicated visual identity pass (FRONTEND-HANDOFF §7) replaces these;
- * everything downstream consumes tokens, so identity lands in this one file.
+ * Datarango design tokens — generated from DESIGN.md (v1.0).
+ * Precision on milk: milky-white canvas, warm ink, ember as the only action
+ * color, petrol as the analytical counterweight. Serif display type, Inter
+ * body, mono for every number that matters. Light theme only (dark mode
+ * deferred — ink islands cover the dark-surface needs).
  */
+
+@import "tw-animate-css";
+
+/* Dark mode is deferred (DESIGN.md): gate dark: behind a class that is never
+ * applied, so leftover dark: utilities stay inert even for dark-OS visitors. */
+@custom-variant dark (&:is(.dark *));
+
 :root {
-  --dr-color-bg: #ffffff;
-  --dr-color-fg: #0a0a0a;
-  --dr-color-primary: #4f46e5;
-  --dr-color-primary-fg: #ffffff;
-  --dr-color-muted: #6b7280;
-  --dr-color-border: #e5e7eb;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 
-  --dr-radius-sm: 0.25rem;
-  --dr-radius-md: 0.5rem;
-  --dr-radius-lg: 1rem;
+  /* canvas & ink */
+  --canvas: #faf8f4;
+  --canvas-soft: #fdfcfa;
+  --surface-card: #ffffff;
+  --surface-strong: #f3f0ea;
+  --surface-ink: #191512;
+  --surface-ink-elevated: #241f1b;
+  --ink: #1c1713;
+  --body-text: #4a423b;
+  --muted-text: #7d746b;
+  --muted-soft: #aaa196;
+  --hairline: #e9e4dc;
+  --hairline-strong: #d8d1c6;
+  --on-primary: #ffffff;
+  --on-ink: #f6f2ec;
+  --on-ink-muted: #a89e92;
 
-  --dr-font-sans: ui-sans-serif, system-ui, sans-serif;
-  --dr-font-mono: ui-monospace, "Cascadia Code", monospace;
+  /* semantic */
+  --success: #177245;
+  --success-soft: #e7f3ec;
+  --warning: #a36205;
+  --warning-soft: #faf1e0;
+  --error: #b3261e;
+  --error-soft: #f9e9e8;
+  --info: #116063;
+  --info-soft: #e7f1f1;
+
+  /* shadcn semantic mapping */
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface-card);
+  --card-foreground: var(--ink);
+  --popover: var(--surface-card);
+  --popover-foreground: var(--ink);
+  --primary: #c23f00;
+  --primary-foreground: var(--on-primary);
+  --secondary: var(--surface-strong);
+  --secondary-foreground: var(--ink);
+  --muted: var(--surface-strong);
+  --muted-foreground: var(--muted-text);
+  --accent: #fef2ec;
+  --accent-foreground: #802100;
+  --destructive: var(--error);
+  --destructive-foreground: #ffffff;
+  --border: var(--hairline);
+  --input: var(--hairline-strong);
+  --ring: #c23f00;
+
+  /* data-viz sequence (ember and petrol alternating leads) */
+  --chart-1: #c23f00;
+  --chart-2: #116063;
+  --chart-3: #e35509;
+  --chart-4: #40989a;
+  --chart-5: #8a6d3b;
+  --chart-6: #601700;
+
+  --radius: 10px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --dr-color-bg: #0a0a0a;
-    --dr-color-fg: #f5f5f5;
-    --dr-color-muted: #9ca3af;
-    --dr-color-border: #262626;
+@theme inline {
+  /* semantic tokens */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+
+  /* canvas & ink utilities */
+  --color-canvas: var(--canvas);
+  --color-canvas-soft: var(--canvas-soft);
+  --color-surface-card: var(--surface-card);
+  --color-surface-strong: var(--surface-strong);
+  --color-ink: var(--surface-ink);
+  --color-ink-elevated: var(--surface-ink-elevated);
+  --color-body: var(--body-text);
+  --color-muted-soft: var(--muted-soft);
+  --color-hairline: var(--hairline);
+  --color-hairline-strong: var(--hairline-strong);
+  --color-on-ink: var(--on-ink);
+  --color-on-ink-muted: var(--on-ink-muted);
+
+  /* semantic status */
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-error: var(--error);
+  --color-error-soft: var(--error-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  /* ember (primary) scale */
+  --color-primary-50: #fef2ec;
+  --color-primary-100: #fddfd0;
+  --color-primary-200: #fbbca2;
+  --color-primary-300: #f89773;
+  --color-primary-400: #e35509;
+  --color-primary-500: #c23f00;
+  --color-primary-600: #a02e00;
+  --color-primary-700: #802100;
+  --color-primary-800: #601700;
+  --color-primary-900: #451000;
+  --color-primary-950: #250800;
+
+  /* petrol (secondary) scale — the analytical counterweight, never a CTA */
+  --color-secondary-50: #eef7f6;
+  --color-secondary-100: #d5ecea;
+  --color-secondary-200: #abd8d6;
+  --color-secondary-300: #7bbfbd;
+  --color-secondary-400: #40989a;
+  --color-secondary-500: #1b7a7d;
+  --color-secondary-600: #116063;
+  --color-secondary-700: #0c4b4e;
+  --color-secondary-800: #093a3d;
+  --color-secondary-900: #062b2e;
+  --color-secondary-950: #031a1c;
+
+  /* type — serif display (Waldenburg when licensed; EB Garamond until then) */
+  --font-heading: var(--font-ebgaramond, "EB Garamond"), "Times New Roman", serif;
+  --font-sans: var(--font-inter, "Inter"), sans-serif;
+  --font-mono-data: var(--font-dm-mono, "DM Mono"), ui-monospace, monospace;
+  --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), ui-monospace, monospace;
+
+  /* radius — Warp geometry: 3px buttons, 6px inputs, 10px cards */
+  --radius-xs: 2px;
+  --radius-sm: 3px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 16px;
+  --radius-2xl: 24px;
+  --radius-3xl: 24px;
+
+  /* elevation — three tiers, nothing else */
+  --shadow-low: 0 1px 2px rgba(28, 23, 19, 0.05);
+  --shadow-medium: 0 4px 16px rgba(28, 23, 19, 0.06);
+  --shadow-high: 0 12px 32px rgba(28, 23, 19, 0.10);
+}
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
   }
+
+  * {
+    border-color: var(--hairline);
+    margin: 0;
+    padding: 0;
+    scrollbar-width: none;
+    font-family: var(--font-sans);
+    user-select: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: var(--canvas);
+    color: var(--body-text);
+    overflow-x: hidden;
+    width: 100%;
+    letter-spacing: 0.01em;
+  }
+
+  ::-ms-scrollbar,
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0px;
+  }
+
+  img {
+    image-rendering: crisp-edges -moz-crisp-edges;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  h1 span,
+  h2 span,
+  h3 span,
+  h4 span,
+  h5 span,
+  h6 span {
+    font-family: var(--font-heading);
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: -0.02em;
+  }
+
+  code,
+  pre,
+  kbd,
+  samp {
+    font-family: var(--font-code);
+  }
+
+  a,
+  button {
+    cursor: pointer;
+    transition: all 0.5s ease-in-out;
+  }
+
+  button:active {
+    transform: scale(0.99);
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+
+  input[type="number"]::-webkit-inner-spin-button,
+  input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+  }
+
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px transparent inset !important;
+    -webkit-text-fill-color: var(--ink) !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+/* mono for every number that matters */
+.mono-data {
+  font-family: var(--font-mono-data);
+  font-variant-numeric: tabular-nums;
+}
+
+/* caption-uppercase — stat labels, product eyebrows */
+.caption-upper {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* link interaction */
+.link {
+  position: relative;
+  transition: all 500ms;
+}
+
+.link::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  width: 0;
+  background: var(--ink);
+  transform-origin: left;
+  transition: all 500ms;
+}
+
+.link:hover::before {
+  width: 100%;
+}
+
+/* running-cell loading idiom: ember pulsing bracket */
+@keyframes cell-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.cell-running {
+  animation: cell-pulse 1.2s ease-in-out infinite;
+  color: var(--primary);
+  font-family: var(--font-mono-data);
+}
+
+/* ember atmosphere bloom — marketing only, max two per viewport */
+.ember-bloom {
+  background: radial-gradient(
+    closest-side,
+    rgba(251, 188, 162, 0.45),
+    rgba(254, 242, 236, 0.25) 60%,
+    transparent
+  );
+  filter: blur(40px);
+}
+
+/* scroll area */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--hairline-strong) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: var(--surface-strong);
+  border-radius: 20px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--hairline-strong);
+  border-radius: 6px;
+  border: 2px solid var(--surface-strong);
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-soft);
+}
+
+/* hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
 }

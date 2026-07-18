@@ -3,10 +3,10 @@
 import { format } from "date-fns";
 import React from "react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
 import { CalendarSearchIcon } from "lucide-react";
 import { Calendar } from "./calendar";
-import { cn } from "@/lib";
+import { cn } from "../../lib";
 
 interface Props {
   onSelect: (date: Date | undefined) => void;

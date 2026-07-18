@@ -4,12 +4,12 @@ Turborepo + pnpm monorepo for all Datarango frontend apps. Companion to `FRONTEN
 
 ## Apps
 
-| App | Port (dev) | Domain | Persona |
-|---|---|---|---|
-| `web` | 3000 | datarango.com / app.datarango.com | visitors + learners (marketing lives in `(marketing)` route group) |
-| `console` | 3001 | console.datarango.com | org owners/admins/managers/instructors |
-| `studio` | 3002 | studio.datarango.com | creators/instructors (content authors) |
-| `admin` | 3003 | admin.datarango.com | platform staff (IP-restricted) |
+| App       | Port (dev) | Domain                            | Persona                                                            |
+| --------- | ---------- | --------------------------------- | ------------------------------------------------------------------ |
+| `web`     | 3000       | datarango.com / app.datarango.com | visitors + learners (marketing lives in `(marketing)` route group) |
+| `console` | 3001       | console.datarango.com             | org owners/admins/managers/instructors                             |
+| `studio`  | 3002       | studio.datarango.com              | creators/instructors (content authors)                             |
+| `admin`   | 3003       | admin.datarango.com               | platform staff (IP-restricted)                                     |
 
 ## Packages
 

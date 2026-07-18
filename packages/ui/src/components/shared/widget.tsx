@@ -15,25 +15,13 @@ import {
 import { RefreshCw, X } from "lucide-react";
 import Image from "next/image";
 
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Card, CardAction, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { ScrollArea } from "@/components/shared/scroll-area";
-import { Statistics } from "@/components/shared/statistics";
-import { Button } from "@/components/ui/button";
-import { cn } from "@/lib";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "../ui/chart";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
+import { Card, CardAction, CardContent, CardHeader, CardTitle } from "../ui/card";
+import { ScrollArea } from "./scroll-area";
+import { Statistics } from "./statistics";
+import { Button } from "../ui/button";
+import { cn } from "../../lib";
 import type {
   ActivitiesWidget,
   AdvertsWidget,
@@ -46,7 +34,7 @@ import type {
   StatisticsWidget,
   TableWidget,
   WidgetConfig,
-} from "@/types";
+} from "../../types";
 
 function StatisticsBody({ widget }: { widget: StatisticsWidget }) {
   return (
@@ -77,7 +65,7 @@ function ChartBody({ widget }: { widget: ChartWidget }) {
   const rows = labels.map((label, i) => {
     const row: Record<string, string | number> = { label };
     series.forEach((s) => {
-      row[s.name] = s.data[i];
+      row[s.name] = s.data[i] ?? 0;
     });
     return row;
   });

@@ -4,7 +4,7 @@ import { addMonths, format, subMonths, isAfter, isBefore, isSameDay, startOfMont
 import { ChevronLeftIcon } from "lucide-react";
 import React from "react";
 
-import { cn } from "@/lib";
+import { cn } from "../../lib";
 
 interface CalendarProps {
   onSelect: (date: Date | undefined) => void;

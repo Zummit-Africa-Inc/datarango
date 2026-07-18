@@ -10,12 +10,19 @@
   "dependencies": {
     "@datarango/api": "workspace:*",
     "@datarango/auth": "workspace:*",
-    "@datarango/realtime": "workspace:*",
     "@datarango/notebook": "workspace:*",
+    "@datarango/realtime": "workspace:*",
     "@datarango/ui": "workspace:*",
+    "@hookform/resolvers": "^5.4.0",
+    "@tanstack/react-query": "^5.101.2",
+    "axios": "^1.18.1",
+    "lucide-react": "^0.545.0",
     "next": "^16.0.0",
     "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "react-dom": "^19.2.0",
+    "react-hook-form": "^7.81.0",
+    "zod": "^4.4.3",
+    "zustand": "^5.0.14"
   },
   "devDependencies": {
     "@datarango/config": "workspace:*",

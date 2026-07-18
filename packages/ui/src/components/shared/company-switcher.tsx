@@ -3,72 +3,85 @@
 import { ChevronsUpDown } from "lucide-react";
 
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
-import { useGlobalStore, useUserStore } from "@/store";
+import type { Tenant } from "../../types";
 import { Button } from "../ui/button";
-import { cn } from "@/lib";
+import { cn } from "../../lib";
 
-export const CompanySwitcher = () => {
-  const { currentTenant, isCollapsed, onTenantChange } = useGlobalStore();
-  const { tenants } = useUserStore();
+interface Props {
+  currentTenant: Tenant;
+  tenants: Tenant[];
+  onTenantChange: (tenant: Tenant) => void;
+  collapsed?: boolean;
+}
 
+const TenantMark = ({ tenant, onInk }: { tenant: Tenant; onInk?: boolean }) => (
+  <div
+    className={cn(
+      "grid size-7 shrink-0 place-items-center rounded-md text-xs font-semibold",
+      onInk ? "bg-ink-elevated text-on-ink" : "bg-surface-strong text-foreground",
+    )}
+  >
+    {tenant.name.charAt(0).toUpperCase()}
+  </div>
+);
+
+/** Org/tenant switcher for multi-org members — lives in the ink sidebar. */
+export const CompanySwitcher = ({ currentTenant, tenants, onTenantChange, collapsed }: Props) => {
   const triggerClasses = cn(
-    "border-b",
-    isCollapsed ? "size-11 justify-center p-0" : "h-11 w-full justify-between",
+    "border-b border-white/5 rounded-none text-on-ink hover:bg-white/10 hover:text-on-ink",
+    collapsed ? "size-11 justify-center p-0" : "h-11 w-full justify-between",
+  );
+
+  const trigger = (
+    <div className={cn("flex items-center", !collapsed && "gap-x-2")}>
+      <TenantMark onInk tenant={currentTenant} />
+      {!collapsed && (
+        <div className="text-left">
+          <p className="text-on-ink text-sm font-medium">{currentTenant.name}</p>
+          <p className="text-on-ink-muted text-xs">{currentTenant.slug}</p>
+        </div>
+      )}
+    </div>
   );
 
   if (tenants.length <= 1) {
     return (
       <Button
         className={triggerClasses}
-        title={isCollapsed ? currentTenant.name : undefined}
+        title={collapsed ? currentTenant.name : undefined}
         variant="ghost"
       >
-        <div className={cn("flex items-center", !isCollapsed && "gap-x-2")}>
-          <div className="size-7 shrink-0 rounded bg-black"></div>
-          {!isCollapsed && (
-            <div className="text-left">
-              <p className="text-sm font-medium">{currentTenant.name}</p>
-              <p className="text-muted-foreground text-xs">{currentTenant.slug}</p>
-            </div>
-          )}
-        </div>
+        {trigger}
       </Button>
     );
   }
 
   return (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger asChild>
         <Button
           className={triggerClasses}
-          title={isCollapsed ? currentTenant.name : undefined}
+          title={collapsed ? currentTenant.name : undefined}
           variant="ghost"
         >
-          <div className={cn("flex items-center", !isCollapsed && "gap-x-2")}>
-            <div className="size-7 shrink-0 rounded bg-black"></div>
-            {!isCollapsed && (
-              <div className="text-left">
-                <p className="text-sm font-medium">{currentTenant.name}</p>
-                <p className="text-muted-foreground text-xs">{currentTenant.slug}</p>
-              </div>
-            )}
-          </div>
-          {!isCollapsed && <ChevronsUpDown className="size-4" />}
+          {trigger}
+          {!collapsed && <ChevronsUpDown className="size-4" />}
         </Button>
       </PopoverTrigger>
-      <PopoverContent align={isCollapsed ? "start" : "center"} className="sm:max-w-64">
+      <PopoverContent align={collapsed ? "start" : "center"} className="p-1 sm:max-w-64">
         {tenants.map((tenant) => (
-          <div
-            className="flex items-center gap-x-2 p-2"
+          <button
+            className="hover:bg-surface-strong flex w-full items-center gap-x-2 rounded-md p-2 transition-colors"
             key={tenant.id}
             onClick={() => onTenantChange(tenant)}
+            type="button"
           >
-            <div className="size-8 rounded bg-black"></div>
+            <TenantMark tenant={tenant} />
             <div className="text-left">
               <p className="text-sm font-medium">{tenant.name}</p>
               <p className="text-muted-foreground text-xs">{tenant.slug}</p>
             </div>
-          </div>
+          </button>
         ))}
       </PopoverContent>
     </Popover>

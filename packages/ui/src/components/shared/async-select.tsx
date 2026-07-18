@@ -3,12 +3,11 @@
 import { Check, ChevronsUpDown, Plus, Search } from "lucide-react";
 import { useState } from "react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import { useDebouncedCallback } from "@/hooks";
-import { Input } from "@/components/ui/input";
-import { useApiQuery } from "@/lib/query";
-import { cn } from "@/lib";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { useDebouncedCallback } from "../../hooks";
+import { Input } from "../ui/input";
+import { cn } from "../../lib";
 
 export interface AsyncSelectOption {
   value: string;
@@ -16,39 +15,38 @@ export interface AsyncSelectOption {
 }
 
 interface AsyncSelectProps {
-  endpoint: string;
+  /** Current options for the active search — fetched by the app (useApi). */
+  options: AsyncSelectOption[];
   onChange: (value: string) => void;
-  getItems: (response: unknown) => unknown[];
-  getOption: (item: unknown) => AsyncSelectOption;
+  /** Fired (debounced) when the search input changes; drive your query with it. */
+  onSearchChange?: (query: string) => void;
+  loading?: boolean;
   addLabel?: string;
   disabled?: boolean;
   displayValue?: string;
   error?: string;
   onAdd?: () => void;
   placeholder?: string;
-  searchParam?: string;
   value?: string;
 }
 
 export const AsyncSelect = ({
-  endpoint,
+  options,
   onChange,
-  getItems,
-  getOption,
+  onSearchChange,
+  loading = false,
   addLabel = "Add new",
   disabled,
   displayValue,
   error,
   onAdd,
   placeholder = "Select...",
-  searchParam = "search",
   value,
 }: AsyncSelectProps) => {
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
 
-  const flush = useDebouncedCallback((q: string) => setDebouncedSearch(q), 300);
+  const flush = useDebouncedCallback((q: string) => onSearchChange?.(q), 300);
 
   const handleSearch = (q: string) => {
     setSearch(q);
@@ -59,18 +57,9 @@ export const AsyncSelect = ({
     setOpen(next);
     if (!next) {
       setSearch("");
-      setDebouncedSearch("");
+      onSearchChange?.("");
     }
   };
-
-  const { data: rawData, isFetching } = useApiQuery({
-    endpoint,
-    params: { [searchParam]: debouncedSearch, pageSize: 20 },
-    enabled: open,
-    staleTime: 0,
-  });
-
-  const options: AsyncSelectOption[] = rawData ? getItems(rawData).map(getOption) : [];
 
   // Keep showing the known label while options haven't loaded yet
   const selectedOption =
@@ -81,7 +70,7 @@ export const AsyncSelect = ({
     onChange(optValue === value ? "" : optValue);
     setOpen(false);
     setSearch("");
-    setDebouncedSearch("");
+    onSearchChange?.("");
   };
 
   return (
@@ -116,7 +105,7 @@ export const AsyncSelect = ({
           </div>
         </div>
         <div className="max-h-52 overflow-y-auto p-1">
-          {isFetching ? (
+          {loading ? (
             <p className="text-muted-foreground py-4 text-center text-xs">Loading...</p>
           ) : options.length === 0 ? (
             <p className="text-muted-foreground py-4 text-center text-xs">No results found.</p>

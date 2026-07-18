@@ -2,7 +2,7 @@ import { ChevronRight, Home, LucideIcon } from "lucide-react";
 import * as React from "react";
 import Link from "next/link";
 
-import { cn, fromKebabCase } from "@/lib";
+import { cn, fromKebabCase } from "../../lib";
 
 type BreadcrumbItem = {
   label: string;
@@ -160,7 +160,7 @@ export const Breadcrumb = ({
       return allItems;
     }
 
-    const firstItem = allItems[0];
+    const firstItem = allItems[0]!;
     const lastItems = allItems.slice(-(maxItems - 2));
     const collapsedItems = allItems.slice(1, -(maxItems - 2));
 

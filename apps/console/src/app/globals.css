@@ -1,8 +1,4 @@
 @import "tailwindcss";
 @import "@datarango/ui/styles/tokens.css";
 
-body {
-  background: var(--dr-color-bg);
-  color: var(--dr-color-fg);
-  font-family: var(--dr-font-sans);
-}
+@source "../../../../packages/ui/src";

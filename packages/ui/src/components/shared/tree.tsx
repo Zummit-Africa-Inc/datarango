@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import { cn } from "@/lib";
+import { cn } from "../../lib";
 
 export interface TreeParentMeta {
   isExpanded: boolean;

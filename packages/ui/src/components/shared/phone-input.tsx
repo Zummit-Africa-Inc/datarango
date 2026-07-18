@@ -3,8 +3,8 @@
 import { useState } from "react";
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-import { DIAL_CODES } from "@/constants/dial-code";
-import { cn } from "@/lib";
+import { DIAL_CODES } from "../../constants/dial-code";
+import { cn } from "../../lib";
 
 interface Props {
   className?: string;
@@ -18,11 +18,12 @@ interface Props {
 
 // Sort once at module level — longest dial code first to avoid "+1" matching "+1264"
 const SORTED_DIAL_CODES = [...DIAL_CODES].sort((a, b) => b.code.length - a.code.length);
+const DEFAULT_DIAL_CODE = DIAL_CODES[0]!.code;
 
 function parse(full: string): { dialCode: string; phoneNumber: string } {
   const match = SORTED_DIAL_CODES.find((c) => full.startsWith(c.code));
   if (match) return { dialCode: match.code, phoneNumber: full.slice(match.code.length) };
-  return { dialCode: DIAL_CODES[0].code, phoneNumber: full };
+  return { dialCode: DEFAULT_DIAL_CODE, phoneNumber: full };
 }
 
 export const PhoneInput = ({
@@ -36,7 +37,7 @@ export const PhoneInput = ({
 }: Props) => {
   const isControlled = value !== undefined;
 
-  const [internalDialCode, setInternalDialCode] = useState(DIAL_CODES[0].code);
+  const [internalDialCode, setInternalDialCode] = useState(DEFAULT_DIAL_CODE);
   const [internalNumber, setInternalNumber] = useState("");
 
   const { dialCode, phoneNumber } = isControlled

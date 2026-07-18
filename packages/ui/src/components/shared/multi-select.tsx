@@ -4,8 +4,8 @@ import { ChevronDownIcon } from "lucide-react";
 import { toast } from "sonner";
 import * as React from "react";
 
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { cn } from "../../lib";
 import {
   Command,
   CommandEmpty,
@@ -13,7 +13,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from "../ui/command";
 
 type Option = {
   label: string;
