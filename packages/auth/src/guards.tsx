@@ -29,7 +29,11 @@ interface AuthGuardProps {
  * @example
  * <AuthGuard fallback={<PageSkeleton />}><Dashboard /></AuthGuard>
  */
-export const AuthGuard = ({ children, fallback = null, redirectTo = "/signin" }: AuthGuardProps) => {
+export const AuthGuard = ({
+  children,
+  fallback = null,
+  redirectTo = "/signin",
+}: AuthGuardProps) => {
   const status = useAuthStatus();
   const router = useRouter();
   const pathname = usePathname();
@@ -57,7 +61,11 @@ interface PermissionGuardProps {
  * @example
  * <PermissionGuard permission="org.members.invite"><InviteButton /></PermissionGuard>
  */
-export const PermissionGuard = ({ children, permission, fallback = null }: PermissionGuardProps) => {
+export const PermissionGuard = ({
+  children,
+  permission,
+  fallback = null,
+}: PermissionGuardProps) => {
   const allowed = usePermission(permission);
   return allowed ? children : fallback;
 };

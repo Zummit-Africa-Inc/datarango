@@ -9,7 +9,7 @@ import { Button, Input, Label } from "@datarango/ui";
 import { AuthCard, AuthDivider } from "@/components/auth/auth-card";
 
 const SignInPrompt = () => (
-  <p className="text-muted-foreground mt-6 text-sm text-center">
+  <p className="text-muted-foreground mt-6 text-center text-sm">
     Already have an account?{" "}
     <Link className="link before:bg-ink text-foreground" href="/signin">
       Sign in

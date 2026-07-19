@@ -3,7 +3,6 @@
 import { useState } from "react";
 
 import { ContextSwitcher, Header, Sidebar } from "@datarango/ui";
-
 import { LEARNER_ROUTES } from "@/config/routes";
 
 const MOCK_USER = { name: "Ada Learner", email: "ada@datarango.com" };

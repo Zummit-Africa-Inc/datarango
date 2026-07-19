@@ -1,6 +1,5 @@
 import type { ComponentType } from "react";
 
-
 export interface RouteConfig {
   href: string;
   label: string;
@@ -17,26 +16,28 @@ export interface RouteGroup {
 }
 
 export interface HttpResponse<T> {
-  data: T
-  message: string
-  status: number
-  success: boolean
+  data: T;
+  message: string;
+  status: number;
+  success: boolean;
 }
 
 export interface PagedResponse<T> {
-  data: T[]
-  page: number
-  pageSize: number
-  total: number
-  totalPages: number
+  data: T[];
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
 }
 
 export interface HttpError {
-  errors: Record<string, string>
-  message: string
-  requestId: string
-  status: number
-  success: boolean
+  errors: Record<string, string>;
+  message: string;
+  requestId: string;
+  status: number;
+  success: boolean;
 }
 
 export interface DefaultParams {
@@ -48,14 +49,8 @@ export interface DefaultParams {
 }
 
 export type StatusVariant =
-  | "amber"
-  | "danger"
-  | "draft"
-  | "info"
-  | "neutral"
-  | "success"
-  | "warning";
+  "amber" | "danger" | "draft" | "info" | "neutral" | "success" | "warning";
 
 export type Maybe<T> = T | null | undefined;
 
-export type MaybePromie<T> = T | Promise<T>
+export type MaybePromie<T> = T | Promise<T>;

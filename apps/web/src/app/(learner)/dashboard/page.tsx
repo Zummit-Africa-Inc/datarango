@@ -15,12 +15,10 @@ export default function DashboardPage() {
           <Statistics key={stat.label} {...stat} />
         ))}
       </div>
-
       <div className="grid gap-6 lg:grid-cols-2">
         <WidgetRenderer widget={ACTIVITY_WIDGET} />
         <WidgetRenderer widget={QUIZ_WIDGET} />
       </div>
-
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-lg">Continue learning</h2>

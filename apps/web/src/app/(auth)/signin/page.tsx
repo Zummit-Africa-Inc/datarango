@@ -7,11 +7,7 @@ import { AuthCard, AuthDivider } from "@/components/auth/auth-card";
 
 const Page = () => {
   return (
-    <AuthCard
-      cell="signin"
-      title="Welcome back"
-      subtitle="Sign in to pick up where you stopped."
-    >
+    <AuthCard cell="signin" title="Welcome back" subtitle="Sign in to pick up where you stopped.">
       <div className="space-y-2">
         <Button className="w-full" type="button" variant="outline">
           Continue with Google
@@ -45,7 +41,7 @@ const Page = () => {
           Sign in
         </Button>
       </form>
-      <p className="text-muted-foreground mt-6 text-sm text-center">
+      <p className="text-muted-foreground mt-6 text-center text-sm">
         New to Datarango?{" "}
         <Link className="link before:bg-ink text-foreground" href="/signup">
           Create account

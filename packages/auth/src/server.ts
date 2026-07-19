@@ -148,13 +148,13 @@ export const createAuthHandlers = ({
       accessToken: tokens.access_token,
       expiresIn: tokens.expires_in,
     });
-    if (tokens.refresh_token) response.cookies.set("dr_refresh", tokens.refresh_token, refreshCookie);
+    if (tokens.refresh_token)
+      response.cookies.set("dr_refresh", tokens.refresh_token, refreshCookie);
     response.cookies.set(sessionCookie, "1", markerCookie);
     return response;
   };
 
-  const signout = async (): Promise<NextResponse> =>
-    clearSession(NextResponse.json({ ok: true }));
+  const signout = async (): Promise<NextResponse> => clearSession(NextResponse.json({ ok: true }));
 
   const route: Handler = async (request, context) => {
     const [action] = (await context.params).auth;

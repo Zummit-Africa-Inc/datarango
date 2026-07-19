@@ -1,5 +1,6 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { PagedResponse } from "../types";
 
 /** Joins conditional class names and resolves Tailwind conflicts. */
 export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
@@ -35,4 +36,20 @@ export function removeNullorUndefined<
     ),
   );
   return cleaned as Partial<T>;
+}
+
+export function paginate<T>(
+  data: T[],
+  page: number,
+  pageSize: number,
+  total: number,
+): PagedResponse<T> {
+  const offset = (page - 1) * pageSize;
+  const hasNextPage = offset + pageSize < total;
+  const hasPreviousPage = page > 1;
+  const totalPages = Math.ceil(total / pageSize);
+
+  const items = data.slice(offset, offset + pageSize);
+
+  return { data: items, hasNextPage, hasPreviousPage, page, pageSize, total, totalPages };
 }

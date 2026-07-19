@@ -29,7 +29,7 @@ export interface TableWidget extends WidgetBase {
 export interface DocumentListWidget extends WidgetBase {
   type: "data";
   dataType: "document-list";
-  documents: { id: string; name: string; url: string; updatedAt: string }[];
+  documents: { id: string; name: string; url: string; updatedAt: Date }[];
 }
 
 export interface ExpensesStatsWidget extends WidgetBase {
@@ -43,11 +43,7 @@ export interface ExpensesStatsWidget extends WidgetBase {
 }
 
 export type DataWidget =
-  | StatisticsWidget
-  | ChartWidget
-  | TableWidget
-  | DocumentListWidget
-  | ExpensesStatsWidget;
+  StatisticsWidget | ChartWidget | TableWidget | DocumentListWidget | ExpensesStatsWidget;
 
 export interface NewsWidget extends WidgetBase {
   type: "news";

@@ -18,24 +18,24 @@ export const LEARNER_ROUTES: RouteGroup[] = [
     group: "Learn",
     routes: [
       { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-      { href: "/courses", label: "Courses", icon: BookOpen },
-      { href: "/quizzes", label: "Quizzes", icon: ListChecks },
-      { href: "/notebooks", label: "Notebooks", icon: NotebookPen },
+      { href: "/dashboard/courses", label: "Courses", icon: BookOpen },
+      { href: "/dashboard/quizzes", label: "Quizzes", icon: ListChecks },
+      { href: "/dashboard/notebooks", label: "Notebooks", icon: NotebookPen },
     ],
   },
   {
     group: "Compete",
     routes: [
-      { href: "/competitions", label: "Competitions", icon: Trophy },
-      { href: "/datasets", label: "Datasets", icon: Database },
+      { href: "/dashboard/competitions", label: "Competitions", icon: Trophy },
+      { href: "/dashboard/datasets", label: "Datasets", icon: Database },
     ],
   },
   {
     group: "Progress",
     routes: [
-      { href: "/wallet", label: "Wallet", icon: Wallet },
-      { href: "/achievements", label: "Achievements", icon: Award },
-      { href: "/settings", label: "Settings", icon: Settings },
+      { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
+      { href: "/dashboard/achievements", label: "Achievements", icon: Award },
+      { href: "/dashboard/settings", label: "Settings", icon: Settings },
     ],
   },
 ];
