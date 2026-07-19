@@ -25,10 +25,7 @@ export const Hero = () => (
     <div className="from-primary-50/60 pointer-events-none absolute inset-0 -z-10 bg-linear-to-b to-transparent" />
     <div className="container mx-auto grid items-center gap-16 px-4 pt-20 pb-24 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:pt-28 lg:pb-32">
       <FadeIn>
-        <span className="border-primary-200 bg-primary-50 text-primary-700 inline-flex items-center gap-x-2 rounded-full border px-3 py-1 text-xs font-semibold tracking-wide uppercase">
-          Courses · Notebooks · Competitions
-        </span>
-        <h1 className="font-heading mt-6 text-6xl leading-[0.95] tracking-tight lg:text-8xl">
+        <h1 className="font-heading mt-6 text-6xl leading-[0.95] tracking-tight lg:text-9xl">
           Play.
           <br />
           Learn.

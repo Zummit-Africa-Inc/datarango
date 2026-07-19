@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+import Link from "next/link";
 import {
   Award,
   BarChart3,
@@ -10,10 +12,9 @@ import {
   Trophy,
   Users,
 } from "lucide-react";
-import Image from "next/image";
-import Link from "next/link";
 
 import { Button, FadeIn, Stagger, StaggerItem } from "@datarango/ui";
+import { Gif } from "./gif";
 
 /* -------------------------------- tool strip ------------------------------- */
 
@@ -111,14 +112,14 @@ const SHOWCASE = [
   {
     title: "Learning that feels like building",
     body: "Lessons open straight into a live notebook. Write real code against real datasets, get auto-graded feedback in seconds, and keep every file you touch.",
-    image: "/assets/illustrations/ai-learning.jpg",
+    image: "learning",
     href: "/courses",
     cta: "Browse courses",
   },
   {
     title: "Competition keeps you honest",
     body: "Submit predictions, watch the leaderboard move, and learn from what the top of the table does differently. Streaks, XP and badges keep the momentum daily.",
-    image: "/assets/illustrations/gamified-learning.jpg",
+    image: "competition",
     href: "/competitions",
     cta: "See competitions",
   },
@@ -133,14 +134,8 @@ export const Showcase = () => (
         }`}
         key={item.title}
       >
-        <div className="relative aspect-4/3 w-full overflow-hidden rounded-xs lg:w-1/2">
-          <Image
-            alt={item.title}
-            className="object-cover"
-            fill
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            src={item.image}
-          />
+        <div className="relative aspect-5/3 w-full lg:w-1/2">
+          <Gif title={item.image} />
         </div>
         <div className="w-full lg:w-1/2">
           <h3 className="font-heading text-3xl tracking-tight lg:text-5xl">{item.title}</h3>
@@ -326,7 +321,7 @@ export const Testimonials = () => (
 /* ----------------------------------- CTA ----------------------------------- */
 
 export const FinalCta = () => (
-  <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
+  <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
     <FadeIn className="border-border from-primary-50 rounded-xs border bg-linear-to-br to-transparent px-8 py-20 text-center lg:py-28">
       <h2 className="font-heading mx-auto max-w-3xl text-4xl tracking-tight lg:text-7xl">
         Your first notebook is <span className="text-primary-500">one click</span> away

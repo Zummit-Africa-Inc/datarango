@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 
 import { FadeIn, Stagger, StaggerItem } from "@datarango/ui";
-
 import { PageIntro } from "@/components/marketing/page-intro";
 import { FinalCta } from "@/components/marketing/sections";
+import { Gif } from "@/components/marketing/gif";
 
 export const metadata: Metadata = {
   title: "About",
@@ -43,16 +43,9 @@ export default function AboutPage() {
         }
         lede="Datarango exists because the gap between watching tutorials and doing real data work is where most learners give up. We close that gap with real notebooks, graded exercises, and competition that keeps you honest."
       />
-
       <section className="container mx-auto grid items-center gap-16 px-4 pb-24 lg:grid-cols-2 lg:px-8">
-        <FadeIn className="relative aspect-4/3 overflow-hidden rounded-xs">
-          <Image
-            alt="Learning at Datarango"
-            className="object-cover"
-            fill
-            sizes="(min-width: 1024px) 50vw, 100vw"
-            src="/assets/illustrations/online-learning.jpg"
-          />
+        <FadeIn className="relative aspect-5/3">
+          <Gif title="architect" />
         </FadeIn>
         <FadeIn delay={0.1}>
           <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">The story so far</h2>
@@ -76,7 +69,6 @@ export default function AboutPage() {
           </div>
         </FadeIn>
       </section>
-
       <section className="border-border/60 border-y">
         <div className="container mx-auto px-4 py-24 lg:px-8">
           <FadeIn className="mx-auto max-w-2xl text-center">
@@ -97,7 +89,6 @@ export default function AboutPage() {
           </Stagger>
         </div>
       </section>
-
       <FinalCta />
     </main>
   );

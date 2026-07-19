@@ -15,7 +15,7 @@ export interface LedgerEntry {
   createdAt: Date;
 }
 
-export interface Badge {
+export interface AchievementBadge {
   id: string;
   key: string;
   name: string;
@@ -29,7 +29,7 @@ export interface GamificationProfile {
   xp: number;
   level: number;
   streakDays: number;
-  badges: Badge[];
+  badges: AchievementBadge[];
 }
 
 export interface GamificationLeaderboardEntry {

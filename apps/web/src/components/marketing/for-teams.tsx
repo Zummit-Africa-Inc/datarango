@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 
 import { Button, FadeIn, Stagger, StaggerItem, TiltCard } from "@datarango/ui";
+import { Gif } from "./gif";
 
 /* ---------------------------------- hero ----------------------------------- */
 
@@ -256,14 +257,8 @@ export const TeamsBilling = () => (
         granted to them. Their learning is theirs.
       </p>
     </FadeIn>
-    <FadeIn className="relative hidden aspect-4/3 overflow-hidden rounded-xs lg:block" delay={0.1}>
-      <Image
-        alt="A team learning together"
-        className="object-cover"
-        fill
-        sizes="(min-width: 1024px) 50vw, 100vw"
-        src="/assets/images/for-business.jpg"
-      />
+    <FadeIn className="relative hidden aspect-4/3 lg:block" delay={0.1}>
+      <Gif title="teams" />
     </FadeIn>
   </section>
 );

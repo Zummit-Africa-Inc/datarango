@@ -154,7 +154,9 @@ function DocumentListBody({ widget }: { widget: DocumentListWidget }) {
             className="flex items-center justify-between py-2 text-sm hover:underline"
           >
             <span>{doc.name}</span>
-            <span className="text-muted-foreground text-xs">{doc.updatedAt}</span>
+            <span className="text-muted-foreground text-xs">
+              {new Date(doc.updatedAt).toLocaleDateString()}
+            </span>
           </a>
         </li>
       ))}

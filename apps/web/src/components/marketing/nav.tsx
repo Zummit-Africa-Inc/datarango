@@ -64,10 +64,15 @@ export const MarketingNav = () => {
                   key={item.href}
                   onClick={() => setExploreOpen(false)}
                 >
-                  <item.icon className="text-primary-500 mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
+                  <item.icon
+                    className="text-primary-500 mt-0.5 size-4 shrink-0"
+                    strokeWidth={1.5}
+                  />
                   <div>
                     <p className="text-foreground text-sm font-medium">{item.label}</p>
-                    <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">{item.description}</p>
+                    <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">
+                      {item.description}
+                    </p>
                   </div>
                 </Link>
               ))}
@@ -101,7 +106,9 @@ export const MarketingNav = () => {
       </div>
       <div className={cn("border-border/60 border-t px-4 pt-2 pb-4 lg:hidden", !open && "hidden")}>
         <nav className="flex flex-col gap-y-1">
-          <p className="text-muted-foreground px-3 pt-1 pb-0.5 text-xs font-semibold tracking-widest uppercase">Explore</p>
+          <p className="text-muted-foreground px-3 pt-1 pb-0.5 text-xs font-semibold tracking-widest uppercase">
+            Explore
+          </p>
           {EXPLORE_ITEMS.map((item) => (
             <Link
               className="hover:bg-accent flex items-center gap-x-2.5 rounded-xs px-3 py-2 text-sm font-medium"

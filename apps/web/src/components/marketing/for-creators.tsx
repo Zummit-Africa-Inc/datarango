@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 import { Button, FadeIn, Stagger, StaggerItem, TiltCard } from "@datarango/ui";
+import { Gif } from "./gif";
 
 /* ---------------------------------- hero ----------------------------------- */
 
@@ -185,9 +186,7 @@ export const CreatorsSteps = () => (
   <section className="border-border/60 border-y">
     <div className="container mx-auto px-4 py-24 lg:px-8">
       <FadeIn>
-        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">
-          How it works
-        </h2>
+        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">How it works</h2>
       </FadeIn>
       <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, index) => (
@@ -249,14 +248,8 @@ export const CreatorsEarnings = () => (
         incentivize learners to complete your course.
       </p>
     </FadeIn>
-    <FadeIn className="relative hidden aspect-4/3 overflow-hidden rounded-xs lg:block" delay={0.1}>
-      <Image
-        alt="A creator recording a course"
-        className="object-cover"
-        fill
-        sizes="(min-width: 1024px) 50vw, 100vw"
-        src="/assets/images/teaching-support.jpg"
-      />
+    <FadeIn className="relative hidden aspect-4/3 lg:block" delay={0.1}>
+      <Gif title="creators" />
     </FadeIn>
   </section>
 );
