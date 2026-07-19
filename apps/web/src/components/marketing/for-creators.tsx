@@ -4,60 +4,52 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   BarChart3,
-  BookOpen,
-  Building2,
   Coins,
-  FileSpreadsheet,
-  Lock,
-  Receipt,
-  Shield,
+  FileVideo,
+  Globe,
+  NotebookPen,
+  Send,
   Trophy,
-  Users,
+  Upload,
+  Wallet,
 } from "lucide-react";
 
 import { Button, FadeIn, Stagger, StaggerItem, TiltCard } from "@datarango/ui";
 
 /* ---------------------------------- hero ----------------------------------- */
 
-const HERO_PROGRESS = [
-  { label: "Data Analysis Fundamentals", value: 82 },
-  { label: "Machine Learning Basics", value: 64 },
-  { label: "SQL for Analysts", value: 91 },
+const HERO_STATS = [
+  { label: "Courses published", value: "150+" },
+  { label: "Active learners", value: "12k+" },
+  { label: "Avg. creator rating", value: "4.8★" },
 ];
 
-export const TeamsHero = () => (
+export const CreatorsHero = () => (
   <section className="bg-ink text-white">
     <div className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
       <FadeIn>
         <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
-          Datarango for Teams & Schools
+          Datarango for Creators
         </p>
         <h1 className="font-heading text-on-ink mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
-          Train a team like
+          Teach data.
           <br />
-          you <span className="text-primary-400">mean it</span>
+          <span className="text-primary-400">Earn doing it.</span>
         </h1>
         <p className="mt-8 max-w-md text-lg leading-relaxed text-white/70">
-          One console to onboard your organization, assign real coursework, and watch measurable
-          progress — while your people keep everything they earn, even if they move on.
+          Publish courses, quizzes and notebook exercises on Datarango Studio. Set your own prices,
+          reward learners with tokens, and reach thousands of data practitioners.
         </p>
         <div className="mt-10 flex flex-wrap gap-4">
           <Button
             asChild
             className="bg-primary-500 hover:bg-primary-400 h-12 px-8 text-base text-white"
           >
-            <Link href="/signup?intent=org">Create an organization</Link>
-          </Button>
-          <Button
-            asChild
-            className="h-12 border-white/30 bg-transparent px-8 text-base text-white hover:bg-white/10"
-            variant="outline"
-          >
-            <Link href="/contact">Book a demo</Link>
+            <Link href="/contact">Apply to become a creator</Link>
           </Button>
         </div>
         <p className="mt-6 text-sm text-white/50">
-          Postpaid — no upfront commitment. Pay per assigned course at cycle end.
+          Creators are onboarded by invitation. Apply and we'll be in touch.
         </p>
       </FadeIn>
       <div className="relative hidden perspective-[1400px] lg:block" aria-hidden>
@@ -68,33 +60,31 @@ export const TeamsHero = () => (
           float
         >
           <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold">Acme Academy — This cycle</p>
-            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs">96 active learners</span>
+            <p className="text-sm font-semibold">Your creator dashboard</p>
+            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs">This month</span>
           </div>
           <div className="mt-6 grid grid-cols-3 gap-4">
-            {[
-              { label: "Seats", value: "120" },
-              { label: "Avg. completion", value: "64%" },
-              { label: "Usage to date", value: "₦412k" },
-            ].map((stat) => (
+            {HERO_STATS.map((stat) => (
               <div className="rounded-xs bg-white/5 p-4" key={stat.label}>
                 <p className="text-xs text-white/50">{stat.label}</p>
                 <p className="mono-data mt-1 text-2xl">{stat.value}</p>
               </div>
             ))}
           </div>
-          <div className="mt-6 space-y-4">
-            {HERO_PROGRESS.map((course) => (
-              <div key={course.label}>
-                <div className="flex justify-between text-xs text-white/60">
-                  <span>{course.label}</span>
-                  <span>{course.value}%</span>
-                </div>
-                <div className="mt-1.5 h-2 rounded-full bg-white/10">
-                  <div
-                    className="bg-primary-400 h-2 rounded-full"
-                    style={{ width: `${course.value}%` }}
-                  />
+          <div className="mt-6 space-y-3">
+            {[
+              { title: "Intro to pandas", enrollments: 340, revenue: "₦68k" },
+              { title: "SQL for Analysts", enrollments: 210, revenue: "₦42k" },
+              { title: "ML with scikit-learn", enrollments: 95, revenue: "₦28.5k" },
+            ].map((course) => (
+              <div
+                className="flex items-center justify-between rounded-xs bg-white/5 px-4 py-3"
+                key={course.title}
+              >
+                <p className="text-sm">{course.title}</p>
+                <div className="flex gap-x-4 text-xs text-white/60">
+                  <span>{course.enrollments} enrolled</span>
+                  <span className="text-primary-300">{course.revenue}</span>
                 </div>
               </div>
             ))}
@@ -107,51 +97,52 @@ export const TeamsHero = () => (
 
 /* -------------------------------- features --------------------------------- */
 
-const ORG_FEATURES = [
+const CREATOR_FEATURES = [
   {
-    icon: Users,
-    title: "Invites at any scale",
-    body: "Invite one manager or a whole cohort by CSV. Members join with the roles you chose.",
+    icon: FileVideo,
+    title: "Rich lesson formats",
+    body: "Author lessons with video, text and audio. Mix formats freely within a single module.",
   },
   {
-    icon: Shield,
-    title: "Roles built from permissions",
-    body: "Owner, admin, manager, instructor, member — or compose custom roles from the permission catalog.",
+    icon: NotebookPen,
+    title: "Live notebook exercises",
+    body: "Attach CPU-backed Jupyter notebooks to any lesson. Learners run real code; you write the auto-grader.",
   },
   {
-    icon: BookOpen,
-    title: "Course assignments",
-    body: "Assign courses to members or groups. End-of-module exercises gate completion, so progress means something.",
-  },
-  {
-    icon: BarChart3,
-    title: "Progress you can defend",
-    body: "Per-member, per-course drill-downs and CSV exports — certificates only count work done in your program.",
+    icon: Coins,
+    title: "Set token rewards",
+    body: "Decide how many tokens each exercise awards. Learners redeem tokens for your courses — a built-in growth loop.",
   },
   {
     icon: Trophy,
-    title: "Private competitions",
-    body: "Run org-only competitions on your own datasets, scored on the same pipeline as public ones.",
+    title: "Host competitions",
+    body: "Create Kaggle-style competitions with your own datasets and scoring pipeline. Public or org-private.",
   },
   {
-    icon: Lock,
-    title: "Org SSO & MFA policy",
-    body: "Bring your identity provider (Entra ID, Google Workspace), auto-provision members, enforce MFA.",
+    icon: BarChart3,
+    title: "Creator analytics",
+    body: "Per-course enrollment, completion rates, exercise pass rates and revenue — all in one dashboard.",
+  },
+  {
+    icon: Globe,
+    title: "Reach a built-in audience",
+    body: "Your courses are discoverable by 12k+ active learners the moment they pass review.",
   },
 ];
 
-export const TeamsFeatures = () => (
+export const CreatorsFeatures = () => (
   <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
     <FadeIn className="mx-auto max-w-2xl text-center">
       <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Built for how <span className="text-primary-500">organizations</span> learn
+        Everything you need to <span className="text-primary-500">teach well</span>
       </h2>
       <p className="text-muted-foreground mt-6 text-lg">
-        Everything in the learner platform, plus the control surface your L&D or faculty team needs.
+        Datarango Studio gives you the tools to build courses that actually work — and the audience
+        to make them worth building.
       </p>
     </FadeIn>
     <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {ORG_FEATURES.map((feature) => (
+      {CREATOR_FEATURES.map((feature) => (
         <StaggerItem
           className="border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
           key={feature.title}
@@ -169,32 +160,34 @@ export const TeamsFeatures = () => (
 
 const STEPS = [
   {
-    icon: Building2,
-    title: "Create your organization",
-    body: "Set up your org, connect SSO if you have it, and configure roles and policies.",
+    icon: Send,
+    title: "Apply",
+    body: "Tell us about your expertise and what you'd like to teach. We review every application personally.",
   },
   {
-    icon: FileSpreadsheet,
-    title: "Invite your people",
-    body: "Single invites or a CSV of hundreds — members land in the right role automatically.",
+    icon: NotebookPen,
+    title: "Get onboarded",
+    body: "Once accepted, we walk you through Datarango Studio and set up your creator account.",
   },
   {
-    icon: BookOpen,
-    title: "Assign courses",
-    body: "Pick courses, assign to members or groups. Enrollment is instant; the meter starts here.",
+    icon: Upload,
+    title: "Build & publish",
+    body: "Author lessons, attach live notebooks, set prices and token rewards, then submit for final review.",
   },
   {
-    icon: BarChart3,
-    title: "Track & report",
-    body: "Watch completion climb, grade submissions, export reports your leadership will actually read.",
+    icon: Wallet,
+    title: "Get paid",
+    body: "Earnings accumulate as learners enroll. Withdraw to your bank account on a monthly cycle.",
   },
 ];
 
-export const TeamsSteps = () => (
+export const CreatorsSteps = () => (
   <section className="border-border/60 border-y">
     <div className="container mx-auto px-4 py-24 lg:px-8">
       <FadeIn>
-        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">Live in an afternoon</h2>
+        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">
+          How it works
+        </h2>
       </FadeIn>
       <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, index) => (
@@ -214,34 +207,34 @@ export const TeamsSteps = () => (
   </section>
 );
 
-/* --------------------------------- billing --------------------------------- */
+/* -------------------------------- earnings --------------------------------- */
 
-const BILLING_POINTS = [
+const EARNINGS_POINTS = [
   {
     icon: Coins,
-    title: "Pay per assigned course",
-    body: "A billable unit is one member actively assigned one course in a cycle. Nothing else.",
+    title: "You set the price",
+    body: "Price your course in naira. Learners can pay with money or tokens they earned on the platform.",
   },
   {
     icon: BarChart3,
-    title: "A meter, not a surprise",
-    body: "The console shows the running total all cycle long — the invoice mirrors it line for line.",
+    title: "Transparent revenue share",
+    body: "A clear percentage of every enrollment goes to you. No hidden fees, no surprise deductions.",
   },
   {
-    icon: Receipt,
-    title: "Invoiced at cycle end",
-    body: "Monthly by default, configurable per org. Pay by card or bank transfer.",
+    icon: Wallet,
+    title: "Monthly payouts",
+    body: "Earnings are settled monthly to your bank account. Your dashboard shows the running total in real time.",
   },
 ];
 
-export const TeamsBilling = () => (
+export const CreatorsEarnings = () => (
   <section className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
     <FadeIn>
       <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Billing that <span className="text-primary-500">respects</span> your budget
+        Earn on your own <span className="text-primary-500">terms</span>
       </h2>
       <div className="mt-10 space-y-8">
-        {BILLING_POINTS.map((point) => (
+        {EARNINGS_POINTS.map((point) => (
           <div className="flex items-start gap-x-4" key={point.title}>
             <point.icon className="text-primary-500 mt-1 size-6 shrink-0" strokeWidth={1.5} />
             <div>
@@ -252,47 +245,40 @@ export const TeamsBilling = () => (
         ))}
       </div>
       <p className="text-muted-foreground border-border mt-10 rounded-xs border border-dashed p-4 text-sm">
-        If your organization ever stops paying, your members keep access to every course already
-        granted to them. Their learning is theirs.
+        Token rewards you set for exercises come from the platform pool — they cost you nothing and
+        incentivize learners to complete your course.
       </p>
     </FadeIn>
     <FadeIn className="relative hidden aspect-4/3 overflow-hidden rounded-xs lg:block" delay={0.1}>
       <Image
-        alt="A team learning together"
+        alt="A creator recording a course"
         className="object-cover"
         fill
         sizes="(min-width: 1024px) 50vw, 100vw"
-        src="/assets/images/for-business.jpg"
+        src="/assets/images/teaching-support.jpg"
       />
     </FadeIn>
   </section>
 );
 
-/* ----------------------------------- CTA ------------------------------------ */
+/* ----------------------------------- CTA ----------------------------------- */
 
-export const TeamsCta = () => (
+export const CreatorsCta = () => (
   <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
     <FadeIn className="bg-ink rounded-xs px-8 py-20 text-center text-white lg:py-24">
       <h2 className="font-heading text-on-ink mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
-        Put your whole team on the <span className="text-primary-400">same curve</span>
+        Your knowledge is worth <span className="text-primary-400">more than a blog post</span>
       </h2>
       <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
-        Create your organization now, or talk to us about rolling Datarango out across your school
-        or company.
+        Turn what you know into a course that earns while you sleep. Apply to join the Datarango
+        creator program.
       </p>
       <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
         <Button
           asChild
           className="bg-primary-500 hover:bg-primary-400 h-12 px-8 text-base text-white"
         >
-          <Link href="/signup?intent=org">Create an organization</Link>
-        </Button>
-        <Button
-          asChild
-          className="h-12 border-white/30 bg-transparent px-8 text-base text-white hover:bg-white/10"
-          variant="outline"
-        >
-          <Link href="/contact">Book a demo</Link>
+          <Link href="/contact">Apply to become a creator</Link>
         </Button>
       </div>
     </FadeIn>

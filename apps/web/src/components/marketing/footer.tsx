@@ -8,8 +8,8 @@ const COLUMNS = [
     links: [
       { href: "/courses", label: "Courses" },
       { href: "/quizzes", label: "Quizzes" },
-      { href: "/competitions", label: "Competitions" },
       { href: "/datasets", label: "Datasets" },
+      { href: "/competitions", label: "Competitions" },
       { href: "/pricing", label: "Pricing" },
     ],
   },
@@ -17,6 +17,7 @@ const COLUMNS = [
     heading: "For organizations",
     links: [
       { href: "/for-teams", label: "Teams & schools" },
+      { href: "/for-creators", label: "For creators" },
       { href: "/contact", label: "Book a demo" },
       { href: "/signup?intent=org", label: "Create an organization" },
     ],
