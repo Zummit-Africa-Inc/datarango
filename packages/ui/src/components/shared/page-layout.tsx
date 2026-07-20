@@ -7,22 +7,22 @@ import { cn } from "../../lib";
 
 interface Props {
   children: React.ReactNode;
-  title: string;
-  className?: string;
-  subtitle?: string;
-  /** Right-aligned header slot (primary action button, filters, …). */
-  actions?: React.ReactNode;
+  title: string
+  actions?: React.ReactNode[]
+  permissions?: string[]
+  subtitle?: string
 }
 
-export const PageLayout = ({ children, title, className, subtitle, actions }: Props) => (
-  <div className={cn("h-full w-full space-y-6", className)}>
+export const PageLayout = ({}: Props) => (
+  <div className={cn("h-full w-full space-y-6")}>
     <div className="flex w-full items-center justify-between">
-      <div>
-        <p className="font-heading text-xl font-semibold">{title}</p>
-        {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
+      <div className="space-y-1">
+        <h2 className="text-xl">{}</h2>
+        <p className="text-sm text-muted-foreground">{}</p>
       </div>
-      {actions}
     </div>
-    <ScrollArea className="min-h-0">{children}</ScrollArea>
+    <ScrollArea className="min-h-0">
+      <div></div>
+    </ScrollArea>
   </div>
 );

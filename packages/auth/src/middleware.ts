@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-export interface AuthMiddlewareConfig {
+export interface AuthProxyConfig {
   /** Sign-in location; absolute URL for apps whose auth UI lives on `web`. */
   signInUrl?: string;
   /** Session marker cookie set by the BFF (default "dr_session"). */
@@ -17,14 +17,14 @@ export interface AuthMiddlewareConfig {
  * @param config - Sign-in target, cookie name, public path prefixes.
  * @returns A Next.js middleware function.
  * @example
- * export const middleware = createAuthMiddleware({ signInUrl: "/signin" });
+ * export const middleware = createAuthProxy({ signInUrl: "/signin" });
  * export const config = { matcher: ["/dashboard/:path*"] };
  */
-export const createAuthMiddleware = ({
+export const createAuthProxy = ({
   signInUrl = "/signin",
   sessionCookie = "dr_session",
   publicPaths = [],
-}: AuthMiddlewareConfig = {}) => {
+}: AuthProxyConfig = {}) => {
   return (request: NextRequest): NextResponse => {
     const { pathname, search } = request.nextUrl;
     const isPublic = publicPaths.some(
