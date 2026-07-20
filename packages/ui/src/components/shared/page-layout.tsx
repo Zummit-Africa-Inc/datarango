@@ -7,10 +7,10 @@ import { cn } from "../../lib";
 
 interface Props {
   children: React.ReactNode;
-  title: string
-  actions?: React.ReactNode[]
-  permissions?: string[]
-  subtitle?: string
+  title: string;
+  actions?: React.ReactNode[];
+  permissions?: string[];
+  subtitle?: string;
 }
 
 export const PageLayout = ({}: Props) => (
@@ -18,7 +18,7 @@ export const PageLayout = ({}: Props) => (
     <div className="flex w-full items-center justify-between">
       <div className="space-y-1">
         <h2 className="text-xl">{}</h2>
-        <p className="text-sm text-muted-foreground">{}</p>
+        <p className="text-muted-foreground text-sm">{}</p>
       </div>
     </div>
     <ScrollArea className="min-h-0">
