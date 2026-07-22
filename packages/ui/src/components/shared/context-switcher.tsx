@@ -10,7 +10,8 @@ import { Button } from "../ui/button";
 
 interface Props {
   user: { name: string; email: string; avatarUrl?: string };
-  onSignOut: () => void;
+  /** Ends the session. May be async (e.g. a BFF sign-out + redirect). */
+  onSignOut: () => void | Promise<void>;
   /** Context toggle (e.g. personal ↔ org view). Omit to hide the toggle row. */
   contextToggle?: {
     title: string;
@@ -23,6 +24,18 @@ interface Props {
 /** Bottom-of-sidebar user block (ink surface): optional context toggle + profile + sign out. */
 export const ContextSwitcher = ({ user, onSignOut, contextToggle }: Props) => {
   const [open, setOpen] = useState(false);
+  const [pending, setPending] = useState(false);
+
+  const handleSignOut = async () => {
+    setPending(true);
+    try {
+      await onSignOut();
+      // A successful sign-out redirects away and unmounts this component; the
+      // pending state is intentionally left set so the button can't be reused.
+    } catch {
+      setPending(false);
+    }
+  };
 
   const initials = user.name
     .split(" ")
@@ -76,11 +89,21 @@ export const ContextSwitcher = ({ user, onSignOut, contextToggle }: Props) => {
             <DialogTitle>Sign Out</DialogTitle>
             <DialogDescription>You can sign back in at any time.</DialogDescription>
             <div className="grid grid-cols-2 gap-6">
-              <Button className="w-full" onClick={() => setOpen(false)} variant="outline">
+              <Button
+                className="w-full"
+                onClick={() => setOpen(false)}
+                variant="outline"
+                disabled={pending}
+              >
                 Cancel
               </Button>
-              <Button className="w-full" onClick={onSignOut} variant="destructive">
-                Sign Out
+              <Button
+                className="w-full"
+                onClick={handleSignOut}
+                variant="destructive"
+                disabled={pending}
+              >
+                {pending ? "Signing out…" : "Sign Out"}
               </Button>
             </div>
           </DialogContent>

@@ -2,11 +2,14 @@
 
 import { useState } from "react";
 
+import { createAuthClient } from "@datarango/auth";
 import { ContextSwitcher, Header, Sidebar } from "@datarango/ui";
 
 import { ADMIN_ROUTES } from "@/config/routes";
 
 const MOCK_USER = { name: "Platform Staff", email: "staff@datarango.com" };
+
+const auth = createAuthClient();
 
 export default function PlatformLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -18,7 +21,7 @@ export default function PlatformLayout({ children }: { children: React.ReactNode
         collapsed={collapsed}
         logoHref="/overview"
         routes={ADMIN_ROUTES}
-        footer={<ContextSwitcher onSignOut={() => undefined} user={MOCK_USER} />}
+        footer={<ContextSwitcher onSignOut={() => auth.signOut()} user={MOCK_USER} />}
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <Header

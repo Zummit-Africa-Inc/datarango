@@ -18,8 +18,8 @@ export const ACTIVITY_WIDGET: ChartWidget = {
   data: {
     labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
     series: [
-      { name: "XP", data: [120, 90, 160, 140, 220, 80, 180] },
-      { name: "Minutes", data: [45, 30, 70, 55, 90, 25, 60] },
+      { name: "XP", data: [0, 0, 0, 0, 0, 0, 0] },
+      { name: "Minutes", data: [0, 0, 0, 0, 0, 0, 0] },
     ],
   },
 };
@@ -32,7 +32,7 @@ export const QUIZ_WIDGET: ChartWidget = {
   chartType: "bar",
   data: {
     labels: ["Pandas I", "SQL Joins", "Viz 101", "ML Intro", "Stats II"],
-    series: [{ name: "Score", data: [92, 78, 85, 64, 88] }],
+    series: [{ name: "Score", data: [0, 0, 0, 0, 0] }],
   },
 };
 

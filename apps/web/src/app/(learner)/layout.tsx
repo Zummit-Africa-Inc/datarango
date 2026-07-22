@@ -3,13 +3,15 @@
 import { useState } from "react";
 
 import { ContextSwitcher, Header, Sidebar } from "@datarango/ui";
+import { createAuthClient, useUser } from "@datarango/auth";
 import { LEARNER_ROUTES } from "@/config/routes";
 
-const MOCK_USER = { name: "Ada Learner", email: "ada@datarango.com" };
+const auth = createAuthClient();
 
 export default function LearnerLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
+  const session = useUser();
 
   return (
     <div className="flex h-screen">
@@ -19,21 +21,15 @@ export default function LearnerLayout({ children }: { children: React.ReactNode 
         routes={LEARNER_ROUTES}
         footer={
           <ContextSwitcher
-            onSignOut={() => undefined}
-            user={MOCK_USER}
-            contextToggle={{
-              title: "Acme Academy",
-              description: "Switch to your org context",
-              checked: false,
-              onCheckedChange: () => undefined,
-            }}
+            onSignOut={() => auth.signOut()}
+            user={session ?? { name: "…", email: "" }}
           />
         }
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <Header
           greeting={{
-            title: `Welcome back, ${MOCK_USER.name.split(" ")[0]}`,
+            title: `Welcome back, ${session?.name?.split(" ")[0] ?? "Learner"}`,
             subtitle: "Keep the streak alive",
           }}
           onToggleSidebar={() => setCollapsed((prev) => !prev)}

@@ -2,12 +2,15 @@
 
 import { useState } from "react";
 
+import { createAuthClient } from "@datarango/auth";
 import { CompanySwitcher, ContextSwitcher, Header, Sidebar, type Tenant } from "@datarango/ui";
 
 import { MOCK_TENANTS } from "@/mock/overview";
 import { ORG_ROUTES } from "@/config/routes";
 
 const MOCK_USER = { name: "Tolu Adebayo", email: "tolu@acme.academy" };
+
+const auth = createAuthClient();
 
 export default function OrgLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -28,7 +31,7 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
             tenants={MOCK_TENANTS}
           />
         }
-        footer={<ContextSwitcher onSignOut={() => undefined} user={MOCK_USER} />}
+        footer={<ContextSwitcher onSignOut={() => auth.signOut()} user={MOCK_USER} />}
       />
       <div className="flex min-w-0 flex-1 flex-col">
         <Header

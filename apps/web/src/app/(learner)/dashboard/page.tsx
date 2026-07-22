@@ -1,19 +1,44 @@
 "use client";
 
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CircleStar, Coins, FileBadge, Zap } from "lucide-react";
 import Link from "next/link";
 
 import { Button, Statistics, WidgetRenderer } from "@datarango/ui";
 
-import { ACTIVITY_WIDGET, CONTINUE_LEARNING, LEARNER_STATS, QUIZ_WIDGET } from "@/mock/dashboard";
+import { ACTIVITY_WIDGET, CONTINUE_LEARNING, QUIZ_WIDGET } from "@/mock/dashboard";
 
 export default function DashboardPage() {
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {LEARNER_STATS.map((stat) => (
-          <Statistics key={stat.label} {...stat} />
-        ))}
+        <Statistics
+          label="DAY STREAK"
+          value="0"
+          icon={Zap}
+          delta="+0"
+          description="No delta available yet"
+        />
+        <Statistics
+          label="TOTAL XP"
+          value="0"
+          icon={CircleStar}
+          delta="+0"
+          description="No delta available yet"
+        />
+        <Statistics
+          label="TOKEN BALANCE"
+          value="0 DRG"
+          icon={Coins}
+          delta="+0"
+          description="No delta available yet"
+        />
+        <Statistics
+          label="CERTIFICATED"
+          value="0"
+          icon={FileBadge}
+          delta="+0"
+          description="No delta available yet"
+        />
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <WidgetRenderer widget={ACTIVITY_WIDGET} />

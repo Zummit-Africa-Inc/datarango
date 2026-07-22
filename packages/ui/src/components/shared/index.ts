@@ -21,4 +21,6 @@ export * from "./sso-login";
 export * from "./statistics";
 export * from "./stepper";
 export * from "./tab-panel";
+export * from "./text-editor"
+export * from "./tree"
 export * from "./widget";
