@@ -6,6 +6,7 @@ export * from "./context-switcher";
 export * from "./data-table";
 export * from "./date-picker";
 export * from "./header";
+export * from "./illustration";
 export * from "./kanban";
 export * from "./loader";
 export * from "./logo";
@@ -21,6 +22,6 @@ export * from "./sso-login";
 export * from "./statistics";
 export * from "./stepper";
 export * from "./tab-panel";
-export * from "./text-editor"
-export * from "./tree"
+export * from "./text-editor";
+export * from "./tree";
 export * from "./widget";

@@ -22,6 +22,8 @@ export interface SessionUser {
   email: string;
   name: string;
   avatarUrl?: string;
+  emailVerified: boolean;
+  mfaEnabled: boolean;
   platformRoles: PlatformRole[];
 }
 

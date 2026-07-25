@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { FacebookIcon, GitHubIcon, InstagramIcon, TwitterIcon, YouTubeIcon } from "@datarango/ui";
 import { Logo } from "@datarango/ui";
 
 const COLUMNS = [
@@ -40,16 +41,38 @@ const COLUMNS = [
   },
 ];
 
+const ROWS = [
+  { href: "https://github.com/Zummit-Africa-Inc", label: "github", icon: GitHubIcon },
+  { href: "https://linkedin.com/com/", label: "linkedin", icon: FacebookIcon },
+  { href: "https://twitter.com/@Datarango", label: "twitter", icon: TwitterIcon },
+  { href: "https://instagram.com/@Zummit-Africa", label: "instagram", icon: InstagramIcon },
+  { href: "https://youtube.com/", label: "youtube", icon: YouTubeIcon },
+];
+
 /** The ink footer — the closing dark band of every marketing page. */
 export const MarketingFooter = () => (
   <footer className="bg-ink text-on-ink">
     <div className="container mx-auto grid gap-12 px-4 py-16 lg:grid-cols-6 lg:px-8">
-      <div className="lg:col-span-2">
-        <Logo onInk />
-        <p className="text-on-ink-muted mt-4 max-w-xs text-sm leading-relaxed">
-          Learn data analytics, AI and ML by doing — courses, notebooks, datasets and competitions
-          in one place.
-        </p>
+      <div className="space-y-16 lg:col-span-2">
+        <div>
+          <Logo onInk />
+          <p className="text-on-ink-muted mt-4 max-w-xs text-sm leading-relaxed">
+            Learn data analytics, AI and ML by doing — courses, notebooks, datasets and competitions
+            in one place.
+          </p>
+        </div>
+        <div className="flex items-center gap-x-4">
+          {ROWS.map((row) => (
+            <Link
+              className="text-on-ink link before:bg-on-ink text-sm"
+              href={row.href}
+              key={row.label}
+              target="_blank"
+            >
+              {row.label}
+            </Link>
+          ))}
+        </div>
       </div>
       {COLUMNS.map((column) => (
         <div key={column.heading}>

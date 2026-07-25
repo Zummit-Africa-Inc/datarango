@@ -36,7 +36,17 @@ const Page = () => {
       return;
     }
 
+    const data = await res.json().catch(() => null);
     const returnTo = searchParams.get("returnTo") ?? "/dashboard";
+
+    // MFA-enabled accounts get a challenge instead of a session — finish on /mfa.
+    if (data?.mfaRequired && data?.challengeToken) {
+      window.location.assign(
+        `/mfa?challenge=${encodeURIComponent(data.challengeToken)}&returnTo=${encodeURIComponent(returnTo)}`,
+      );
+      return;
+    }
+
     window.location.assign(
       returnTo.startsWith("http")
         ? returnTo

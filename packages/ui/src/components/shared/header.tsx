@@ -56,7 +56,7 @@ export const Header = ({
       <div className="flex items-center gap-x-4">
         {search && (
           <Input
-            className="w-64"
+            className="w-80"
             onChange={(e) => search.onChange(e.target.value)}
             placeholder={search.placeholder ?? "Search…"}
             type="search"

@@ -279,7 +279,7 @@ const TESTIMONIALS = [
     quote:
       "We assigned three courses to forty interns and could finally see who was progressing — the usage meter made billing a non-event.",
     name: "Kwame B.",
-    role: "L&D Lead, fintech",
+    role: "L&D Lead, Fintech",
   },
   {
     quote:
