@@ -4,11 +4,8 @@ import { IconBase, type IconProps } from "./icon-base";
 
 export const MicrosoftIcon = ({ className, ...props }: IconProps) => {
   return (
-    <IconBase className={className} viewBox="0 0 24 24" {...props}>
-      <rect x="1" y="1" width="9" height="9" fill="#f25022" />
-      <rect x="11" y="1" width="9" height="9" fill="#7fba00" />
-      <rect x="1" y="11" width="9" height="9" fill="#00a4ef" />
-      <rect x="11" y="11" width="9" height="9" fill="#ffb900" />
+    <IconBase className={className} viewBox="0 0 24 24" fill="currentColor" {...props}>
+      <path d="M11.001 5H5.00098V11H11.001V5ZM13.001 5V11H19.001V5H13.001ZM19.001 13H13.001V19H19.001V13ZM11.001 19V13H5.00098V19H11.001ZM3.00098 3H21.001V21H3.00098V3Z"></path>
     </IconBase>
   );
 };

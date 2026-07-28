@@ -64,7 +64,7 @@ export const MarketingFooter = () => (
         <div className="flex items-center gap-x-4">
           {ROWS.map((row) => (
             <Link
-              className="text-on-ink link before:bg-on-ink text-sm"
+              className="text-on-ink hover:text-primary-400 link before:bg-primary-400 text-sm font-light"
               href={row.href}
               key={row.label}
               target="_blank"

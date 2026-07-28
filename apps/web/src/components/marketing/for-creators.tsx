@@ -14,8 +14,16 @@ import {
   Wallet,
 } from "lucide-react";
 
-import { Button, FadeIn, Stagger, StaggerItem, TiltCard } from "@datarango/ui";
 import { Gif } from "./gif";
+import {
+  Button,
+  CreditIllustration,
+  FadeIn,
+  InvestmentIllustration,
+  Stagger,
+  StaggerItem,
+  TiltCard,
+} from "@datarango/ui";
 
 /* ---------------------------------- hero ----------------------------------- */
 
@@ -103,31 +111,37 @@ const CREATOR_FEATURES = [
     icon: FileVideo,
     title: "Rich lesson formats",
     body: "Author lessons with video, text and audio. Mix formats freely within a single module.",
+    color: "#E26666",
   },
   {
     icon: NotebookPen,
     title: "Live notebook exercises",
     body: "Attach CPU-backed Jupyter notebooks to any lesson. Learners run real code; you write the auto-grader.",
+    color: "#0A1A4D",
   },
   {
-    icon: Coins,
+    icon: InvestmentIllustration,
     title: "Set token rewards",
     body: "Decide how many tokens each exercise awards. Learners redeem tokens for your courses — a built-in growth loop.",
+    color: "#66BDE2",
   },
   {
     icon: Trophy,
     title: "Host competitions",
     body: "Create Kaggle-style competitions with your own datasets and scoring pipeline. Public or org-private.",
+    color: "#1FAD64",
   },
   {
-    icon: BarChart3,
+    icon: CreditIllustration,
     title: "Creator analytics",
     body: "Per-course enrollment, completion rates, exercise pass rates and revenue — all in one dashboard.",
+    color: "#F28A00",
   },
   {
     icon: Globe,
     title: "Reach a built-in audience",
     body: "Your courses are discoverable by 12k+ active learners the moment they pass review.",
+    color: "#9C66E2",
   },
 ];
 
@@ -143,16 +157,22 @@ export const CreatorsFeatures = () => (
       </p>
     </FadeIn>
     <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {CREATOR_FEATURES.map((feature) => (
-        <StaggerItem
-          className="border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
-          key={feature.title}
-        >
-          <feature.icon className="text-primary-500 size-8" strokeWidth={1.5} />
-          <h3 className="font-heading mt-5 text-xl">{feature.title}</h3>
-          <p className="text-muted-foreground mt-3 leading-relaxed">{feature.body}</p>
-        </StaggerItem>
-      ))}
+      {CREATOR_FEATURES.map((feature) => {
+        return (
+          <StaggerItem
+            className="group border-border bg-on-ink-muted rounded-xs border transition-colors"
+            key={feature.title}
+          >
+            <div className="h-30 space-y-2 p-4">
+              <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
+              <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
+            </div>
+            <div className="bg-ink flex h-70 justify-end overflow-hidden">
+              <feature.icon className="text-on-ink size-70 grayscale-100" />
+            </div>
+          </StaggerItem>
+        );
+      })}
     </Stagger>
   </section>
 );
@@ -191,12 +211,7 @@ export const CreatorsSteps = () => (
       <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, index) => (
           <StaggerItem key={step.title}>
-            <div className="flex items-center gap-x-3">
-              <span className="bg-primary-500 grid size-8 shrink-0 place-items-center rounded-full text-sm font-medium text-white">
-                {index + 1}
-              </span>
-              <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
-            </div>
+            <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
             <h3 className="font-heading mt-4 text-lg">{step.title}</h3>
             <p className="text-muted-foreground mt-2 leading-relaxed">{step.body}</p>
           </StaggerItem>

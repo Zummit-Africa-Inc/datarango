@@ -15,8 +15,16 @@ import {
   Users,
 } from "lucide-react";
 
-import { Button, FadeIn, Stagger, StaggerItem, TiltCard } from "@datarango/ui";
 import { Gif } from "./gif";
+import {
+  BusinessIllustration,
+  Button,
+  CreditIllustration,
+  FadeIn,
+  Stagger,
+  StaggerItem,
+  TiltCard,
+} from "@datarango/ui";
 
 /* ---------------------------------- hero ----------------------------------- */
 
@@ -113,31 +121,37 @@ const ORG_FEATURES = [
     icon: Users,
     title: "Invites at any scale",
     body: "Invite one manager or a whole cohort by CSV. Members join with the roles you chose.",
+    color: "#E26666",
   },
   {
     icon: Shield,
     title: "Roles built from permissions",
     body: "Owner, admin, manager, instructor, member — or compose custom roles from the permission catalog.",
+    color: "#0A1A4D",
   },
   {
-    icon: BookOpen,
+    icon: BusinessIllustration,
     title: "Course assignments",
     body: "Assign courses to members or groups. End-of-module exercises gate completion, so progress means something.",
+    color: "#66BDE2",
   },
   {
-    icon: BarChart3,
+    icon: CreditIllustration,
     title: "Progress you can defend",
     body: "Per-member, per-course drill-downs and CSV exports — certificates only count work done in your program.",
+    color: "#1FAD64",
   },
   {
     icon: Trophy,
     title: "Private competitions",
     body: "Run org-only competitions on your own datasets, scored on the same pipeline as public ones.",
+    color: "#F28A00",
   },
   {
     icon: Lock,
     title: "Org SSO & MFA policy",
     body: "Bring your identity provider (Entra ID, Google Workspace), auto-provision members, enforce MFA.",
+    color: "#9C66E2",
   },
 ];
 
@@ -152,16 +166,22 @@ export const TeamsFeatures = () => (
       </p>
     </FadeIn>
     <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {ORG_FEATURES.map((feature) => (
-        <StaggerItem
-          className="border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
-          key={feature.title}
-        >
-          <feature.icon className="text-primary-500 size-8" strokeWidth={1.5} />
-          <h3 className="font-heading mt-5 text-xl">{feature.title}</h3>
-          <p className="text-muted-foreground mt-3 leading-relaxed">{feature.body}</p>
-        </StaggerItem>
-      ))}
+      {ORG_FEATURES.map((feature) => {
+        return (
+          <StaggerItem
+            className="group border-border bg-on-ink-muted rounded-xs border transition-colors"
+            key={feature.title}
+          >
+            <div className="h-30 space-y-2 p-4">
+              <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
+              <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
+            </div>
+            <div className="bg-ink flex h-70 justify-end overflow-hidden grayscale-1000">
+              <feature.icon className="text-on-ink size-70 grayscale-100" />
+            </div>
+          </StaggerItem>
+        );
+      })}
     </Stagger>
   </section>
 );
@@ -200,12 +220,7 @@ export const TeamsSteps = () => (
       <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, index) => (
           <StaggerItem key={step.title}>
-            <div className="flex items-center gap-x-3">
-              <span className="bg-primary-500 grid size-8 shrink-0 place-items-center rounded-full text-sm font-medium text-white">
-                {index + 1}
-              </span>
-              <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
-            </div>
+            <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
             <h3 className="font-heading mt-4 text-lg">{step.title}</h3>
             <p className="text-muted-foreground mt-2 leading-relaxed">{step.body}</p>
           </StaggerItem>

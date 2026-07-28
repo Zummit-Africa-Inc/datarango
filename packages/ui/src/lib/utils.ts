@@ -53,3 +53,8 @@ export function paginate<T>(
 
   return { data: items, hasNextPage, hasPreviousPage, page, pageSize, total, totalPages };
 }
+
+export const getColorVariant = (color: string, percentage: number, variant: "light" | "dark") => {
+  const mixColor = variant === "light" ? "white" : "black";
+  return `color-mix(in srgb, ${color} ${percentage}%, ${mixColor})`;
+};

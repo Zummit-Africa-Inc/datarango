@@ -2,19 +2,18 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import {
-  Award,
-  BarChart3,
-  BookOpen,
-  Coins,
-  Database,
-  NotebookPen,
-  Trophy,
-  Users,
-} from "lucide-react";
+import { BarChart3, BookOpen, Coins, NotebookPen, Trophy, Users } from "lucide-react";
 
-import { Button, FadeIn, Stagger, StaggerItem } from "@datarango/ui";
 import { Gif } from "./gif";
+import {
+  BusinessIllustration,
+  Button,
+  CreditIllustration,
+  FadeIn,
+  InvestmentIllustration,
+  Stagger,
+  StaggerItem,
+} from "@datarango/ui";
 
 /* -------------------------------- tool strip ------------------------------- */
 
@@ -52,31 +51,43 @@ const FEATURES = [
     icon: BookOpen,
     title: "Courses that make you do the work",
     body: "Video, text and audio lessons — and every module ends with a graded exercise you can't skip.",
+    image: "",
+    color: "#E26666",
   },
   {
     icon: NotebookPen,
     title: "Real Jupyter notebooks",
     body: "CPU-backed kernels in the browser with persistent storage. Close the tab, come back, resume exactly where you left off.",
+    image: "",
+    color: "#0A1A4D",
+  },
+  {
+    icon: CreditIllustration,
+    title: "Competitions & leaderboards",
+    body: "Kaggle-style scoring pipelines with public and private leaderboards — plus private competitions for your org.",
+    image: "",
+    color: "#66BDE2",
+  },
+  {
+    icon: InvestmentIllustration,
+    title: "Earn while you learn",
+    body: "Quizzes and streaks credit tokens to your wallet. Redeem them for courses and perks.",
+    image: "",
+    color: "#1FAD64",
+  },
+  {
+    icon: BusinessIllustration,
+    title: "Hosted datasets",
+    body: "Versioned, quota-managed datasets that mount read-only into your notebooks. No downloads, no setup.",
+    image: "",
+    color: "#F28A00",
   },
   {
     icon: Trophy,
-    title: "Competitions & leaderboards",
-    body: "Kaggle-style scoring pipelines with public and private leaderboards — plus private competitions for your org.",
-  },
-  {
-    icon: Coins,
-    title: "Earn while you learn",
-    body: "Quizzes and streaks credit tokens to your wallet. Redeem them for courses and perks.",
-  },
-  {
-    icon: Database,
-    title: "Hosted datasets",
-    body: "Versioned, quota-managed datasets that mount read-only into your notebooks. No downloads, no setup.",
-  },
-  {
-    icon: Award,
     title: "Certificates that verify",
     body: "Course completion issues a certificate with a public verification page you can share anywhere.",
+    image: "",
+    color: "#9C66E2",
   },
 ];
 
@@ -92,16 +103,22 @@ export const Features = () => (
       </p>
     </FadeIn>
     <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {FEATURES.map((feature) => (
-        <StaggerItem
-          className="group border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
-          key={feature.title}
-        >
-          <feature.icon className="text-primary-500 size-8" strokeWidth={1.5} />
-          <h3 className="font-heading mt-5 text-xl">{feature.title}</h3>
-          <p className="text-muted-foreground mt-3 leading-relaxed">{feature.body}</p>
-        </StaggerItem>
-      ))}
+      {FEATURES.map((feature) => {
+        return (
+          <StaggerItem
+            className="group border-border bg-on-ink-muted rounded-xs border transition-colors"
+            key={feature.title}
+          >
+            <div className="h-30 space-y-2 p-4">
+              <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
+              <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
+            </div>
+            <div className="bg-ink flex h-70 justify-end overflow-hidden">
+              <feature.icon className="text-on-ink size-70 grayscale-100" />
+            </div>
+          </StaggerItem>
+        );
+      })}
     </Stagger>
   </section>
 );

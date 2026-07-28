@@ -9,10 +9,11 @@ interface MotionProps {
   children: ReactNode;
   className?: string;
   delay?: number;
+  style?: CSSProperties;
 }
 
 /** Fade + rise into view. Respects prefers-reduced-motion. */
-export const FadeIn = ({ children, className, delay = 0 }: MotionProps) => {
+export const FadeIn = ({ children, className, delay = 0, style }: MotionProps) => {
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -21,6 +22,7 @@ export const FadeIn = ({ children, className, delay = 0 }: MotionProps) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.6, delay, ease: [0.215, 0.61, 0.355, 1] }}
+      style={style}
     >
       {children}
     </motion.div>
@@ -38,7 +40,7 @@ const staggerItem: Variants = {
 };
 
 /** Container that staggers its <StaggerItem /> children into view. */
-export const Stagger = ({ children, className }: Omit<MotionProps, "delay">) => {
+export const Stagger = ({ children, className, style }: Omit<MotionProps, "delay">) => {
   const reduce = useReducedMotion();
   return (
     <motion.div
@@ -47,14 +49,15 @@ export const Stagger = ({ children, className }: Omit<MotionProps, "delay">) => 
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-80px" }}
+      style={style}
     >
       {children}
     </motion.div>
   );
 };
 
-export const StaggerItem = ({ children, className }: Omit<MotionProps, "delay">) => (
-  <motion.div className={className} variants={staggerItem}>
+export const StaggerItem = ({ children, className, style }: Omit<MotionProps, "delay">) => (
+  <motion.div className={className} variants={staggerItem} style={style}>
     {children}
   </motion.div>
 );
