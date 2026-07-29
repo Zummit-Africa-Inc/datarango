@@ -2,6 +2,8 @@ import { DM_Mono, EB_Garamond, Inter, JetBrains_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { Providers } from "@/providers";
+
 const ebGaramond = EB_Garamond({
   subsets: ["latin"],
   variable: "--font-ebgaramond",
@@ -37,7 +39,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body
         className={`${ebGaramond.variable} ${inter.variable} ${dmMono.variable} ${jetbrainsMono.variable}`}
       >
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

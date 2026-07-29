@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import { ContextSwitcher, Header, Sidebar } from "@datarango/ui";
 import { createAuthClient, useActiveOrg, useMemberships, useUser } from "@datarango/auth";
+import { ContextSwitcher, Header, Sidebar } from "@datarango/ui";
 import { LEARNER_ROUTES } from "@/config/routes";
 
 const auth = createAuthClient();
@@ -52,6 +52,7 @@ export default function LearnerLayout({ children }: { children: React.ReactNode 
           onToggleSidebar={() => setCollapsed((prev) => !prev)}
           overviewPaths={["/dashboard"]}
           search={{ value: search, onChange: setSearch, placeholder: "Search courses, datasets…" }}
+          actions={[]}
         />
         <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
       </div>
