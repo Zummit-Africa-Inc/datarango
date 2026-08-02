@@ -1,4 +1,5 @@
-import type { ChartWidget } from "@datarango/ui";
+import type { ChartWidget, Course, Enrollment } from "@datarango/ui";
+import { faker } from "@faker-js/faker";
 
 /** Placeholder data until the gateway ships (backend Phases 1–2). */
 
@@ -36,26 +37,48 @@ export const QUIZ_WIDGET: ChartWidget = {
   },
 };
 
-export const CONTINUE_LEARNING = [
-  {
-    id: "c1",
-    title: "Data Analysis with Pandas",
-    module: "Module 4 · GroupBy & Aggregation",
-    progress: 68,
-    source: "Personal",
-  },
-  {
-    id: "c2",
-    title: "Machine Learning Fundamentals",
-    module: "Module 2 · Regression",
-    progress: 31,
-    source: "Assigned by Acme Academy",
-  },
-  {
-    id: "c3",
-    title: "SQL for Analysts",
-    module: "Module 6 · Window Functions",
-    progress: 89,
-    source: "Personal",
-  },
-];
+export const COURSES: Course[] = Array.from({ length: 20 }, () => {
+  const amount = faker.number.int();
+  const tokens = amount * 100;
+  const price = faker.commerce.price({ symbol: "USD" });
+  console.log({ price });
+
+  return {
+    createdAt: faker.date.past(),
+    creatorId: faker.string.uuid(),
+    description: faker.lorem.paragraphs({ min: 1, max: 2 }),
+    id: faker.string.uuid(),
+    price: { fiat: { amount, currency: "USD" }, tokens },
+    slug: faker.lorem.slug(),
+    status: "published",
+    title: faker.system.commonFileName(),
+    updatedAt: faker.date.recent(),
+    coverUrl: faker.image.urlPicsumPhotos({ height: 300, width: 200 }),
+    publishedVersionId: faker.system.semver(),
+  };
+});
+
+export const CONTINUE_LEARNING: Enrollment[] = Array.from({ length: 3 }, (_, index) => {
+  const course = COURSES[index]!;
+
+  return {
+    courseId: course.id,
+    courseTitle: course.title,
+    courseVersionId: course.publishedVersionId!,
+    currentModuleTitle: faker.lorem.lines(2),
+    completedAt: index === 0 ? faker.date.recent() : undefined,
+    progress: faker.number.int({ min: 0, max: 100 }),
+    source: "purchase",
+    createdAt: faker.date.recent(),
+    id: faker.string.uuid(),
+    course: {
+      id: course.id,
+      title: course.title,
+      module: faker.word.preposition(),
+      source: "purchase",
+      progressPercent: faker.number.int({ min: 0, max: 100 }),
+    },
+    userId: faker.string.uuid(),
+    grantedByOrgId: faker.string.uuid(),
+  }
+});

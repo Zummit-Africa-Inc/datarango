@@ -1,8 +1,8 @@
 "use client";
 
+import { BarChart3, BookOpen, Coins, NotebookPen, Trophy, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { BarChart3, BookOpen, Coins, NotebookPen, Trophy, Users } from "lucide-react";
 
 import { Gif } from "./gif";
 import {
@@ -174,7 +174,7 @@ const TEAM_POINTS = [
   { icon: BarChart3, text: "Track per-member, per-course progress from one dashboard" },
   {
     icon: Coins,
-    text: "Postpaid billing — pay per assigned course, see the meter before the invoice",
+    text: "One flat rate per seat — assign as much as you like, the bill doesn't move",
   },
 ];
 
@@ -294,7 +294,7 @@ const TESTIMONIALS = [
   },
   {
     quote:
-      "We assigned three courses to forty interns and could finally see who was progressing — the usage meter made billing a non-event.",
+      "We assigned three courses to forty interns and could finally see who was progressing — and it cost us the same as if we'd assigned one.",
     name: "Kwame B.",
     role: "L&D Lead, Fintech",
   },

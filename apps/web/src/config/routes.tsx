@@ -1,5 +1,6 @@
 import {
   Award,
+  BadgeCheck,
   BookOpen,
   Database,
   LayoutDashboard,
@@ -33,6 +34,7 @@ export const LEARNER_ROUTES: RouteGroup[] = [
   {
     group: "Progress",
     routes: [
+      { href: "/dashboard/certificates", label: "Certificates", icon: BadgeCheck },
       { href: "/dashboard/wallet", label: "Wallet", icon: Wallet },
       { href: "/dashboard/achievements", label: "Achievements", icon: Award },
       { href: "/dashboard/settings", label: "Settings", icon: Settings },

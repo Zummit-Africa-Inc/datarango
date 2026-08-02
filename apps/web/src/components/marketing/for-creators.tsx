@@ -16,6 +16,7 @@ import {
 
 import { Gif } from "./gif";
 import {
+  BusinessIllustration,
   Button,
   CreditIllustration,
   FadeIn,
@@ -108,7 +109,7 @@ export const CreatorsHero = () => (
 
 const CREATOR_FEATURES = [
   {
-    icon: FileVideo,
+    icon: BusinessIllustration,
     title: "Rich lesson formats",
     body: "Author lessons with video, text and audio. Mix formats freely within a single module.",
     color: "#E26666",

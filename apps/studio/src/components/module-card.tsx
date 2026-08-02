@@ -5,6 +5,7 @@ import { AlertTriangle, GripVertical, Plus, Trash2 } from "lucide-react";
 
 import { Badge, Button, Input } from "@datarango/ui";
 
+import { ExercisePicker } from "@/components/exercise-picker";
 import { InlineEdit } from "@/components/inline-edit";
 import { SortableItem, SortableList, type DragHandleProps } from "@/components/sortable";
 import {
@@ -101,13 +102,22 @@ export const ModuleCard = ({
           )}
         </div>
 
-        {module.exerciseId ? (
-          <Badge variant="success">Exercise set</Badge>
+        {frozen ? (
+          module.exerciseId ? (
+            <Badge variant="success">Exercise set</Badge>
+          ) : (
+            <Badge variant="outline" className="gap-1">
+              <AlertTriangle className="size-3" />
+              No exercise
+            </Badge>
+          )
         ) : (
-          <Badge variant="outline" className="gap-1">
-            <AlertTriangle className="size-3" />
-            No exercise
-          </Badge>
+          <ExercisePicker
+            moduleTitle={module.title}
+            exerciseId={module.exerciseId}
+            pending={updateModule.isPending}
+            onSelect={(exerciseId) => updateModule.mutate({ moduleId: module.id, exerciseId })}
+          />
         )}
 
         <span className="text-muted-foreground text-xs">

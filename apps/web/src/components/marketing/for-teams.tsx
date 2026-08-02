@@ -66,7 +66,7 @@ export const TeamsHero = () => (
           </Button>
         </div>
         <p className="mt-6 text-sm text-white/50">
-          Postpaid — no upfront commitment. Pay per assigned course at cycle end.
+          A flat monthly rate per seat. Every seated member gets the whole catalogue.
         </p>
       </FadeIn>
       <div className="relative hidden perspective-[1400px] lg:block" aria-hidden>
@@ -82,9 +82,9 @@ export const TeamsHero = () => (
           </div>
           <div className="mt-6 grid grid-cols-3 gap-4">
             {[
-              { label: "Seats", value: "120" },
+              { label: "Seats used", value: "112/120" },
               { label: "Avg. completion", value: "64%" },
-              { label: "Usage to date", value: "₦412k" },
+              { label: "Renews in", value: "12d" },
             ].map((stat) => (
               <div className="rounded-xs bg-white/5 p-4" key={stat.label}>
                 <p className="text-xs text-white/50">{stat.label}</p>
@@ -202,7 +202,7 @@ const STEPS = [
   {
     icon: BookOpen,
     title: "Assign courses",
-    body: "Pick courses, assign to members or groups. Enrollment is instant; the meter starts here.",
+    body: "Pick courses, assign to members or groups. Enrollment is instant, and assigning never changes your bill.",
   },
   {
     icon: BarChart3,
@@ -235,18 +235,18 @@ export const TeamsSteps = () => (
 const BILLING_POINTS = [
   {
     icon: Coins,
-    title: "Pay per assigned course",
-    body: "A billable unit is one member actively assigned one course in a cycle. Nothing else.",
+    title: "One rate, per seat",
+    body: "A seat is one active member. They get the whole catalogue — assign as much as you like without touching the bill.",
   },
   {
     icon: BarChart3,
-    title: "A meter, not a surprise",
-    body: "The console shows the running total all cycle long — the invoice mirrors it line for line.",
+    title: "Seats you can see",
+    body: "The console shows licensed against consumed seats, so you always know where you stand before renewal.",
   },
   {
     icon: Receipt,
-    title: "Invoiced at cycle end",
-    body: "Monthly by default, configurable per org. Pay by card or bank transfer.",
+    title: "Predictable each cycle",
+    body: "Monthly by default, configurable per org. Mid-cycle joiners prorate; leavers free their seat at once.",
   },
 ];
 
@@ -268,8 +268,8 @@ export const TeamsBilling = () => (
         ))}
       </div>
       <p className="text-muted-foreground border-border mt-10 rounded-xs border border-dashed p-4 text-sm">
-        If your organization ever stops paying, your members keep access to every course already
-        granted to them. Their learning is theirs.
+        If your organization ever stops paying, your members keep access to the courses they were
+        already enrolled in. Their learning is theirs.
       </p>
     </FadeIn>
     <FadeIn className="relative hidden aspect-4/3 lg:block" delay={0.1}>

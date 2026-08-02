@@ -47,11 +47,13 @@ export interface Enrollment {
   id: string;
   userId: string;
   courseId: string;
+  courseTitle: string
   courseVersionId: string;
+  currentModuleTitle?: string
   source: "purchase" | "token" | "org_assignment" | "free";
   grantedByOrgId?: string;
-  progressPercent: number;
-  completedAt?: string;
+  progress: number;
+  completedAt?: Date;
   createdAt: Date;
 }
 

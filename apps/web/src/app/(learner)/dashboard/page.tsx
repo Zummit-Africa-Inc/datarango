@@ -3,7 +3,7 @@
 import { ArrowRight, CircleStar, Coins, FileBadge, Zap } from "lucide-react";
 import Link from "next/link";
 
-import { Button, Statistics, WidgetRenderer } from "@datarango/ui";
+import { Button, fromSnakeCase, Statistics, WidgetRenderer } from "@datarango/ui";
 
 import { ACTIVITY_WIDGET, CONTINUE_LEARNING, QUIZ_WIDGET } from "@/mock/dashboard";
 
@@ -48,7 +48,7 @@ export default function DashboardPage() {
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-lg">Continue learning</h2>
           <Button asChild size="sm" variant="ghost">
-            <Link href="/courses">
+            <Link href="/dashboard/courses">
               All courses <ArrowRight className="size-4" />
             </Link>
           </Button>
@@ -57,12 +57,12 @@ export default function DashboardPage() {
           {CONTINUE_LEARNING.map((course) => (
             <Link
               className="border-border bg-card hover:border-primary-300 block rounded-xs border p-5 transition-colors"
-              href={`/learn/${course.id}`}
+              href={`/dashboard/course/${course.id}`}
               key={course.id}
             >
               <p className="text-muted-foreground text-xs">{course.source}</p>
-              <p className="font-heading mt-1">{course.title}</p>
-              <p className="text-muted-foreground mt-1 text-sm">{course.module}</p>
+              <p className="font-heading mt-1 text-xl capitalize">{fromSnakeCase(course.courseTitle.split('.')[0])}</p>
+              <p className="text-muted-foreground mt-1 text-sm">{course.currentModuleTitle}</p>
               <div className="bg-muted mt-4 h-2 rounded-full">
                 <div
                   className="bg-primary-500 h-2 rounded-full"

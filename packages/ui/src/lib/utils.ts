@@ -1,6 +1,7 @@
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { PagedResponse } from "../types";
+import { fromKebabCase } from "./string";
 
 /** Joins conditional class names and resolves Tailwind conflicts. */
 export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
@@ -8,13 +9,6 @@ export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
 /** Strips trailing slashes and collapses dynamic segments for route matching. */
 export const normalize = (pathname: string): string =>
   pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
-
-/** "course-builder" → "Course Builder" */
-export const fromKebabCase = (value: string): string =>
-  value
-    .split("-")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
 
 /** Builds breadcrumb items from a pathname, e.g. "/courses/data-101" → Courses / Data 101. */
 export const buildBreadcrumbs = (pathname: string): { label: string; href: string }[] => {

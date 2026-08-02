@@ -20,34 +20,36 @@ import {
 const PLANS = [
   {
     icon: User,
-    name: "Learners",
+    name: "Individuals",
     price: "Free",
-    period: "to join, forever",
+    period: "to start, no card",
     description:
-      "The whole platform — notebooks, datasets, competitions, standalone quizzes. Pay per course, only when you enroll.",
+      "Stay on the free tier as long as you like. When you want the premium catalogue, pick whichever route suits you — subscribe, buy a single course, or spend tokens you earned.",
     features: [
-      "Free account with Jupyter notebooks & persistent storage",
-      "Public competitions and leaderboards",
-      "Standalone quizzes with token rewards",
-      "Buy courses one-off — or redeem them with earned tokens",
+      "Free tier: free-marked courses, standard quizzes, public competitions",
+      "Jupyter notebooks in the browser, with a monthly hour allowance",
+      "Subscribe for unlimited access to every premium course",
+      "Or buy a single course outright — no subscription needed",
+      "Or redeem tokens earned from quizzes, streaks and competitions",
       "Verifiable certificates on completion",
     ],
-    cta: { label: "Join for free", href: "/signup" },
+    cta: { label: "Start free", href: "/signup" },
     highlight: false,
   },
   {
     icon: Building2,
     name: "Teams & Schools",
-    price: "Per course",
-    period: "assigned, postpaid",
+    price: "Per seat",
+    period: "per member, monthly",
     description:
-      "One billable unit: a member actively assigned a course in a cycle. See the meter all month; the invoice mirrors it.",
+      "One subscription, one seat per active member. Seated members get the whole catalogue — assigning courses is how you steer them, not how you're charged.",
     features: [
-      "Everything in Learners for every member",
+      "Everything individuals get, for every seated member",
       "Org console: invites, roles, assignments, progress reporting",
       "Private competitions for your organization",
-      "Live usage meter — invoiced at cycle end, no prepayment",
-      "Members keep granted courses, always",
+      "Add people mid-cycle — new seats are prorated",
+      "Remove someone and their seat frees up immediately",
+      "Members keep their certificates and wallet, always",
     ],
     cta: { label: "Create an organization", href: "/signup?intent=org" },
     highlight: true,
@@ -62,7 +64,7 @@ const PLANS = [
     features: [
       "Org SSO (Entra ID, Google Workspace) & MFA policy",
       "Custom roles from the permission catalog",
-      "Negotiated price book & billing cycle",
+      "Negotiated per-seat rate, billing cycle and invoicing terms",
       "Org-funded token rewards for your members",
       "Priority support & onboarding",
     ],
@@ -134,8 +136,8 @@ export const PricingPlans = () => (
       ))}
     </Stagger>
     <FadeIn className="text-muted-foreground mx-auto mt-10 max-w-2xl text-center text-sm">
-      Course prices are set per course by their creators. Tokens earned from quizzes, streaks and
-      competitions can be redeemed against any token-priced course.
+      Individual course prices are set by their creators. Tokens earned from quizzes, streaks and
+      competitions can be redeemed against any token-priced course, whether or not you subscribe.
     </FadeIn>
   </section>
 );
@@ -149,9 +151,14 @@ const FAQS = [
       "Datarango is a learning platform for data analytics, AI and ML — structured courses with graded exercises, real Jupyter notebooks in the browser, hosted datasets, and live competitions with leaderboards.",
   },
   {
-    question: "Is Datarango really free for individuals?",
+    question: "Is there a free tier?",
     answer:
-      "Yes. Creating an account, using notebooks, joining public competitions and taking standalone quizzes is free. You only pay when you enroll in a paid course — and you can pay with tokens you earned on the platform instead of money.",
+      "Yes, and you can stay on it indefinitely. It covers free-marked courses, standard quizzes, public competitions, and a monthly allowance of notebook hours. Premium courses need one of three things: a subscription, a one-off purchase of that course, or tokens you earned on the platform.",
+  },
+  {
+    question: "Should I subscribe or just buy the one course?",
+    answer:
+      "Subscribe if you expect to work through several courses — it unlocks the whole premium catalogue for a flat monthly price. Buy a single course if there's one specific thing you're after; it stays yours whether or not you ever subscribe. Tokens are a third route that costs no money at all: earn them by passing quizzes, holding streaks and placing in competitions, then redeem them against token-priced courses.",
   },
   {
     question: "How do tokens work?",
@@ -161,12 +168,12 @@ const FAQS = [
   {
     question: "How does billing work for organizations?",
     answer:
-      "Postpaid, per assignment. When you assign a course to a member, that creates one billable unit in the current cycle. Your console shows the running total all cycle long, and the invoice at cycle end mirrors that meter line for line. No seats, no subscriptions, no prepayment.",
+      "A per-seat monthly subscription. You license a number of seats and each active member consumes one. Seated members get unlimited access to the catalogue, so assigning a course is how you direct and track their learning — it never adds to the bill. Adding people mid-cycle prorates the new seats; removing someone frees their seat straight away, and a reduction in seat count takes effect at your next renewal.",
   },
   {
     question: "What happens if our organization stops paying?",
     answer:
-      "Org features freeze — new assignments, invites, dashboards — but your members keep personal access to every course already granted to them. Their learning history, certificates and wallet always remain theirs.",
+      "Org features freeze — new assignments, invites, dashboards — but members keep personal access to the courses they were already enrolled in. Their learning history, certificates and wallet always remain theirs, and reinstating the subscription restores everything intact.",
   },
   {
     question: "Do I need programming experience?",

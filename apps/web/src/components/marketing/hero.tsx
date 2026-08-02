@@ -46,7 +46,7 @@ export const Hero = () => (
           </Button>
         </div>
         <p className="text-muted-foreground mt-6 text-sm">
-          Free for individuals — no credit card. Teams pay only for assigned courses.
+          Free tier for individuals — no credit card. Teams pay a flat rate per seat.
         </p>
       </FadeIn>
       <div className="relative hidden h-135 perspective-[1400px] lg:block" aria-hidden>

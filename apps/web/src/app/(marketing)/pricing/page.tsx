@@ -6,7 +6,7 @@ import { PageIntro } from "@/components/marketing/page-intro";
 export const metadata: Metadata = {
   title: "Pricing",
   description:
-    "Free for individuals — pay only for the courses you take. Teams and schools pay per assigned course, postpaid.",
+    "A free tier for individuals, then subscribe, buy a single course, or spend earned tokens. Teams and schools pay a flat monthly rate per seat.",
 };
 
 export default function PricingPage() {
@@ -16,10 +16,10 @@ export default function PricingPage() {
         eyebrow="Pricing"
         title={
           <>
-            Pay for <span className="text-primary-500">learning</span>, not for seats
+            Start free. <span className="text-primary-500">Upgrade</span> however suits you
           </>
         }
-        lede="No subscriptions. Individuals join free and pay per course — with money or with tokens they earned. Organizations pay only for courses they actually assign."
+        lede="Individuals get a free tier that never expires, then a choice: subscribe for everything, buy a single course, or redeem tokens you earned. Organizations pay a flat monthly rate per seat — every seated member gets the whole catalogue."
       />
       <PricingPlans />
       <PricingFaq />

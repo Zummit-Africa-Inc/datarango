@@ -23,8 +23,9 @@ const SECTIONS = [
   {
     heading: "Courses, purchases & tokens",
     paragraphs: [
-      "Course purchases grant a personal, non-transferable license to the course content for the purchased version. Tokens are an in-platform reward with no cash value; they can be earned through learning activity and redeemed for courses and perks, but not transferred between users or exchanged for money. Reward rules include anti-abuse limits, and we may reverse credits obtained through abuse.",
-      "Courses assigned to you by an organization remain accessible to you even if that organization's account lapses.",
+      "Premium content may be accessed through an individual subscription, a one-off purchase of a specific course, or redemption of tokens. A one-off purchase grants a personal, non-transferable license to that course for the purchased version and survives the lapse of any subscription. Subscription access lasts for as long as the subscription is active.",
+      "Tokens are an in-platform reward with no cash value; they can be earned through learning activity and redeemed for courses and perks, but not transferred between users or exchanged for money. Reward rules include anti-abuse limits, and we may reverse credits obtained through abuse.",
+      "Courses you are enrolled in through an organization remain accessible to you even if that organization's account lapses.",
     ],
   },
   {
@@ -48,7 +49,8 @@ const SECTIONS = [
   {
     heading: "Organizations",
     paragraphs: [
-      "Organization owners are responsible for their members' seats and for charges arising from course assignments, invoiced postpaid at the end of each billing cycle as shown in the console's usage meter. Overdue invoices lead to suspension of organization features after the dunning period; members' personal access to already-granted courses is never revoked.",
+      "Organization subscriptions are charged per licensed seat for each billing cycle. A seat is consumed by each active membership; members added mid-cycle are charged pro rata, seats freed by removing a member become available immediately, and reductions in the licensed seat count take effect at the next renewal. Organization owners are responsible for these charges.",
+      "Overdue invoices lead to suspension of organization features after the dunning period; members' personal access to courses they are already enrolled in is never revoked.",
     ],
   },
   {
