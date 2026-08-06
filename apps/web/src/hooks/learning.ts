@@ -106,7 +106,11 @@ const progressKey = (courseId: string) => ["learning-progress", courseId];
 // ── Discovery ──────────────────────────────────────────────────────────────
 
 /** Published courses from every creator — not the caller's own authoring list. */
-export const useDiscoverCourses = (options: { search?: string; page?: number; pageSize?: number }) =>
+export const useDiscoverCourses = (options: {
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}) =>
   useApi.query<CourseList>(
     [...DISCOVER, options.search ?? "", String(options.page ?? 1)],
     "/learning/catalog/discover",

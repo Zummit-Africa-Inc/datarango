@@ -38,7 +38,11 @@ export default function LessonPlayerPage() {
   const ordered = useMemo(
     () =>
       (tree?.modules ?? []).flatMap((module) =>
-        module.lessons.map((lesson) => ({ lesson, moduleId: module.id, moduleTitle: module.title })),
+        module.lessons.map((lesson) => ({
+          lesson,
+          moduleId: module.id,
+          moduleTitle: module.title,
+        })),
       ),
     [tree],
   );
@@ -114,12 +118,7 @@ export default function LessonPlayerPage() {
       />
 
       <div className="border-hairline flex flex-wrap items-center justify-between gap-3 border-t pt-4">
-        <Button
-          asChild={!!previous}
-          disabled={!previous}
-          size="sm"
-          variant="outline"
-        >
+        <Button asChild={!!previous} disabled={!previous} size="sm" variant="outline">
           {previous ? (
             <Link href={`/dashboard/courses/${courseId}/lessons/${previous.lesson.id}`}>
               <ArrowLeft className="size-3.5" />

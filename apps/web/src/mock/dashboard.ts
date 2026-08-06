@@ -80,5 +80,5 @@ export const CONTINUE_LEARNING: Enrollment[] = Array.from({ length: 3 }, (_, ind
     },
     userId: faker.string.uuid(),
     grantedByOrgId: faker.string.uuid(),
-  }
+  };
 });

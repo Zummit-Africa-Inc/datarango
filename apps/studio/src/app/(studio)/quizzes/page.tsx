@@ -9,7 +9,9 @@ import { useMyQuizzes } from "@/hooks/assessment";
 
 /** "Unlimited" is the meaning of 0, and reads better than the number. */
 const attemptsLabel = (maxAttempts: number) =>
-  maxAttempts === 0 ? "Unlimited attempts" : `${maxAttempts} attempt${maxAttempts === 1 ? "" : "s"}`;
+  maxAttempts === 0
+    ? "Unlimited attempts"
+    : `${maxAttempts} attempt${maxAttempts === 1 ? "" : "s"}`;
 
 const timeLabel = (seconds: number | null) =>
   seconds === null ? "Untimed" : `${Math.round(seconds / 60)} min`;

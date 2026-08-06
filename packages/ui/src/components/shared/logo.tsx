@@ -13,16 +13,30 @@ interface Props {
   collapsed?: boolean;
   /** Renders the cream variant for ink surfaces (sidebar, footer). */
   onInk?: boolean;
+  type?: "icon" | "wordmark";
 }
 
 /** Datarango logo — wordmark, or the glyph when collapsed. */
-export const Logo = ({ className, collapsed = false, onInk = false }: Props) => {
-  const src = onInk ? (collapsed ? iconDark : logoDark) : collapsed ? iconLight : logoLight;
-  const sizing = collapsed ? "h-6 w-auto" : "h-6 w-auto";
+export const Logo = ({ className, collapsed = false, onInk = false, type = "wordmark" }: Props) => {
+  const src = onInk
+    ? collapsed || type === "icon"
+      ? iconDark
+      : logoDark
+    : collapsed || type === "icon"
+      ? iconLight
+      : logoLight;
+  const sizing = collapsed || type === "icon" ? "h-10 w-10" : "h-6 aspect-[5.6/1] w-auto";
 
   return (
-    <span className={cn("flex items-center select-none", className)}>
-      <Image alt="Datarango" className={sizing} priority src={src} />
+    <span className={cn("relative flex items-center select-none", sizing, className)}>
+      <Image
+        alt="Datarango"
+        className="object-cover"
+        fill
+        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        priority
+        src={src}
+      />
     </span>
   );
 };

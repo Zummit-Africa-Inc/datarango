@@ -58,7 +58,7 @@ export const ExercisePicker = ({
       <DialogTrigger asChild>
         <button
           type="button"
-          className="rounded-xs focus-visible:ring-ring focus-visible:ring-2 focus-visible:outline-none"
+          className="focus-visible:ring-ring rounded-xs focus-visible:ring-2 focus-visible:outline-none"
           aria-label={
             exerciseId ? `Change exercise for ${moduleTitle}` : `Set exercise for ${moduleTitle}`
           }
@@ -117,7 +117,9 @@ export const ExercisePicker = ({
                     <span className="text-ink block truncate font-medium">{quiz.title}</span>
                     <span className="text-muted-foreground block truncate text-xs">
                       Pass {quiz.passThresholdPercent}% ·{" "}
-                      {quiz.maxAttempts === 0 ? "unlimited attempts" : `${quiz.maxAttempts} attempts`}
+                      {quiz.maxAttempts === 0
+                        ? "unlimited attempts"
+                        : `${quiz.maxAttempts} attempts`}
                     </span>
                   </span>
                 </button>
