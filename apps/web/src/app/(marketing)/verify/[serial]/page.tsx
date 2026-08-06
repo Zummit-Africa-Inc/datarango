@@ -125,10 +125,10 @@ export default async function VerifyCertificatePage({
               We couldn&apos;t verify that serial
             </h1>
             <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-              No Datarango certificate matches{" "}
-              <span className="mono-data break-all">{serial}</span>. Check for a typo — serials look
-              like <span className="mono-data">DR-XXXX-XXXX-XXXX</span> and never contain the
-              letters I, L, O or U.
+              No Datarango certificate matches <span className="mono-data break-all">{serial}</span>
+              . Check for a typo — serials look like{" "}
+              <span className="mono-data">DR-XXXX-XXXX-XXXX</span> and never contain the letters I,
+              L, O or U.
             </p>
             <Button asChild className="mt-6" variant="outline">
               <Link href="/">Back to Datarango</Link>

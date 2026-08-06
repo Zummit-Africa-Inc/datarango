@@ -6,14 +6,13 @@ import { useActiveOrg, usePermission } from "@datarango/auth";
 import { Button, Input, PageLayout, Skeleton } from "@datarango/ui";
 
 import {
+  memberLabel,
   useChangeMemberRole,
   useDeactivateMember,
   useInviteMember,
   useOrgMembers,
   useOrgRoles,
 } from "@/hooks/orgs";
-
-const short = (id: string) => `${id.slice(0, 8)}…`;
 
 export default function MembersPage() {
   const { activeOrgId } = useActiveOrg();
@@ -94,7 +93,13 @@ export default function MembersPage() {
               key={m.userId}
               className="border-hairline grid grid-cols-[1fr_auto_auto_auto] items-center gap-4 border-b px-4 py-3 text-sm last:border-0"
             >
-              <span className="font-mono text-xs">{short(m.userId)}</span>
+              <span className="min-w-0">
+                <span className="text-ink block truncate">{memberLabel(m)}</span>
+                {/* Only when it adds something — otherwise the label is already the email. */}
+                {m.displayName && m.email && (
+                  <span className="text-muted-foreground block truncate text-xs">{m.email}</span>
+                )}
+              </span>
               {canManage && m.role !== "owner" ? (
                 <select
                   className="border-input bg-background h-8 rounded-xs border px-2 text-sm"
@@ -102,7 +107,7 @@ export default function MembersPage() {
                   onChange={(e) =>
                     changeRole.mutate({ targetUserId: m.userId, role: e.target.value })
                   }
-                  aria-label={`Role for ${short(m.userId)}`}
+                  aria-label={`Role for ${memberLabel(m)}`}
                 >
                   {[...new Set([m.role, ...assignable])].map((r) => (
                     <option key={r} value={r}>

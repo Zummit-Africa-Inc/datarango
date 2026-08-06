@@ -89,12 +89,9 @@ export const useQuiz = (quizId: string) =>
   });
 
 export const useSubmitQuiz = (quizId: string) =>
-  useApi.mutation<SubmitQuizInput, AttemptResult>(
-    `/learning/assessment/quizzes/${quizId}/submit`,
-    {
-      invalidates: [quizKey(quizId), ["learning-progress"], ["learning-certificates"]],
-      // The result screen reports pass or fail itself; a toast would either
-      // duplicate it or, worse, celebrate a failure.
-      toast: { success: undefined },
-    },
-  );
+  useApi.mutation<SubmitQuizInput, AttemptResult>(`/learning/assessment/quizzes/${quizId}/submit`, {
+    invalidates: [quizKey(quizId), ["learning-progress"], ["learning-certificates"]],
+    // The result screen reports pass or fail itself; a toast would either
+    // duplicate it or, worse, celebrate a failure.
+    toast: { success: undefined },
+  });

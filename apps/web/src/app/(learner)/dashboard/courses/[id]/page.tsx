@@ -120,7 +120,8 @@ export default function CourseDetailPage() {
         <div className="mb-3 flex items-baseline justify-between">
           <h2 className="font-heading text-ink text-lg">Syllabus</h2>
           <span className="text-muted-foreground text-sm">
-            {tree.modules.length} module{tree.modules.length === 1 ? "" : "s"} · {lessonCount} lesson
+            {tree.modules.length} module{tree.modules.length === 1 ? "" : "s"} · {lessonCount}{" "}
+            lesson
             {lessonCount === 1 ? "" : "s"}
           </span>
         </div>
@@ -158,19 +159,14 @@ export default function CourseDetailPage() {
 
                   <ul className="px-4 py-2">
                     {module.lessons.map((lesson) => (
-                      <li
-                        className="flex items-center gap-3 py-1.5 text-sm"
-                        key={lesson.id}
-                      >
+                      <li className="flex items-center gap-3 py-1.5 text-sm" key={lesson.id}>
                         <Badge variant="ghost" className="w-16 justify-center">
                           {KIND_LABEL[lesson.kind]}
                         </Badge>
                         <span className="min-w-0 flex-1 truncate">{lesson.title}</span>
                         {isEnrolled ? (
                           <Button asChild size="sm" variant="ghost">
-                            <Link
-                              href={`/dashboard/courses/${courseId}/lessons/${lesson.id}`}
-                            >
+                            <Link href={`/dashboard/courses/${courseId}/lessons/${lesson.id}`}>
                               Open
                             </Link>
                           </Button>

@@ -8,7 +8,7 @@ interface AuthCardProps {
 }
 
 export const AuthCard = ({ cell, title, subtitle, children }: AuthCardProps) => (
-  <div className="border-border bg-card w-full max-w-md rounded-xs border p-8">
+  <div className="w-full max-w-md p-8">
     <p className="mono-data text-muted-foreground text-xs">dr [{cell}]</p>
     <h1 className="font-heading mt-4 text-3xl tracking-tight">{title}</h1>
     <p className="text-muted-foreground mt-2 text-sm leading-relaxed">{subtitle}</p>

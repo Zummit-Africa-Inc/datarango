@@ -10,13 +10,27 @@ export interface OrgSummary {
   role: string;
 }
 
-/** A member row (mirrors accounts' OrgMemberInfo). */
+/**
+ * A member row (mirrors accounts' `OrgMemberView`).
+ *
+ * `displayName`/`email` are resolved from identity through `IUserDirectory`
+ * *after* the `org.members.view` gate, and only for ids that came out of this
+ * org's memberships — so this is never a way to probe for users outside it.
+ * Both are null when identity has no such user, which the UI renders as the
+ * short id rather than inventing a name.
+ */
 export interface OrgMember {
   userId: string;
   role: string;
   joinedAt: string;
   active: boolean;
+  displayName: string | null;
+  email: string | null;
 }
+
+/** How to name a member in the UI, falling back to a short id. */
+export const memberLabel = (member: OrgMember) =>
+  member.displayName?.trim() || member.email || `${member.userId.slice(0, 8)}…`;
 
 /** A role in the catalog (built-in or custom) with its permission set. */
 export interface OrgRole {

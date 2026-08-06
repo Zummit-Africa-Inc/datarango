@@ -61,7 +61,9 @@ export default function DashboardPage() {
               key={course.id}
             >
               <p className="text-muted-foreground text-xs">{course.source}</p>
-              <p className="font-heading mt-1 text-xl capitalize">{fromSnakeCase(course.courseTitle.split('.')[0])}</p>
+              <p className="font-heading mt-1 text-xl capitalize">
+                {fromSnakeCase(course.courseTitle.split(".")[0])}
+              </p>
               <p className="text-muted-foreground mt-1 text-sm">{course.currentModuleTitle}</p>
               <div className="bg-muted mt-4 h-2 rounded-full">
                 <div

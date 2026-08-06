@@ -174,7 +174,9 @@ export const QuestionForm = ({
             type="number"
             min={1}
             value={draft.points}
-            onChange={(e) => onChange({ ...draft, points: Math.max(1, Number(e.target.value) || 1) })}
+            onChange={(e) =>
+              onChange({ ...draft, points: Math.max(1, Number(e.target.value) || 1) })
+            }
           />
         </div>
       </div>
@@ -270,11 +272,10 @@ export const QuestionForm = ({
           />
           <p className="text-muted-foreground text-xs">
             A regular expression. Matching ignores case and trims surrounding whitespace, so{" "}
-            <code className="font-mono">^pandas$</code> accepts <code className="font-mono">
-              {" PANDAS "}
-            </code>
-            . Anchor it with <code className="font-mono">^</code> and{" "}
-            <code className="font-mono">$</code> unless you mean to match a substring.
+            <code className="font-mono">^pandas$</code> accepts{" "}
+            <code className="font-mono">{" PANDAS "}</code>. Anchor it with{" "}
+            <code className="font-mono">^</code> and <code className="font-mono">$</code> unless you
+            mean to match a substring.
           </p>
         </div>
       )}
