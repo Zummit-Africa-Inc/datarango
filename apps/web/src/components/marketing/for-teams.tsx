@@ -7,14 +7,14 @@ import { Gif } from "./gif";
 import {
   Button,
   CoursesIllustration,
-  EarnIllustration,
   FadeIn,
   LaptopIllustration,
+  LeaderboardIllustration,
   PolicyIllustration,
+  ProgressIllustration,
   Stagger,
   StaggerItem,
   TiltCard,
-  TrophyIllustration,
   WorkIllustration,
 } from "@datarango/ui";
 
@@ -128,13 +128,13 @@ const ORG_FEATURES = [
     color: "#66BDE2",
   },
   {
-    icon: EarnIllustration,
+    icon: ProgressIllustration,
     title: "Progress you can defend",
     body: "Per-member, per-course drill-downs and CSV exports — certificates only count work done in your program.",
     color: "#1FAD64",
   },
   {
-    icon: TrophyIllustration,
+    icon: LeaderboardIllustration,
     title: "Private competitions",
     body: "Run org-only competitions on your own datasets, scored on the same pipeline as public ones.",
     color: "#F28A00",

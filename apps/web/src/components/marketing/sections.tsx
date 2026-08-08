@@ -116,7 +116,7 @@ export const Features = () => (
               <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
               <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
             </div>
-            <div className="flex justify-end overflow-hidden py-5 bg-white">
+            <div className="flex justify-end overflow-hidden bg-white py-5">
               <feature.icon className="size-40" />
             </div>
           </StaggerItem>

@@ -2,22 +2,22 @@
 
 import Image, { type StaticImageData } from "next/image";
 
-import courses from "../../assets/notion/images-1.avif";
-import leaderboard from "../../assets/notion/images-2.avif";
-import teaching from "../../assets/notion/images-3.avif";
-import learning from "../../assets/notion/images-4.avif";
-import progress from "../../assets/notion/images-5.avif";
-import work from "../../assets/notion/images-6.avif";
-import handson from "../../assets/notion/images-7.avif";
-import teamwork from "../../assets/notion/images-8.avif";
-import competition from "../../assets/notion/images-9.avif";
-import earn from "../../assets/notion/images-10.avif";
-import laptop from "../../assets/notion/images-11.png";
-import focused from "../../assets/notion/images-12.png";
-import users from "../../assets/notion/images-13.png";
-import trophy from "../../assets/notion/images-14.png";
-import notebook from "../../assets/notion/images-15.png";
-import policy from "../../assets/notion/images-16.png";
+import courses from "../../assets/illustrations/images-1.avif";
+import leaderboard from "../../assets/illustrations/images-2.avif";
+import teaching from "../../assets/illustrations/images-3.avif";
+import learning from "../../assets/illustrations/images-4.avif";
+import progress from "../../assets/illustrations/images-5.avif";
+import work from "../../assets/illustrations/images-6.avif";
+import handson from "../../assets/illustrations/images-7.avif";
+import teamwork from "../../assets/illustrations/images-8.avif";
+import competition from "../../assets/illustrations/images-9.avif";
+import earn from "../../assets/illustrations/images-10.avif";
+import laptop from "../../assets/illustrations/images-11.png";
+import focused from "../../assets/illustrations/images-12.png";
+import users from "../../assets/illustrations/images-13.png";
+import trophy from "../../assets/illustrations/images-14.png";
+import notebook from "../../assets/illustrations/images-15.png";
+import policy from "../../assets/illustrations/images-16.png";
 
 import { cn } from "../../lib";
 
@@ -25,7 +25,7 @@ export type IllustrationName =
   | "competition"
   | "courses"
   | "earn"
-  |"focused"
+  | "focused"
   | "handson"
   | "laptop"
   | "leaderboard"
