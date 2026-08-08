@@ -1,29 +1,21 @@
 "use client";
 
-import Image from "next/image";
+import { BarChart3, BookOpen, Building2, Coins, FileSpreadsheet, Receipt } from "lucide-react";
 import Link from "next/link";
-import {
-  BarChart3,
-  BookOpen,
-  Building2,
-  Coins,
-  FileSpreadsheet,
-  Lock,
-  Receipt,
-  Shield,
-  Trophy,
-  Users,
-} from "lucide-react";
 
 import { Gif } from "./gif";
 import {
-  BusinessIllustration,
   Button,
-  CreditIllustration,
+  CoursesIllustration,
+  EarnIllustration,
   FadeIn,
+  LaptopIllustration,
+  PolicyIllustration,
   Stagger,
   StaggerItem,
   TiltCard,
+  TrophyIllustration,
+  WorkIllustration,
 } from "@datarango/ui";
 
 /* ---------------------------------- hero ----------------------------------- */
@@ -118,37 +110,37 @@ export const TeamsHero = () => (
 
 const ORG_FEATURES = [
   {
-    icon: Users,
+    icon: WorkIllustration,
     title: "Invites at any scale",
     body: "Invite one manager or a whole cohort by CSV. Members join with the roles you chose.",
     color: "#E26666",
   },
   {
-    icon: Shield,
+    icon: LaptopIllustration,
     title: "Roles built from permissions",
     body: "Owner, admin, manager, instructor, member — or compose custom roles from the permission catalog.",
     color: "#0A1A4D",
   },
   {
-    icon: BusinessIllustration,
+    icon: CoursesIllustration,
     title: "Course assignments",
     body: "Assign courses to members or groups. End-of-module exercises gate completion, so progress means something.",
     color: "#66BDE2",
   },
   {
-    icon: CreditIllustration,
+    icon: EarnIllustration,
     title: "Progress you can defend",
     body: "Per-member, per-course drill-downs and CSV exports — certificates only count work done in your program.",
     color: "#1FAD64",
   },
   {
-    icon: Trophy,
+    icon: TrophyIllustration,
     title: "Private competitions",
     body: "Run org-only competitions on your own datasets, scored on the same pipeline as public ones.",
     color: "#F28A00",
   },
   {
-    icon: Lock,
+    icon: PolicyIllustration,
     title: "Org SSO & MFA policy",
     body: "Bring your identity provider (Entra ID, Google Workspace), auto-provision members, enforce MFA.",
     color: "#9C66E2",
@@ -176,8 +168,8 @@ export const TeamsFeatures = () => (
               <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
               <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
             </div>
-            <div className="bg-ink flex h-70 justify-end overflow-hidden grayscale-1000">
-              <feature.icon className="text-on-ink size-70 grayscale-100" />
+            <div className="flex justify-end overflow-hidden bg-white py-5">
+              <feature.icon className="size-40" />
             </div>
           </StaggerItem>
         );

@@ -1,18 +1,21 @@
 "use client";
 
-import { BarChart3, BookOpen, Coins, NotebookPen, Trophy, Users } from "lucide-react";
+import { BarChart3, BookOpen, Coins, Users } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
 import { Gif } from "./gif";
 import {
-  BusinessIllustration,
   Button,
-  CreditIllustration,
+  CompetitionIllustration,
+  CoursesIllustration,
+  EarnIllustration,
   FadeIn,
-  InvestmentIllustration,
+  HandsonIllustration,
+  NotebookIllustration,
   Stagger,
   StaggerItem,
+  TrophyIllustration,
 } from "@datarango/ui";
 
 /* -------------------------------- tool strip ------------------------------- */
@@ -48,42 +51,42 @@ export const ToolStrip = () => (
 
 const FEATURES = [
   {
-    icon: BookOpen,
+    icon: CoursesIllustration,
     title: "Courses that make you do the work",
     body: "Video, text and audio lessons — and every module ends with a graded exercise you can't skip.",
     image: "",
     color: "#E26666",
   },
   {
-    icon: NotebookPen,
+    icon: NotebookIllustration,
     title: "Real Jupyter notebooks",
     body: "CPU-backed kernels in the browser with persistent storage. Close the tab, come back, resume exactly where you left off.",
     image: "",
     color: "#0A1A4D",
   },
   {
-    icon: CreditIllustration,
+    icon: CompetitionIllustration,
     title: "Competitions & leaderboards",
     body: "Kaggle-style scoring pipelines with public and private leaderboards — plus private competitions for your org.",
     image: "",
     color: "#66BDE2",
   },
   {
-    icon: InvestmentIllustration,
+    icon: EarnIllustration,
     title: "Earn while you learn",
     body: "Quizzes and streaks credit tokens to your wallet. Redeem them for courses and perks.",
     image: "",
     color: "#1FAD64",
   },
   {
-    icon: BusinessIllustration,
+    icon: HandsonIllustration,
     title: "Hosted datasets",
     body: "Versioned, quota-managed datasets that mount read-only into your notebooks. No downloads, no setup.",
     image: "",
     color: "#F28A00",
   },
   {
-    icon: Trophy,
+    icon: TrophyIllustration,
     title: "Certificates that verify",
     body: "Course completion issues a certificate with a public verification page you can share anywhere.",
     image: "",
@@ -113,8 +116,8 @@ export const Features = () => (
               <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
               <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
             </div>
-            <div className="bg-ink flex h-70 justify-end overflow-hidden">
-              <feature.icon className="text-on-ink size-70 grayscale-100" />
+            <div className="flex justify-end overflow-hidden py-5 bg-white">
+              <feature.icon className="size-40" />
             </div>
           </StaggerItem>
         );

@@ -19,6 +19,11 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
+  --font-sans: var(--font-inter, "Inter"), sans-serif;
+  --font-serif: var(--font-ebgaramond, "EB Garamond"), serif;
+  --font-mono-data: var(--font-dm-mono, "DM Mono"), ui-monospace, monospace;
+  --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), ui-monospace, monospace;
+
   /* canvas & ink */
   --canvas: #faf8f4;
   --canvas-soft: #fdfcfa;
@@ -157,10 +162,10 @@
   --color-secondary-950: #031a1c;
 
   /* type — serif display (Waldenburg when licensed; EB Garamond until then) */
-  --font-heading: var(--font-ebgaramond, "EB Garamond"), "Times New Roman", serif;
-  --font-sans: var(--font-inter, "Inter"), sans-serif;
-  --font-mono-data: var(--font-dm-mono, "DM Mono"), ui-monospace, monospace;
-  --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), ui-monospace, monospace;
+  --font-heading: var(--font-serif, "EB Garamond"), "Times New Roman", serif;
+  --font-sans: var(--font-sans, "Inter"), sans-serif;
+  --font-mono-data: var(--font-mono-data, "DM Mono"), ui-monospace, monospace;
+  --font-code: var(--font-code, "JetBrains Mono"), ui-monospace, monospace;
 
   /* radius — Warp geometry: 3px buttons, 6px inputs, 10px cards */
   --radius-xs: 2px;
