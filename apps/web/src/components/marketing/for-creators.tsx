@@ -1,29 +1,21 @@
 "use client";
 
-import Image from "next/image";
+import { BarChart3, Coins, NotebookPen, Send, Upload, Wallet } from "lucide-react";
 import Link from "next/link";
-import {
-  BarChart3,
-  Coins,
-  FileVideo,
-  Globe,
-  NotebookPen,
-  Send,
-  Trophy,
-  Upload,
-  Wallet,
-} from "lucide-react";
 
 import { Gif } from "./gif";
 import {
-  BusinessIllustration,
   Button,
-  CreditIllustration,
+  EarnIllustration,
   FadeIn,
-  InvestmentIllustration,
+  NotebookIllustration,
+  ProgressIllustration,
   Stagger,
   StaggerItem,
+  TeachingIllustration,
   TiltCard,
+  TrophyIllustration,
+  UsersIllustration,
 } from "@datarango/ui";
 
 /* ---------------------------------- hero ----------------------------------- */
@@ -109,37 +101,37 @@ export const CreatorsHero = () => (
 
 const CREATOR_FEATURES = [
   {
-    icon: BusinessIllustration,
+    icon: TeachingIllustration,
     title: "Rich lesson formats",
     body: "Author lessons with video, text and audio. Mix formats freely within a single module.",
     color: "#E26666",
   },
   {
-    icon: NotebookPen,
+    icon: NotebookIllustration,
     title: "Live notebook exercises",
     body: "Attach CPU-backed Jupyter notebooks to any lesson. Learners run real code; you write the auto-grader.",
     color: "#0A1A4D",
   },
   {
-    icon: InvestmentIllustration,
+    icon: EarnIllustration,
     title: "Set token rewards",
     body: "Decide how many tokens each exercise awards. Learners redeem tokens for your courses — a built-in growth loop.",
     color: "#66BDE2",
   },
   {
-    icon: Trophy,
+    icon: TrophyIllustration,
     title: "Host competitions",
     body: "Create Kaggle-style competitions with your own datasets and scoring pipeline. Public or org-private.",
     color: "#1FAD64",
   },
   {
-    icon: CreditIllustration,
+    icon: ProgressIllustration,
     title: "Creator analytics",
     body: "Per-course enrollment, completion rates, exercise pass rates and revenue — all in one dashboard.",
     color: "#F28A00",
   },
   {
-    icon: Globe,
+    icon: UsersIllustration,
     title: "Reach a built-in audience",
     body: "Your courses are discoverable by 12k+ active learners the moment they pass review.",
     color: "#9C66E2",
@@ -168,8 +160,8 @@ export const CreatorsFeatures = () => (
               <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
               <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
             </div>
-            <div className="bg-ink flex h-70 justify-end overflow-hidden">
-              <feature.icon className="text-on-ink size-70 grayscale-100" />
+            <div className="flex justify-end overflow-hidden bg-white py-5">
+              <feature.icon className="size-40" />
             </div>
           </StaggerItem>
         );
