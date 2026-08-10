@@ -8,6 +8,7 @@
   "dependencies": {
     "@datarango/api": "workspace:*",
     "@datarango/ui": "workspace:*",
+    "@tanstack/react-query": "^5.0.0",
     "date-fns": "^4.1.0",
     "lucide-react": "^0.545.0",
     "sonner": "^2.0.0"
@@ -17,6 +18,7 @@
     "react": "^19.0.0"
   },
   "devDependencies": {
+    "eslint": "^9.0.0",
     "@datarango/config": "workspace:*",
     "@types/react": "^19.2.0",
     "next": "^16.0.0",
@@ -24,6 +26,7 @@
     "typescript": "^5.9.0"
   },
   "scripts": {
+    "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   }
 }

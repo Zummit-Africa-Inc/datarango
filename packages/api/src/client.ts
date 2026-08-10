@@ -118,6 +118,15 @@ export const createClient = ({
   };
 
   return {
+    /**
+     * The gateway origin this client talks to.
+     *
+     * Exposed so the socket transport in this same package can derive its `ws://`
+     * URL from exactly the origin the REST calls use, rather than re-reading an
+     * env var and drifting from it. Nothing outside `@datarango/api` should need
+     * this — §3 keeps the gateway behind this package.
+     */
+    baseUrl,
     get: <T>(path: string, options?: RequestOptions) => request<T>("GET", path, undefined, options),
     post: <T>(path: string, body?: unknown, options?: RequestOptions) =>
       request<T>("POST", path, body, options),

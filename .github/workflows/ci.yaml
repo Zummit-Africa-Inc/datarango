@@ -1,0 +1,78 @@
+name: CI
+
+# datarango-frontend was the only repo in the platform with no workflow at all —
+# every backend service has had one since Phase 0. Nine packages and four apps
+# were being merged on the strength of whatever the author happened to run
+# locally.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      # Formatting first: it is the fastest check and the one most likely to be
+      # a one-line fix, so failing here does not make anybody wait on a build.
+      - name: Format
+        run: pnpm format:check
+
+      # Lint genuinely runs now. Until 2026-08-10 no package defined a `lint`
+      # script, so the root one shelled out to turbo, found nothing, and passed —
+      # a green check that had inspected zero files.
+      - name: Lint
+        run: pnpm -r lint
+
+      - name: Typecheck
+        run: pnpm -r typecheck
+
+      # Build catches what the other three cannot: a route that fails to
+      # prerender, a server component importing something client-only, a bad
+      # import path that tsc resolves and the bundler does not.
+      - name: Build
+        run: pnpm build
+
+  smoke:
+    runs-on: ubuntu-latest
+    needs: verify
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.18.1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: pnpm --filter web exec playwright install --with-deps chromium
+
+      # The check none of the above can make: does the app actually render.
+      # Typecheck and build both passed for weeks while the studio would have
+      # read `undefined` from every field, because the gateway double-wrapped
+      # its responses — types cannot catch a server disagreeing with them, and
+      # a build cannot catch a page that throws on paint.
+      - name: Smoke
+        run: pnpm --filter web test:e2e

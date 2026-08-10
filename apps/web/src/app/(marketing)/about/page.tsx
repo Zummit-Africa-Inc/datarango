@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 
 import { FadeIn, Stagger, StaggerItem } from "@datarango/ui";
 import { PageIntro } from "@/components/marketing/page-intro";

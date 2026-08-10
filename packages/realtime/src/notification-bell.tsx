@@ -15,6 +15,7 @@ import {
   useMarkNotificationsRead,
   useUnreadCount,
 } from "./use-inbox";
+import { useNotificationSocket } from "./use-notification-socket";
 
 /**
  * The notification bell and its inbox panel — shared across the app shells, so
@@ -26,7 +27,13 @@ import {
 export const NotificationBell = () => {
   const [open, setOpen] = useState(false);
 
-  const { data: unread } = useUnreadCount();
+  // The socket is opened here, once, by the component that is mounted for the
+  // whole session — not by each hook that wants fresh data, which would open one
+  // connection per consumer. It invalidates the same query keys the panel and
+  // badge already read, so nothing below this line changed when it landed.
+  const { connected } = useNotificationSocket();
+
+  const { data: unread } = useUnreadCount({ live: connected });
   const inbox = useInbox({ enabled: open });
   const markRead = useMarkNotificationsRead();
   const markAllRead = useMarkAllNotificationsRead();
@@ -43,9 +50,7 @@ export const NotificationBell = () => {
           className="hover:bg-muted relative grid size-9 place-items-center rounded-md"
           // The count belongs in the label, not just the badge — a screen reader
           // otherwise announces "Notifications" whether there are none or nine.
-          aria-label={
-            hasUnread ? `Notifications, ${count} unread` : "Notifications, none unread"
-          }
+          aria-label={hasUnread ? `Notifications, ${count} unread` : "Notifications, none unread"}
         >
           <Bell className="size-4" />
           {hasUnread && (

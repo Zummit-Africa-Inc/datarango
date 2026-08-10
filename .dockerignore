@@ -1,0 +1,37 @@
+# Dependencies and build output are produced inside the image. Copying the host
+# copies in would also drag Windows-resolved binaries (sharp, the swc native
+# module) into a linux build.
+node_modules
+**/node_modules
+.next
+**/.next
+.turbo
+**/.turbo
+dist
+**/dist
+out
+**/out
+coverage
+**/coverage
+*.tsbuildinfo
+**/*.tsbuildinfo
+
+.git
+.gitignore
+.github
+
+# Deliberate: the image must take its NEXT_PUBLIC_* values from explicit build
+# args, not from whichever .env.local happens to sit on the builder's disk.
+# Leaving these out is what keeps `docker compose build` reproducible.
+**/.env
+**/.env.local
+**/.env.*.local
+
+# Test artefacts, never part of a runtime image.
+**/test-results
+**/playwright-report
+**/.playwright
+
+Dockerfile
+.dockerignore
+README.md

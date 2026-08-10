@@ -210,7 +210,7 @@ export const TeamsSteps = () => (
         <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">Live in an afternoon</h2>
       </FadeIn>
       <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map((step, index) => (
+        {STEPS.map((step) => (
           <StaggerItem key={step.title}>
             <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
             <h3 className="font-heading mt-4 text-lg">{step.title}</h3>

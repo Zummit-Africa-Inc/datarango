@@ -4,6 +4,8 @@ import { createAuthHandlers } from "@datarango/auth/server";
 // SSO cookie on the gateway origin) and /api/auth/signout.
 const handlers = createAuthHandlers({
   issuer: process.env.AUTH_ISSUER ?? "http://localhost:8080",
+  // Unset outside Docker, where the public issuer is reachable from here too.
+  tokenIssuer: process.env.AUTH_ISSUER_INTERNAL,
   clientId: process.env.AUTH_CLIENT_ID ?? "datarango-studio",
   appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3002",
   cookieDomain: process.env.AUTH_COOKIE_DOMAIN,

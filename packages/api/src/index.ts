@@ -6,6 +6,8 @@
 export { ApiError, createClient } from "./client";
 export type { ApiClient, ClientConfig, Problem, RequestOptions } from "./client";
 export { configureApi, getApi } from "./configure";
+export { connectGatewaySocket } from "./socket";
+export type { GatewaySocketOptions } from "./socket";
 export { ApiProvider, useOrgScope } from "./provider";
 export { useApi, useApiMutation, useApiPaginated, useApiQuery } from "./use-api";
 export type { CursorPage, QueryParams } from "./types";

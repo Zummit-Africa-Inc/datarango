@@ -24,8 +24,21 @@ import type { InboxEntry, InboxPage, MarkReadResult, UnreadCount } from "./types
 const INBOX = ["notifications-inbox"];
 const UNREAD = ["notifications-unread"];
 
-/** How often the badge polls. Cheap: one aggregate, no payloads. */
+/**
+ * How often the badge polls when it is the only thing keeping the count fresh.
+ */
 const UNREAD_POLL_MS = 60_000;
+
+/**
+ * How often it polls once the socket is connected.
+ *
+ * Not zero, deliberately. The socket makes polling unnecessary for *arrivals*,
+ * but it cannot cover everything: a frame dropped between NATS and the browser
+ * leaves the badge stale until something else refetches, and the connection can
+ * be up while silently not delivering. A slow heartbeat is the cheap
+ * reconciliation that keeps a rare transport failure from being permanent.
+ */
+const UNREAD_POLL_LIVE_MS = 300_000;
 
 /**
  * The badge count for the whole inbox, not a page of it.
@@ -33,11 +46,14 @@ const UNREAD_POLL_MS = 60_000;
  * Its own endpoint rather than a field read off the list, because the badge is
  * live for every signed-in user on every screen while the panel is opened
  * rarely — this is the request that runs all day, so it stays an aggregate.
+ *
+ * @param options.live - Whether the notification socket is currently connected.
+ *   Slows the poll to a reconciliation heartbeat rather than switching it off.
  */
-export const useUnreadCount = () =>
+export const useUnreadCount = (options: { live?: boolean } = {}) =>
   useApi.query<UnreadCount>(UNREAD, "/platform/notifications/unread-count", {
     orgScoped: false,
-    refetchInterval: UNREAD_POLL_MS,
+    refetchInterval: options.live ? UNREAD_POLL_LIVE_MS : UNREAD_POLL_MS,
   });
 
 /**

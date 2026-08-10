@@ -63,6 +63,42 @@ export const notificationCopy = (entry: InboxEntry): NotificationCopy => {
       };
     }
 
+    case "course-rejected": {
+      const courseId = text(payload, "courseId");
+      const reason = text(payload, "reason");
+      return {
+        title: "Your course needs changes",
+        // The reviewer's own words, verbatim. Summarising them would throw away
+        // the only part that tells the creator what to do — and requiring a
+        // reason on the backend and then not showing it would make the whole
+        // rule pointless.
+        body: reason,
+        // Straight into the builder, which is where the fixing happens.
+        href: courseId ? `/courses/${courseId}` : "/courses",
+      };
+    }
+
+    case "course-published": {
+      const courseId = text(payload, "courseId");
+      const title = text(payload, "title");
+      return {
+        title: "Your course is live",
+        body: title ? `${title} passed review and is now published.` : "It passed review.",
+        href: courseId ? `/courses/${courseId}` : "/courses",
+      };
+    }
+
+    case "media-failed": {
+      const error = text(payload, "error");
+      return {
+        title: "An upload couldn't be processed",
+        // Carried through from the media module, which writes these for a
+        // person ("sent as text/html but the ticket was issued for image/png").
+        body: error,
+        href: "/media",
+      };
+    }
+
     default:
       return { title: "New notification" };
   }
