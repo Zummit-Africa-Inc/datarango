@@ -1,8 +1,10 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { createAuthClient, useActiveOrg, useMemberships, useUser } from "@datarango/auth";
+import { NotificationBell, useNotificationToasts } from "@datarango/realtime";
 import { ContextSwitcher, Header, Sidebar } from "@datarango/ui";
 import { LEARNER_ROUTES } from "@/config/routes";
 
@@ -11,9 +13,15 @@ const auth = createAuthClient();
 export default function LearnerLayout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
   const [search, setSearch] = useState("");
+  const router = useRouter();
   const session = useUser();
   const memberships = useMemberships();
   const { activeOrgId, setOrgContext } = useActiveOrg();
+
+  // Mounted on the shell rather than on a page, so a certificate issued while
+  // the learner is reading a lesson still announces itself. The bell below and
+  // this hook share one polled count.
+  useNotificationToasts();
 
   // Learners with an org membership can flip between personal and org context.
   const primaryOrg = memberships[0];
@@ -51,8 +59,20 @@ export default function LearnerLayout({ children }: { children: React.ReactNode 
           }}
           onToggleSidebar={() => setCollapsed((prev) => !prev)}
           overviewPaths={["/dashboard"]}
-          search={{ value: search, onChange: setSearch, placeholder: "Search courses, datasets…" }}
-          actions={[]}
+          search={{
+            value: search,
+            onChange: setSearch,
+            placeholder: "Search courses and quizzes…",
+            // Navigates rather than filtering in place: results span kinds and
+            // need their own page, and a URL you can share or come back to beats
+            // a query held in a header's local state — which is all this box did
+            // before the search service existed.
+            onSubmit: () => {
+              const q = search.trim();
+              if (q) router.push(`/dashboard/search?q=${encodeURIComponent(q)}`);
+            },
+          }}
+          actions={<NotificationBell />}
         />
         <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
       </div>

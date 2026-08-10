@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, CheckCircle2, XCircle } from "lucide-react";
+import { AlertTriangle, CheckCircle2, Clock, XCircle } from "lucide-react";
 
 import { Badge, Button, Input, Textarea, cn } from "@datarango/ui";
 
@@ -269,63 +269,105 @@ const QuizResult = ({
   quiz: string;
   result: AttemptResult;
   context: AttemptContext;
-}) => (
-  <div className="space-y-4">
-    <div
-      className={cn(
-        "border-hairline bg-card flex items-start gap-3 rounded-xs border p-5",
-        result.passed ? "border-emerald-600/40" : "border-amber-600/40",
-      )}
-    >
-      {result.passed ? (
-        <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
-      ) : (
-        <XCircle className="mt-0.5 size-5 shrink-0 text-amber-600" />
-      )}
-      <div>
-        <p className="font-heading text-ink text-lg">
-          {result.passed ? "Passed" : "Not passed yet"}
-        </p>
-        <p className="text-muted-foreground mt-1 text-sm">
-          {quiz} — {result.pointsAwarded} of {result.pointsAvailable} points ({result.scorePercent}
-          %).
-        </p>
+}) => {
+  // An attempt with a question still under review has no verdict at all.
+  // Reading `passed` here would render a perfectly good submission as "not
+  // passed yet" and show a score that is only the auto-graded floor — telling
+  // the learner they fell short of a mark nobody has finished awarding.
+  const pending = result.status === "pendingReview";
+  const awaiting = result.answers.filter((a) => a.awaitingReview).length;
 
-        {/* Say plainly whether this counted, rather than leaving it implied. */}
-        {result.passed && context !== "standalone" && (
-          <p className="mt-2 text-sm text-emerald-700">
-            {result.courseProgressAdvanced
-              ? "Your course progress has been updated."
-              : "Scored, but it didn't update a course — you may not be enrolled."}
-          </p>
+  return (
+    <div className="space-y-4">
+      <div
+        className={cn(
+          "border-hairline bg-card flex items-start gap-3 rounded-xs border p-5",
+          pending
+            ? "border-sky-600/40"
+            : result.passed
+              ? "border-emerald-600/40"
+              : "border-amber-600/40",
         )}
-        {result.passed && context === "standalone" && (
-          <p className="text-muted-foreground mt-2 text-sm">
-            Taken from the library, so this doesn&apos;t change any course progress.
-          </p>
+      >
+        {pending ? (
+          <Clock className="mt-0.5 size-5 shrink-0 text-sky-600" />
+        ) : result.passed ? (
+          <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
+        ) : (
+          <XCircle className="mt-0.5 size-5 shrink-0 text-amber-600" />
         )}
+        <div>
+          <p className="font-heading text-ink text-lg">
+            {pending ? "Submitted — awaiting review" : result.passed ? "Passed" : "Not passed yet"}
+          </p>
+
+          {pending ? (
+            <>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {quiz} — {awaiting} answer{awaiting === 1 ? "" : "s"} {awaiting === 1 ? "is" : "are"}{" "}
+                with a marker. You&apos;ll be notified when it&apos;s scored.
+              </p>
+              {/* Deliberately no percentage: the auto-graded floor would read as
+                  a final mark and it can only go up from here. */}
+              <p className="text-muted-foreground mt-2 text-xs">
+                {result.pointsAvailable - result.pointsAwarded} of {result.pointsAvailable} points
+                are still to be decided, so there&apos;s no score to show yet.
+              </p>
+              {context !== "standalone" && (
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Your course progress updates once this is marked.
+                </p>
+              )}
+            </>
+          ) : (
+            <>
+              <p className="text-muted-foreground mt-1 text-sm">
+                {quiz} — {result.pointsAwarded} of {result.pointsAvailable} points (
+                {result.scorePercent}%).
+              </p>
+
+              {/* Say plainly whether this counted, rather than leaving it implied. */}
+              {result.passed && context !== "standalone" && (
+                <p className="mt-2 text-sm text-emerald-700">
+                  {result.courseProgressAdvanced
+                    ? "Your course progress has been updated."
+                    : "Scored, but it didn't update a course — you may not be enrolled."}
+                </p>
+              )}
+              {result.passed && context === "standalone" && (
+                <p className="text-muted-foreground mt-2 text-sm">
+                  Taken from the library, so this doesn&apos;t change any course progress.
+                </p>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      <div className="border-hairline bg-card rounded-xs border">
+        <p className="border-hairline text-muted-foreground border-b px-4 py-2 text-xs font-medium uppercase">
+          Per question
+        </p>
+        <ul className="px-4 py-2">
+          {result.answers.map((answer, index) => (
+            <li className="flex items-center gap-3 py-1.5 text-sm" key={answer.questionId}>
+              {answer.awaitingReview ? (
+                <Clock className="size-4 shrink-0 text-sky-600" />
+              ) : answer.correct ? (
+                <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+              ) : (
+                <XCircle className="text-muted-foreground size-4 shrink-0" />
+              )}
+              <span className="flex-1">Question {index + 1}</span>
+              <span className="text-muted-foreground text-xs">
+                {answer.awaitingReview
+                  ? `— /${answer.pointsAvailable}`
+                  : `${answer.pointsAwarded}/${answer.pointsAvailable}`}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
-
-    <div className="border-hairline bg-card rounded-xs border">
-      <p className="border-hairline text-muted-foreground border-b px-4 py-2 text-xs font-medium uppercase">
-        Per question
-      </p>
-      <ul className="px-4 py-2">
-        {result.answers.map((answer, index) => (
-          <li className="flex items-center gap-3 py-1.5 text-sm" key={answer.questionId}>
-            {answer.correct ? (
-              <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
-            ) : (
-              <XCircle className="text-muted-foreground size-4 shrink-0" />
-            )}
-            <span className="flex-1">Question {index + 1}</span>
-            <span className="text-muted-foreground text-xs">
-              {answer.pointsAwarded}/{answer.pointsAvailable}
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </div>
-);
+  );
+};
