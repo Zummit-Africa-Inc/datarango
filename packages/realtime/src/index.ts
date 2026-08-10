@@ -1,8 +1,17 @@
 /**
- * @datarango/realtime — WebSocket client + hooks for the notifications channel
- * (useNotifications, useEventToast). Reconnect with backoff + inbox-cursor resume.
+ * @datarango/realtime — the notifications channel: inbox client, bell + panel,
+ * and arrival toasts.
  *
- * Implemented in Phase F1/F2 once the gateway WS proxy exists. The notebook
- * kernel channel is deliberately NOT here — it lives in @datarango/notebook.
+ * Transport is polling today. The handoff's design is a Postgres inbox pushed
+ * over the gateway WebSocket, and that proxy is not built; the inbox row is the
+ * source of truth either way, so the socket is a latency improvement rather
+ * than a correctness one, and swapping it in changes nothing above these hooks.
+ *
+ * The notebook kernel channel is deliberately NOT here — it lives in
+ * @datarango/notebook.
  */
-export {};
+export * from "./types";
+export * from "./notification-copy";
+export * from "./use-inbox";
+export * from "./use-notification-toasts";
+export * from "./notification-bell";

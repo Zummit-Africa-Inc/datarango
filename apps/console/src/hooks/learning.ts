@@ -43,9 +43,10 @@ export interface CourseList {
  *
  * Note what is *not* here — any hint of how far they have got. Enrolment rows
  * are user-owned and enrollment's RLS never lets one user read another's, so a
- * manager writes a seat enrolment they cannot read back. Progress reporting
- * needs an explicitly-written reporting read on the learning side; it is not
- * something this endpoint can be coaxed into returning.
+ * manager writes a seat enrolment they cannot read back. Progress comes from a
+ * separate, deliberately-written reporting read (`useOrgCourseReport` below)
+ * behind its own permission; it is not something this endpoint can be coaxed
+ * into returning.
  */
 export interface OrgAssignment {
   id: string;
@@ -67,6 +68,52 @@ export interface OrgAssignment {
 export interface AssignResult {
   assigned: string[];
   alreadyAssigned: string[];
+}
+
+/**
+ * One member's standing on an assigned course (mirrors learning's
+ * `OrgMemberProgress`).
+ *
+ * `progressVisible` is **not** a permission flag — the manager is authorised for
+ * every field in this record. It marks a member who was already enrolled when
+ * the org assigned the course, so their enrolment is personally theirs and the
+ * org's reporting policy does not admit it. The honest answer there is "we
+ * can't see this", never a zero: rendering 0% would tell a manager the person
+ * hasn't started when they may well have finished.
+ */
+export interface OrgMemberProgress {
+  userId: string;
+  assignedAt: string;
+  progressVisible: boolean;
+  lessonsCompleted: number;
+  lessonsTotal: number;
+  modulesCompleted: number;
+  modulesTotal: number;
+  percentComplete: number;
+  completed: boolean;
+  completedAt: string | null;
+  lastActivityAt: string | null;
+  startedAt: string | null;
+}
+
+/**
+ * Counts across the report. `progressNotVisible` is its own bucket rather than
+ * folded into `notStarted`, for the same reason the flag exists at all.
+ */
+export interface OrgCourseSummary {
+  assigned: number;
+  completed: number;
+  inProgress: number;
+  notStarted: number;
+  progressNotVisible: number;
+}
+
+/** `summary` is null when nothing is assigned — no report to summarise. */
+export interface OrgCourseReport {
+  orgId: string;
+  courseId: string;
+  members: OrgMemberProgress[];
+  summary: OrgCourseSummary | null;
 }
 
 const DISCOVER = ["console-discover"];
@@ -102,4 +149,19 @@ export const useAssignCourse = (orgId: string) =>
   useApi.mutation<{ courseId: string; userIds: string[] }, AssignResult>(
     `/learning/enrollment/orgs/${orgId}/assignments`,
     { invalidates: [assignmentsKey(orgId)] },
+  );
+
+/**
+ * Per-member progress on one assigned course.
+ *
+ * Gated server-side on `org.reports.view`, separately from `org.courses.assign`
+ * — putting training in front of people and reading how everyone is doing are
+ * different powers, and org roles are custom, so the UI checks the same
+ * permission before it renders rather than letting the call 403.
+ */
+export const useOrgCourseReport = (orgId: string | null, courseId: string | null) =>
+  useApi.query<OrgCourseReport>(
+    ["org-course-report", orgId ?? "", courseId ?? ""],
+    `/learning/enrollment/orgs/${orgId}/reports/courses/${courseId}`,
+    { enabled: !!orgId && !!courseId },
   );

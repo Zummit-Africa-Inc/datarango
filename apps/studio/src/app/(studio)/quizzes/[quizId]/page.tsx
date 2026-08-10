@@ -64,6 +64,7 @@ export default function QuizBuilderPage() {
         points: cleaned.points,
         options: cleaned.options,
         correct: cleaned.correct,
+        requiresManualGrading: cleaned.requiresManualGrading,
       },
       {
         onSuccess: () => {

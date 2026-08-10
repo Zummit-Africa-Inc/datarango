@@ -1,4 +1,11 @@
-import { BarChart3, BookOpen, FileQuestion, Images, ListChecks } from "lucide-react";
+import {
+  BarChart3,
+  BookOpen,
+  ClipboardCheck,
+  FileQuestion,
+  Images,
+  ListChecks,
+} from "lucide-react";
 
 import type { RouteGroup } from "@datarango/ui";
 
@@ -19,6 +26,9 @@ export const STUDIO_ROUTES: RouteGroup[] = [
   {
     group: "Insights",
     routes: [
+      // Above the disabled entries because it is the one thing here a creator
+      // has to act on — learners are waiting on it.
+      { href: "/grading", label: "Grading", icon: ClipboardCheck },
       { href: "/review", label: "Review status", icon: ListChecks, disabled: true },
       { href: "/analytics", label: "Analytics", icon: BarChart3, disabled: true },
     ],

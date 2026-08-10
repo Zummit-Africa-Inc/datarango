@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { BookOpen, Search } from "lucide-react";
 
 import { useActiveOrg, usePermission } from "@datarango/auth";
@@ -254,15 +255,18 @@ export default function AssignmentsPage() {
         )}
 
         {/*
-          Said plainly rather than shipped as an empty "0%" column: a manager
-          who sees a progress bar assumes it is real. Enrolment rows are
-          user-owned and enrollment's RLS never lets one user read another's, so
-          the org writes a seat enrolment it cannot read back. Reporting needs
-          its own deliberate read on the learning side.
+          Progress lives on its own page rather than as a column here. It comes
+          from a separate reporting read behind a separate permission
+          (org.reports.view) — enrolments are user-owned, so the org writes a
+          seat it cannot read back by default, and that boundary is worth being
+          visible in the UI rather than blurred into this table.
         */}
         <p className="text-muted-foreground text-xs">
-          Progress isn&apos;t shown here yet. Member progress is private to the learner by default,
-          so reporting it to an org needs a dedicated read rather than widening that rule.
+          Member progress is reported per course on{" "}
+          <Link href="/progress" className="text-ink underline underline-offset-2">
+            Progress
+          </Link>
+          , and needs the <Code>org.reports.view</Code> permission — separate from assigning.
         </p>
       </section>
     </PageLayout>

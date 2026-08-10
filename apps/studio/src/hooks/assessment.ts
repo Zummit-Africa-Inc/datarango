@@ -53,7 +53,15 @@ export interface AuthoredQuestion {
   prompt: string;
   points: number;
   options: QuizOption[];
+  /** Empty for a manually-graded question — there is no key by definition. */
   correct: string[];
+  /**
+   * A person scores this one, not the pattern. Only the text kinds may be set
+   * this way: a choice question grades itself, and the server refuses the
+   * combination rather than letting an author queue work that never needed
+   * doing.
+   */
+  requiresManualGrading: boolean;
 }
 
 export interface QuizAuthoringView {
@@ -147,9 +155,11 @@ export interface AddQuestionInput {
   prompt: string;
   points: number;
   options: QuizOption[];
+  /** Must be empty when `requiresManualGrading` — the server refuses both. */
   correct: string[];
   /** Omitted means append; the server resolves a negative position to last. */
   position?: number;
+  requiresManualGrading?: boolean;
 }
 
 export const useAddQuestion = (quizId: string) =>
@@ -171,6 +181,12 @@ export interface UpdateQuestionInput {
   points?: number;
   options?: QuizOption[];
   correct?: string[];
+  /**
+   * Switching *to* manual drops the key server-side, so it need not be cleared
+   * here. Switching *away* leaves the question with no key, which the server
+   * then rejects — send `correct` in the same edit.
+   */
+  requiresManualGrading?: boolean;
 }
 
 export const useUpdateQuestion = (quizId: string) =>

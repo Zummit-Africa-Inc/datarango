@@ -21,6 +21,7 @@ export interface QuestionDraft {
   points: number;
   options: QuizOption[];
   correct: string[];
+  requiresManualGrading: boolean;
 }
 
 /** Option ids only have to be unique within their question, so a letter is plenty. */
@@ -42,6 +43,7 @@ export const emptyDraft = (): QuestionDraft => ({
     { id: "b", text: "" },
   ],
   correct: [],
+  requiresManualGrading: false,
 });
 
 export const draftFromQuestion = (question: AuthoredQuestion): QuestionDraft => ({
@@ -50,6 +52,7 @@ export const draftFromQuestion = (question: AuthoredQuestion): QuestionDraft => 
   points: question.points,
   options: question.options.length > 0 ? question.options : [{ id: "a", text: "" }],
   correct: question.correct,
+  requiresManualGrading: question.requiresManualGrading,
 });
 
 /**
@@ -59,6 +62,14 @@ export const draftFromQuestion = (question: AuthoredQuestion): QuestionDraft => 
  */
 export const draftProblem = (draft: QuestionDraft): string | null => {
   if (!draft.prompt.trim()) return "Give the question a prompt.";
+
+  // A manually-graded question is the one case with no key to validate — the
+  // usual "needs an answer" rule is inverted, so it returns before reaching it.
+  if (draft.requiresManualGrading) {
+    return isChoiceKind(draft.kind)
+      ? "A choice question is graded by its options — turn off manual marking."
+      : null;
+  }
 
   if (isChoiceKind(draft.kind)) {
     const filled = draft.options.filter((o) => o.text.trim());
@@ -78,6 +89,11 @@ export const draftProblem = (draft: QuestionDraft): string | null => {
 
 /** Drops blank options so a half-filled row never reaches the answer key. */
 export const cleanDraft = (draft: QuestionDraft): QuestionDraft => {
+  // The server refuses a manual question that also carries a key, so the key is
+  // dropped here rather than sent and bounced.
+  if (draft.requiresManualGrading) {
+    return { ...draft, options: [], correct: [] };
+  }
   if (!isChoiceKind(draft.kind)) {
     return { ...draft, options: [], correct: [draft.correct[0]?.trim() ?? ""] };
   }
@@ -123,6 +139,10 @@ export const QuestionForm = ({
       ...draft,
       kind,
       correct: crossing ? [] : kind === "mcq" ? draft.correct.slice(0, 1) : draft.correct,
+      // Moving to a choice kind turns manual marking off rather than leaving an
+      // invalid combination for the submit to reject: choice questions grade
+      // themselves and the server refuses the pairing outright.
+      requiresManualGrading: isChoiceKind(kind) ? false : draft.requiresManualGrading,
     });
   };
 
@@ -261,22 +281,49 @@ export const QuestionForm = ({
           </Button>
         </div>
       ) : (
-        <div className="space-y-1.5">
-          <Label htmlFor="question-pattern">Answer pattern</Label>
-          <Input
-            id="question-pattern"
-            className="font-mono"
-            value={draft.correct[0] ?? ""}
-            onChange={(e) => onChange({ ...draft, correct: [e.target.value] })}
-            placeholder="^pandas$"
-          />
-          <p className="text-muted-foreground text-xs">
-            A regular expression. Matching ignores case and trims surrounding whitespace, so{" "}
-            <code className="font-mono">^pandas$</code> accepts{" "}
-            <code className="font-mono">{" PANDAS "}</code>. Anchor it with{" "}
-            <code className="font-mono">^</code> and <code className="font-mono">$</code> unless you
-            mean to match a substring.
-          </p>
+        <div className="space-y-3">
+          {/*
+            The choice is between a pattern and a person. Offered only on the
+            text kinds, because a choice question already grades itself and
+            putting a human in that loop costs the learner a wait for nothing.
+          */}
+          <label className="flex items-start gap-2">
+            <Checkbox
+              className="mt-0.5"
+              checked={draft.requiresManualGrading}
+              onCheckedChange={(checked) =>
+                onChange({ ...draft, requiresManualGrading: checked === true })
+              }
+            />
+            <span className="text-sm">
+              I&apos;ll mark this one myself
+              <span className="text-muted-foreground block text-xs">
+                For answers a pattern can&apos;t judge — an explanation, a design, a bit of
+                reasoning. Submissions wait in your grading queue, and the learner isn&apos;t told
+                pass or fail until you&apos;ve marked it.
+              </span>
+            </span>
+          </label>
+
+          {!draft.requiresManualGrading && (
+            <div className="space-y-1.5">
+              <Label htmlFor="question-pattern">Answer pattern</Label>
+              <Input
+                id="question-pattern"
+                className="font-mono"
+                value={draft.correct[0] ?? ""}
+                onChange={(e) => onChange({ ...draft, correct: [e.target.value] })}
+                placeholder="^pandas$"
+              />
+              <p className="text-muted-foreground text-xs">
+                A regular expression. Matching ignores case and trims surrounding whitespace, so{" "}
+                <code className="font-mono">^pandas$</code> accepts{" "}
+                <code className="font-mono">{" PANDAS "}</code>. Anchor it with{" "}
+                <code className="font-mono">^</code> and <code className="font-mono">$</code> unless
+                you mean to match a substring.
+              </p>
+            </div>
+          )}
         </div>
       )}
 

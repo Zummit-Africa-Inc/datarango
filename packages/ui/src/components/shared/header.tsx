@@ -17,6 +17,12 @@ interface Props {
     value: string;
     onChange: (value: string) => void;
     placeholder?: string;
+    /**
+     * Runs on Enter. Optional because some shells filter as you type; when it
+     * is supplied the box becomes a real form, so Enter submits and the browser
+     * gives the input its usual search-field affordances.
+     */
+    onSubmit?: () => void;
   };
   /** Right-aligned slot (notifications bell, theme toggle, …). */
   actions?: ReactNode;
@@ -55,13 +61,22 @@ export const Header = ({
       </div>
       <div className="flex items-center gap-x-4">
         {search && (
-          <Input
-            className="w-80"
-            onChange={(e) => search.onChange(e.target.value)}
-            placeholder={search.placeholder ?? "Search…"}
-            type="search"
-            value={search.value}
-          />
+          <form
+            role="search"
+            onSubmit={(e) => {
+              e.preventDefault();
+              search.onSubmit?.();
+            }}
+          >
+            <Input
+              aria-label={search.placeholder ?? "Search"}
+              className="w-80"
+              onChange={(e) => search.onChange(e.target.value)}
+              placeholder={search.placeholder ?? "Search…"}
+              type="search"
+              value={search.value}
+            />
+          </form>
         )}
         {actions}
       </div>

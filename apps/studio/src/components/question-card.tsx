@@ -58,6 +58,7 @@ export const QuestionCard = ({
         // pointing at an option that no longer exists.
         options: cleaned.options,
         correct: cleaned.correct,
+        requiresManualGrading: cleaned.requiresManualGrading,
       },
       { onSuccess: () => setEditing(false) },
     );
@@ -99,6 +100,7 @@ export const QuestionCard = ({
         </p>
 
         <Badge variant="ghost">{QUESTION_KIND_LABELS[question.kind]}</Badge>
+        {question.requiresManualGrading && <Badge variant="outline">You mark this</Badge>}
         <span className="text-muted-foreground text-xs tabular-nums">
           {question.points} pt{question.points === 1 ? "" : "s"}
         </span>
@@ -121,7 +123,11 @@ export const QuestionCard = ({
       </div>
 
       <div className="border-hairline border-t px-3 py-2 pl-12">
-        {isChoiceKind(question.kind) ? (
+        {question.requiresManualGrading ? (
+          <p className="text-muted-foreground text-xs">
+            No answer key — every submission waits in your grading queue.
+          </p>
+        ) : isChoiceKind(question.kind) ? (
           <ul className="space-y-1">
             {question.options.map((option) => {
               const correct = question.correct.includes(option.id);
