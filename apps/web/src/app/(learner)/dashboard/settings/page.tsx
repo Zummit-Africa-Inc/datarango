@@ -4,6 +4,9 @@ import { useState } from "react";
 
 import { PageLayout, TabList, TabPanel } from "@datarango/ui";
 
+import { EmailStatus } from "@/components/settings/email-status";
+import { MfaSection } from "@/components/settings/mfa-section";
+
 const TABS = [
   { label: "Account", value: "account" },
   { label: "Security", value: "security" },
@@ -19,11 +22,17 @@ export default function SettingsPage() {
       <div className="space-y-6">
         <TabList activeTab={activeTab} onTabChange={setActiveTab} tabs={TABS} />
         <div>
+          {/*
+            Both of these components existed and were imported by nothing, so
+            the screens they implement were unreachable in the product while the
+            build stayed green — MFA enrolment in particular. ESLint's
+            unused-export finding is what surfaced it.
+          */}
           <TabPanel selected={activeTab} value="account">
-            <p>Account settings content</p>
+            <EmailStatus />
           </TabPanel>
           <TabPanel selected={activeTab} value="security">
-            <p>Security settings content</p>
+            <MfaSection />
           </TabPanel>
           <TabPanel selected={activeTab} value="billing">
             <p>Billing settings content</p>

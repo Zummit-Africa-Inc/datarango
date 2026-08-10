@@ -3,8 +3,29 @@ import { NextResponse, type NextRequest } from "next/server";
 import { createPkcePair, randomState } from "./pkce";
 
 export interface AuthHandlerConfig {
-  /** Accounts service origin (OpenIddict), e.g. https://accounts.datarango.com */
+  /**
+   * Public issuer origin (OpenIddict, via the gateway), e.g. https://accounts.datarango.com.
+   * This one is sent to the *browser* — it is the origin the user is redirected
+   * to for /connect/authorize — so it must be reachable from the user's machine.
+   */
   issuer: string;
+  /**
+   * Origin for the *server-to-server* token calls (/connect/token), when it
+   * differs from `issuer`. Defaults to `issuer`, which is right whenever one
+   * origin is reachable from both sides.
+   *
+   * It stops being right the moment this app runs in a container: the public
+   * issuer is `http://localhost:8080`, and inside a container `localhost` is
+   * that container, not the gateway — so the code exchange and every refresh
+   * would connect to the Next server itself and fail. Compose sets this to
+   * `http://gateway:8080`.
+   *
+   * Safe to point elsewhere because OpenIddict pins its issuer with
+   * `SetIssuer` rather than deriving it from the request Host, so a token
+   * fetched over the internal origin still carries `iss: <public issuer>` and
+   * still validates at the gateway. Only the transport differs.
+   */
+  tokenIssuer?: string;
   clientId: string;
   /** This app's public origin — used for the redirect URI and returnTo resolution. */
   appUrl: string;
@@ -44,6 +65,7 @@ type Handler = (request: NextRequest, context: RouteContext) => Promise<NextResp
  */
 export const createAuthHandlers = ({
   issuer,
+  tokenIssuer = issuer,
   clientId,
   appUrl,
   scope = "openid profile email offline_access",
@@ -63,8 +85,10 @@ export const createAuthHandlers = ({
     ...(cookieDomain ? { domain: cookieDomain } : {}),
   };
 
+  // Server-to-server, so `tokenIssuer`. Every other use of the issuer below
+  // builds a URL the browser follows, and those stay on the public origin.
   const exchangeToken = async (body: Record<string, string>): Promise<TokenResponse | null> => {
-    const res = await fetch(`${issuer}/connect/token`, {
+    const res = await fetch(`${tokenIssuer}/connect/token`, {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body: new URLSearchParams({ client_id: clientId, ...body }),

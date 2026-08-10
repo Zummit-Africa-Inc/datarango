@@ -191,11 +191,7 @@ export default function ProgressPage() {
               )}
 
               {report.summary && (
-                <BucketFilter
-                  summary={report.summary}
-                  active={bucket}
-                  onChange={setBucket}
-                />
+                <BucketFilter summary={report.summary} active={bucket} onChange={setBucket} />
               )}
 
               <section className="border-hairline bg-card overflow-hidden rounded-xs border">
@@ -248,7 +244,13 @@ const BucketFilter = ({
   active,
   onChange,
 }: {
-  summary: { assigned: number; completed: number; inProgress: number; notStarted: number; progressNotVisible: number };
+  summary: {
+    assigned: number;
+    completed: number;
+    inProgress: number;
+    notStarted: number;
+    progressNotVisible: number;
+  };
   active: Bucket;
   onChange: (next: Bucket) => void;
 }) => {
@@ -349,7 +351,8 @@ const MemberProgressRow = ({
     <span className="text-muted-foreground text-right text-xs">
       {progress.completed ? (
         <Badge variant="success">
-          Completed {progress.completedAt ? new Date(progress.completedAt).toLocaleDateString() : ""}
+          Completed{" "}
+          {progress.completedAt ? new Date(progress.completedAt).toLocaleDateString() : ""}
         </Badge>
       ) : !progress.progressVisible ? (
         <span>assigned {new Date(progress.assignedAt).toLocaleDateString()}</span>

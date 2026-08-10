@@ -96,7 +96,11 @@ function ChartContainer({
 
 // ChartStyle is kept for backward compatibility but is no longer used internally.
 // Color variables are now injected as inline styles on ChartContainer via useTheme.
-const ChartStyle = ({}: { id: string; config: ChartConfig }) => null;
+// The parameter is named and ignored rather than destructured to nothing.
+// `({}: Props)` is indistinguishable from a component whose author forgot to
+// pull its props out — which is exactly how PageLayout shipped rendering
+// nothing at all — so the deliberate case says so.
+const ChartStyle = (_props: { id: string; config: ChartConfig }) => null;
 
 const ChartTooltip = RechartsPrimitive.Tooltip;
 

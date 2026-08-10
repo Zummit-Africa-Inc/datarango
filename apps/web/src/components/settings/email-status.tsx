@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 
-import { Button, PageLayout } from "@datarango/ui";
+import { Button } from "@datarango/ui";
 import { useUser } from "@datarango/auth";
 import { getApi } from "@datarango/api";
 
-const EmailStatus = () => {
+export const EmailStatus = () => {
   const user = useUser();
   const [sent, setSent] = useState(false);
   const [busy, setBusy] = useState(false);

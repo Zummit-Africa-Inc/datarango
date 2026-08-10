@@ -40,8 +40,6 @@ export const QUIZ_WIDGET: ChartWidget = {
 export const COURSES: Course[] = Array.from({ length: 20 }, () => {
   const amount = faker.number.int();
   const tokens = amount * 100;
-  const price = faker.commerce.price({ symbol: "USD" });
-  console.log({ price });
 
   return {
     createdAt: faker.date.past(),

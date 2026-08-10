@@ -304,8 +304,9 @@ const QuizResult = ({
           {pending ? (
             <>
               <p className="text-muted-foreground mt-1 text-sm">
-                {quiz} — {awaiting} answer{awaiting === 1 ? "" : "s"} {awaiting === 1 ? "is" : "are"}{" "}
-                with a marker. You&apos;ll be notified when it&apos;s scored.
+                {quiz} — {awaiting} answer{awaiting === 1 ? "" : "s"}{" "}
+                {awaiting === 1 ? "is" : "are"} with a marker. You&apos;ll be notified when
+                it&apos;s scored.
               </p>
               {/* Deliberately no percentage: the auto-graded floor would read as
                   a final mark and it can only go up from here. */}

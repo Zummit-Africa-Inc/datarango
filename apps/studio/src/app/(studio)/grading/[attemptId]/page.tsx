@@ -121,7 +121,11 @@ export default function GradeAttemptPage() {
             disabled={outcome?.finalised ?? false}
             onGrade={(points, feedback) =>
               grade.mutate(
-                { answerId: answer.answerId, pointsAwarded: points, feedback: feedback || undefined },
+                {
+                  answerId: answer.answerId,
+                  pointsAwarded: points,
+                  feedback: feedback || undefined,
+                },
                 { onSuccess: setOutcome },
               )
             }

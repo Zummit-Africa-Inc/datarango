@@ -42,13 +42,16 @@ export default function GradingPage() {
   // errors tells an instructor nothing about why.
   if (!canGrade) {
     return (
-      <PageLayout title="Grading" subtitle="Written answers from your members, waiting to be marked.">
+      <PageLayout
+        title="Grading"
+        subtitle="Written answers from your members, waiting to be marked."
+      >
         <Notice title="You don't have access to grading">
           Marking members&apos; submissions needs the <Code>org.grading.grade</Code> permission,
           which the built-in <Code>instructor</Code> role carries. It is separate from{" "}
-          <Code>org.reports.view</Code> on purpose — seeing that somebody scored 40% and reading
-          the paragraph they wrote are different levels of access. An owner or admin can grant it
-          from Roles.
+          <Code>org.reports.view</Code> on purpose — seeing that somebody scored 40% and reading the
+          paragraph they wrote are different levels of access. An owner or admin can grant it from
+          Roles.
         </Notice>
       </PageLayout>
     );

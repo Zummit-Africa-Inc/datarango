@@ -97,7 +97,6 @@ export default function DashboardPage() {
             </Link>
           </Button>
         </div>
-
         {enrollmentsLoading ? (
           <Skeleton skeleton="list" count={3} />
         ) : inProgress.length === 0 ? (
@@ -127,7 +126,6 @@ export default function DashboardPage() {
           </div>
         )}
       </section>
-
       <section className="space-y-3">
         <div className="flex items-center justify-between">
           <h2 className="font-heading text-lg">Recent quiz attempts</h2>
@@ -137,7 +135,6 @@ export default function DashboardPage() {
             </Link>
           </Button>
         </div>
-
         {attemptList.length === 0 ? (
           <EmptyState
             title="No attempts yet"
@@ -248,7 +245,7 @@ const EmptyState = ({
   href: string;
   cta: string;
 }) => (
-  <div className="border-hairline bg-card rounded-xs border px-6 py-10 text-center">
+  <div className="border-hairline bg-card rounded-xs border px-6 py-10 min-h-75 text-center">
     <p className="font-heading text-ink text-lg">{title}</p>
     <p className="text-muted-foreground mt-1 text-sm">{body}</p>
     <Button asChild size="sm" variant="outline" className="mt-4">
