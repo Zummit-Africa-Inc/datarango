@@ -49,10 +49,26 @@ export const useOrgRole = (): OrgRole | null =>
   useSessionStore((s) => selectActiveMembership(s)?.role ?? null);
 
 /**
- * Checks a platform-level role on the signed-in user.
+ * Whether the signed-in user's platform grant satisfies `role`.
  *
- * @param role - Platform role to check.
- * @example const isCreator = usePlatformRole("creator");
+ * Mirrors the server's `PlatformRoles.Implies`: **admin implies everything**,
+ * anything else must match exactly. Without that, a platform admin opening the
+ * review queue would be refused by the client while the server would happily
+ * serve them — the UI locking out the one person who can do everything.
+ *
+ * Support is deliberately *not* treated as weaker than reviewer. They are
+ * different powers, not a ladder, so there is no ordering to compare.
+ *
+ * UX gating only — the server re-checks on every call.
+ *
+ * @example const canReview = usePlatformRole("platform.reviewer");
  */
 export const usePlatformRole = (role: PlatformRole): boolean =>
-  useSessionStore((s) => s.user?.platformRoles.includes(role) ?? false);
+  useSessionStore(
+    (s) =>
+      s.user?.platformRoles.some((held) => held === "platform.admin" || held === role) ?? false,
+  );
+
+/** True for any platform grant at all — the "should this app be usable" check. */
+export const useIsPlatformStaff = (): boolean =>
+  useSessionStore((s) => (s.user?.platformRoles.length ?? 0) > 0);

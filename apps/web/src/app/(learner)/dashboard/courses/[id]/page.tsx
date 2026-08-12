@@ -1,12 +1,11 @@
 "use client";
 
+import { ArrowLeft, CheckCircle2, Circle, FileQuestion, Lock } from "lucide-react";
+import { useParams } from "next/navigation";
 import { useMemo } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
-import { ArrowLeft, CheckCircle2, Circle, FileQuestion, Lock } from "lucide-react";
 
 import { Badge, Button, PageLayout, Skeleton, cn } from "@datarango/ui";
-
 import {
   useCourseProgress,
   useCourseTree,
@@ -156,7 +155,6 @@ export default function CourseDetailPage() {
                       </span>
                     )}
                   </div>
-
                   <ul className="px-4 py-2">
                     {module.lessons.map((lesson) => (
                       <li className="flex items-center gap-3 py-1.5 text-sm" key={lesson.id}>
@@ -178,7 +176,6 @@ export default function CourseDetailPage() {
                         )}
                       </li>
                     ))}
-
                     <li
                       className={cn(
                         "text-muted-foreground flex items-center gap-3 py-1.5 text-sm",
@@ -190,7 +187,6 @@ export default function CourseDetailPage() {
                       </Badge>
                       <span className="flex min-w-0 flex-1 items-center gap-1.5 truncate">
                         <FileQuestion className="size-3.5 shrink-0" />
-                        {/* The module gate: lessons alone never complete a module. */}
                         End-of-module exercise
                         {moduleProgress?.exercisePassed && (
                           <span className="text-emerald-600"> · passed</span>

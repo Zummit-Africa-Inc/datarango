@@ -245,7 +245,7 @@ const EmptyState = ({
   href: string;
   cta: string;
 }) => (
-  <div className="border-hairline bg-card rounded-xs border px-6 py-10 min-h-75 text-center">
+  <div className="border-hairline bg-card min-h-75 rounded-xs border px-6 py-10 text-center">
     <p className="font-heading text-ink text-lg">{title}</p>
     <p className="text-muted-foreground mt-1 text-sm">{body}</p>
     <Button asChild size="sm" variant="outline" className="mt-4">

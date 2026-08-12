@@ -16,6 +16,13 @@ import { defineConfig, devices } from "@playwright/test";
  *
  * `pnpm start` rather than `build && start` — the apps are built beforehand, so
  * a failing build fails loudly on its own rather than inside a webServer timeout.
+ *
+ * **Deliberately not run in CI.** The workflow runs `web`'s boot smoke, which
+ * needs no backend; these specs need Postgres, NATS, MinIO, the gateway and
+ * three services, so putting them behind a `pnpm -r test:e2e` would turn every
+ * pull request red for reasons no author could act on. They are the check you
+ * run against a stack you have up. Wiring them into CI means standing the stack
+ * up there first — worth doing, and a bigger job than a workflow line.
  */
 export default defineConfig({
   testDir: "./e2e",

@@ -1,4 +1,6 @@
-import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
+
+import { register, signIn, studioUser } from "./support";
 
 /**
  * Phase 2 gate — the studio half, against the live stack.
@@ -9,57 +11,18 @@ import { expect, test, type APIRequestContext, type Page } from "@playwright/tes
  * pointed at it.
  *
  * The account is synthetic and created here. Nothing touches a real user's
- * credentials — the password below exists for the duration of this file.
+ * credentials — the password exists for the duration of this file.
  */
 
-const GATEWAY = "http://localhost:8080";
-const STUDIO = "http://localhost:3002";
-
-const stamp = Date.now();
-const creator = {
-  email: `gate-studio-${stamp}@datarango.test`,
-  password: "gate-studio-pass-1",
-  displayName: "Gate Studio Creator",
-};
-
-/** Registers the throwaway creator straight against the gateway. */
-const register = async (request: APIRequestContext) => {
-  const response = await request.post(`${GATEWAY}/auth/register`, {
-    data: { email: creator.email, displayName: creator.displayName, password: creator.password },
-  });
-  expect(response.ok(), `register failed: ${response.status()}`).toBe(true);
-};
-
-/**
- * Signs in through the real chain: studio guard → studio BFF → gateway
- * /connect/authorize → web /signin → back with a session.
- */
-const signIn = async (page: Page) => {
-  await page.goto(`${STUDIO}/courses`);
-
-  // The guard should send us to web's sign-in rather than render the studio.
-  await page.waitForURL(/localhost:3000\/signin/, { timeout: 30_000 });
-
-  await page.getByRole("textbox", { name: /email/i }).fill(creator.email);
-  await page.locator('input[type="password"]').first().fill(creator.password);
-
-  // The form's own submit, scoped to the form. A looser name match caught
-  // "Continue with Google" and drove the run onto a real Google sign-in page —
-  // the password flow is what is under test, and third-party consent screens are
-  // not something a test should be clicking through.
-  await page.locator('form button[type="submit"]').first().click();
-
-  // ...and back into the studio, authenticated.
-  await page.waitForURL(/localhost:3002/, { timeout: 45_000 });
-};
+const creator = studioUser("studio");
 
 test.describe("Phase 2 gate — studio", () => {
   test("a creator signs in and authors a course through the UI", async ({ page, request }) => {
     const pageErrors: string[] = [];
     page.on("pageerror", (error) => pageErrors.push(error.message));
 
-    await register(request);
-    await signIn(page);
+    await register(request, creator);
+    await signIn(page, creator);
 
     // The courses screen must actually render. This is where the double-wrapped
     // catalog envelope would have surfaced — the list rendering but every field
@@ -70,8 +33,11 @@ test.describe("Phase 2 gate — studio", () => {
     });
 
     // Author a course.
-    const title = `Gate Course ${stamp}`;
-    await page.getByRole("button", { name: /new course|create course|add course/i }).first().click();
+    const title = `Gate Course ${Date.now()}`;
+    await page
+      .getByRole("button", { name: /new course|create course|add course/i })
+      .first()
+      .click();
 
     await page.getByRole("textbox", { name: /title/i }).first().fill(title);
 
@@ -79,7 +45,7 @@ test.describe("Phase 2 gate — studio", () => {
     const slug = page.getByRole("textbox", { name: /slug/i }).first();
     if (await slug.isVisible().catch(() => false)) {
       const current = await slug.inputValue();
-      if (!current) await slug.fill(`gate-course-${stamp}`);
+      if (!current) await slug.fill(`gate-course-${Date.now()}`);
     }
 
     const summary = page.getByRole("textbox", { name: /summary|description/i }).first();

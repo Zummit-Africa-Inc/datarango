@@ -16,6 +16,16 @@ const nextConfig: NextConfig = {
   // keeps the traced file set correct wherever the build runs.
   outputFileTracingRoot: path.join(__dirname, "../.."),
 
+  // Inotify events do not cross the Windows→Linux bind mount that
+  // docker-compose.dev.yml uses, so HMR there has to poll for changes instead.
+  // Left unset on the host, where native watching works and polling would only
+  // burn CPU. It is webpack that acts on it — which is why the dev image runs
+  // `next dev --webpack`; Turbopack takes the same value and, on 16.2.10, still
+  // never fires.
+  ...(process.env.NEXT_WATCH_POLL_MS
+    ? { watchOptions: { pollIntervalMs: Number(process.env.NEXT_WATCH_POLL_MS) } }
+    : {}),
+
   transpilePackages: ["@datarango/ui", "@datarango/api", "@datarango/auth", "@datarango/notebook"],
 };
 

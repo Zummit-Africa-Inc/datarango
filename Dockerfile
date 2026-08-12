@@ -25,11 +25,51 @@ FROM base AS deps
 COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 RUN pnpm fetch
 
-# ── build ────────────────────────────────────────────────────────────────────
-FROM deps AS builder
-ARG APP
+# ── workspace ────────────────────────────────────────────────────────────────
+# The full install, shared by `builder` and `dev`. No ARG is referenced here on
+# purpose: the layer is then identical for all four apps, so the install runs
+# once for the whole compose build instead of once per image.
+FROM deps AS workspace
 COPY . .
 RUN pnpm install --frozen-lockfile --prefer-offline
+
+# ── dev ──────────────────────────────────────────────────────────────────────
+# `next dev` for docker-compose.dev.yml. The image carries the complete linux
+# install; the override bind-mounts only src/ and public/ over it, never
+# node_modules — the host's is Windows-resolved (sharp, the swc native module)
+# and shadowing the linux one breaks the server on first request.
+#
+# Consequence worth stating: dependency changes, next.config.ts, and the
+# postcss/tailwind configs live outside those mounts, so changing one needs a
+# rebuild. Anything under src/ does not.
+FROM workspace AS dev
+ARG APP
+ARG PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV HOSTNAME=0.0.0.0
+ENV PORT=${PORT}
+# Same reason as APP_ENTRYPOINT below: CMD cannot expand a build arg.
+ENV APP_NAME=${APP}
+EXPOSE ${PORT}
+
+# `--webpack`, and so *not* the app's own `dev` script, which is Turbopack.
+#
+# Neither bundler gets file events in a container here: inotify does not cross
+# the Windows bind mount, and does not survive overlayfs either — a container's
+# own writes go unnoticed too, which is how this was pinned down. Both therefore
+# have to poll. Only webpack's poller actually engages: Turbopack takes the same
+# `watchOptions.pollIntervalMs` from next.config.ts and, on 16.2.10, still never
+# sees the change. Measured, not assumed — with Turbopack an edit was still
+# invisible after four minutes; under webpack it lands in seconds.
+#
+# The cost is webpack's slower cold compile, paid once per route. Nothing else
+# uses this stage: the production build and `pnpm dev` on the host, where events
+# work natively, are both still Turbopack.
+CMD ["sh", "-c", "cd \"apps/$APP_NAME\" && exec ./node_modules/.bin/next dev --webpack -p \"$PORT\""]
+
+# ── build ────────────────────────────────────────────────────────────────────
+FROM workspace AS builder
+ARG APP
 
 # NEXT_PUBLIC_* are inlined into the client bundle at build time, so they are
 # build args rather than runtime env — changing one needs a rebuild, not a

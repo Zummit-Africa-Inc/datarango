@@ -20,11 +20,24 @@ const scopeKey = (key: QueryKey, orgId: string | null, orgScoped: boolean): Quer
 const errorMessage = (error: Error): string =>
   error instanceof ApiError ? error.message : "Something went wrong";
 
-interface QueryOptions {
+interface QueryOptions<TData> {
   params?: QueryParams;
   enabled?: boolean;
   staleTime?: number;
-  refetchInterval?: number;
+  /**
+   * Poll interval in ms, or a function of the latest data returning one.
+   *
+   * The function form is for "poll until the data says stop" — a list holding
+   * work that finishes elsewhere (a transcode, a job) has no client-side event
+   * to hang off, and polling it forever once everything has settled is a
+   * request per interval per open tab that can never change anything. Return
+   * `undefined` to stop.
+   *
+   * It takes the data rather than TanStack's `Query` object deliberately: what
+   * a caller wants to inspect is what came back, and threading the query
+   * generic through every call site buys nothing.
+   */
+  refetchInterval?: number | ((data: TData | undefined) => number | false | undefined);
   /**
    * Whether the active org context is appended to the query key (default
    * true) — org switches must never serve cross-tenant cache (§3).
@@ -40,15 +53,19 @@ interface QueryOptions {
  * @param options - Params, enabled, staleTime, refetchInterval, orgScoped.
  * @example const { data } = useApi.query<CourseDetail>(["course", slug], `/courses/${slug}`);
  */
-const useApiQuery = <TData>(key: QueryKey, path: string, options: QueryOptions = {}) => {
+const useApiQuery = <TData>(key: QueryKey, path: string, options: QueryOptions<TData> = {}) => {
   const orgId = useOrgScope();
+  const { refetchInterval } = options;
 
   return useQuery<TData, ApiError>({
     queryKey: scopeKey(key, orgId, options.orgScoped ?? true),
     queryFn: ({ signal }) => getApi().get<TData>(path, { params: options.params, signal }),
     enabled: options.enabled,
     staleTime: options.staleTime,
-    refetchInterval: options.refetchInterval,
+    refetchInterval:
+      typeof refetchInterval === "function"
+        ? (query) => refetchInterval(query.state.data)
+        : refetchInterval,
   });
 };
 

@@ -31,3 +31,24 @@ pnpm --filter web dev
 pnpm build
 pnpm typecheck
 ```
+
+## In Docker
+
+`make up` (repo root) builds the standalone production bundle — correct for
+checking what deploys, but a source edit only reaches the browser via a rebuild.
+For UI work use the dev override instead, which runs `next dev` over
+bind-mounted source:
+
+```sh
+make dev             # whole stack, hot-reloading frontends
+make dev-frontends   # just the four apps (infra + gateway already up)
+make dev-logs
+```
+
+Only `src/` (and web's `public/`) is mounted — never `node_modules`, since the
+host's is Windows-resolved and shadowing the image's linux install breaks the
+server. So one class of edit still rebuilds: dependencies, `next.config.ts`, and
+the postcss/tailwind configs. Re-run `make dev-frontends` after those.
+
+HMR polls rather than watching (`NEXT_WATCH_POLL_MS`, read by `next.config.ts`)
+because inotify events do not cross the Windows→Linux bind mount.
