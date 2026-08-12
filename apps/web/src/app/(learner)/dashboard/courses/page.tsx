@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
 import { Search } from "lucide-react";
+import Link from "next/link";
 
 import { Badge, Button, Input, PageLayout, Skeleton } from "@datarango/ui";
 
@@ -74,27 +74,30 @@ export default function CoursesPage() {
           {courses.map((course) => {
             const isEnrolled = enrolledCourseIds.has(course.id);
             return (
-              <Link
+              <div
+                className="border-hairline bg-card hover:border-primary-500/40 flex flex-col rounded-xs border transition-colors"
                 key={course.id}
-                href={`/dashboard/courses/${course.id}`}
-                className="border-hairline bg-card hover:border-primary-500/40 flex flex-col rounded-xs border p-5 transition-colors"
               >
-                <div className="flex items-start justify-between gap-3">
-                  <h2 className="font-heading text-ink text-lg leading-snug">{course.title}</h2>
-                  {isEnrolled && <Badge variant="success">Enrolled</Badge>}
+                <div className="bg-primary-500 relative h-40 w-full"></div>
+                <div className="flex-1 space-y-4 p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <h2 className="font-heading text-ink text-xl leading-snug">{course.title}</h2>
+                    {isEnrolled && <Badge variant="success">Enrolled</Badge>}
+                  </div>
+                  <p className="text-muted-foreground mt-2 line-clamp-3 flex-1 text-sm leading-relaxed">
+                    {course.summary || "No summary yet."}
+                  </p>
+                  <Button asChild>
+                    <Link href={`/dashboard/courses/${course.id}`}>
+                      {isEnrolled ? "Continue →" : "View course →"}
+                    </Link>
+                  </Button>
                 </div>
-                <p className="text-muted-foreground mt-2 line-clamp-3 flex-1 text-sm leading-relaxed">
-                  {course.summary || "No summary yet."}
-                </p>
-                <span className="text-primary-500 mt-4 text-sm font-medium">
-                  {isEnrolled ? "Continue →" : "View course →"}
-                </span>
-              </Link>
+              </div>
             );
           })}
         </div>
       )}
-
       {lastPage > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">

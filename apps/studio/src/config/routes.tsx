@@ -20,7 +20,7 @@ export const STUDIO_ROUTES: RouteGroup[] = [
     routes: [
       { href: "/courses", label: "Courses", icon: BookOpen },
       { href: "/quizzes", label: "Quizzes", icon: FileQuestion },
-      { href: "/media", label: "Media library", icon: Images, disabled: true },
+      { href: "/media", label: "Media library", icon: Images },
     ],
   },
   {
@@ -29,7 +29,7 @@ export const STUDIO_ROUTES: RouteGroup[] = [
       // Above the disabled entries because it is the one thing here a creator
       // has to act on — learners are waiting on it.
       { href: "/grading", label: "Grading", icon: ClipboardCheck },
-      { href: "/review", label: "Review status", icon: ListChecks, disabled: true },
+      { href: "/review", label: "Review status", icon: ListChecks },
       { href: "/analytics", label: "Analytics", icon: BarChart3, disabled: true },
     ],
   },

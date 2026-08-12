@@ -12,10 +12,11 @@ import { ModuleCard } from "@/components/module-card";
 import { SortableItem, SortableList } from "@/components/sortable";
 import {
   useAddModule,
-  usePublishCourse,
   useRemoveModule,
   useReorderModules,
   useCourseTree,
+  useSubmitForReview,
+  useWithdrawFromReview,
 } from "@/hooks/catalog";
 
 export default function CourseBuilderPage() {
@@ -26,7 +27,8 @@ export default function CourseBuilderPage() {
   const addModule = useAddModule(courseId);
   const removeModule = useRemoveModule(courseId);
   const reorderModules = useReorderModules(courseId);
-  const publish = usePublishCourse(courseId);
+  const submit = useSubmitForReview(courseId);
+  const withdraw = useWithdrawFromReview(courseId);
 
   const [newModuleTitle, setNewModuleTitle] = useState("");
   const [pendingOrder, setPendingOrder] = useState<string[] | null>(null);
@@ -42,9 +44,15 @@ export default function CourseBuilderPage() {
     return ordered.length === serverModules.length ? ordered : serverModules;
   }, [serverModules, pendingOrder]);
 
-  const frozen = tree?.course.status === "published";
+  const status = tree?.course.status;
+  const frozen = status === "published";
+  const inReview = status === "review";
   const modulesMissingExercise = modules.filter((m) => !m.exerciseId);
-  const canPublish = !frozen && modules.length > 0 && modulesMissingExercise.length === 0;
+
+  // Editing during review is deliberately still allowed — the backend re-checks
+  // the publish invariant at approval precisely because content can change in
+  // between. Only a published course is frozen.
+  const canSubmit = status === "draft" && modules.length > 0 && modulesMissingExercise.length === 0;
 
   const reorder = (idsInOrder: string[]) => {
     setPendingOrder(idsInOrder);
@@ -88,14 +96,29 @@ export default function CourseBuilderPage() {
       subtitle={tree.course.summary || "No summary yet."}
       actions={[
         <CourseStatusBadge key="status" status={tree.course.status} />,
-        <Button
-          key="publish"
-          disabled={!canPublish || publish.isPending}
-          onClick={() => publish.mutate()}
-        >
-          {publish.isPending ? "Publishing…" : "Publish"}
-        </Button>,
-      ]}
+        // A course leaves the creator's hands here. There is no publish button
+        // because there is no publish endpoint: a reviewer approving is what
+        // publishes, so offering one would promise something the creator cannot
+        // do.
+        inReview ? (
+          <Button
+            key="withdraw"
+            variant="outline"
+            disabled={withdraw.isPending}
+            onClick={() => withdraw.mutate()}
+          >
+            {withdraw.isPending ? "Withdrawing…" : "Withdraw"}
+          </Button>
+        ) : !frozen ? (
+          <Button
+            key="submit"
+            disabled={!canSubmit || submit.isPending}
+            onClick={() => submit.mutate()}
+          >
+            {submit.isPending ? "Submitting…" : "Submit for review"}
+          </Button>
+        ) : null,
+      ].filter(Boolean)}
     >
       <Link
         href="/courses"
@@ -111,9 +134,20 @@ export default function CourseBuilderPage() {
         </div>
       )}
 
-      {!frozen && modules.length > 0 && modulesMissingExercise.length > 0 && (
+      {inReview && (
         <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
-          <p className="text-ink font-medium">Not ready to publish</p>
+          <p className="text-ink font-medium">With the platform review team</p>
+          <p className="text-muted-foreground mt-1">
+            You can still edit while it waits — the checks run again when a reviewer decides.
+            Withdrawing puts it back in draft. You&apos;ll be notified either way, and rejections
+            come with a reason.
+          </p>
+        </div>
+      )}
+
+      {status === "draft" && modules.length > 0 && modulesMissingExercise.length > 0 && (
+        <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
+          <p className="text-ink font-medium">Not ready to submit</p>
           <p className="text-muted-foreground mt-1">
             Every module needs an end-of-module exercise. Still missing on{" "}
             {modulesMissingExercise.map((m) => m.title).join(", ")}.

@@ -7,6 +7,7 @@ import { Badge, Button, Input } from "@datarango/ui";
 
 import { ExercisePicker } from "@/components/exercise-picker";
 import { InlineEdit } from "@/components/inline-edit";
+import { LessonMedia } from "@/components/lesson-media";
 import { SortableItem, SortableList, type DragHandleProps } from "@/components/sortable";
 import {
   useAddLesson,
@@ -170,6 +171,14 @@ export const ModuleCard = ({
                         />
                       )}
                     </div>
+
+                    {/* Playback ids are written by platform.media, never by the
+                        catalog — so this is the one lesson control that stays
+                        available on a published course, and only to finish a
+                        lesson that has nothing attached yet. */}
+                    {(lesson.kind === "video" || lesson.kind === "audio") && (
+                      <LessonMedia courseId={courseId} lesson={lesson} frozen={frozen} />
+                    )}
 
                     {!frozen && (
                       <Button

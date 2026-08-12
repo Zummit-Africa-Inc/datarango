@@ -25,6 +25,7 @@ export {
   useActiveOrg,
   useAuthStatus,
   useIsAuthenticated,
+  useIsPlatformStaff,
   useMemberships,
   useOrgRole,
   usePermission,

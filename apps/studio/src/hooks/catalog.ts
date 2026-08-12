@@ -83,7 +83,16 @@ export interface CourseList {
 }
 
 const COURSES = ["catalog-courses"];
-const courseTreeKey = (courseId: string) => ["catalog-course-tree", courseId];
+
+/** The creator's review-status view, invalidated by submit and withdraw. */
+export const REVIEW = ["catalog-review-status"];
+
+/**
+ * Exported because media uploads land outside this module: a lesson's playback
+ * id is written by learning's consumer of `dr.media.asset.ready`, so the studio
+ * has to be able to re-read the tree after an upload without owning that write.
+ */
+export const courseTreeKey = (courseId: string) => ["catalog-course-tree", courseId];
 
 // ── Courses ────────────────────────────────────────────────────────────────
 
@@ -135,20 +144,37 @@ export const useUpdateCourse = (courseId: string) =>
     },
   );
 
-export interface PublishResult {
-  course: Course;
-  version: CourseVersion;
-}
+/**
+ * Hands the draft to the platform for review.
+ *
+ * This is as far as a creator can take their own course. **There is no publish
+ * endpoint** — the direct path was removed on 2026-08-11 because
+ * `publish_course_version` performed no status check, so a draft could reach
+ * learners without anyone reviewing it. A course becomes published by a
+ * reviewer approving it, and approval *is* publication.
+ *
+ * Refuses until every module has an exercise (`catalog.publish_invariant`) and
+ * until the course has at least one module (`catalog.no_modules`) — checked here
+ * as well as at approval, so a course that can never be published does not sit
+ * in a queue wasting a reviewer's time on a problem only the creator can fix.
+ * The default error toast carries the server's message.
+ */
+export const useSubmitForReview = (courseId: string) =>
+  useApi.mutation<void, Course>(`/learning/catalog/courses/${courseId}/submit`, {
+    invalidates: [COURSES, courseTreeKey(courseId), REVIEW],
+    toast: { success: "Submitted for review" },
+  });
 
 /**
- * Publish refuses until every module has an exercise; the backend answers
- * catalog.publish_invariant. The default error toast carries that message, so
- * the caller only needs onError for anything richer.
+ * Takes it back out of the queue.
+ *
+ * The creator changing their mind — distinct from a reviewer rejecting, which
+ * carries a reason and a different audit trail.
  */
-export const usePublishCourse = (courseId: string) =>
-  useApi.mutation<void, PublishResult>(`/learning/catalog/courses/${courseId}/publish`, {
-    invalidates: [COURSES, courseTreeKey(courseId)],
-    toast: { success: "Course published" },
+export const useWithdrawFromReview = (courseId: string) =>
+  useApi.mutation<void, Course>(`/learning/catalog/courses/${courseId}/withdraw`, {
+    invalidates: [COURSES, courseTreeKey(courseId), REVIEW],
+    toast: { success: "Withdrawn — back to draft" },
   });
 
 // ── Modules ────────────────────────────────────────────────────────────────
