@@ -108,7 +108,7 @@ export default function CourseDetailPage() {
       <div>
         <TabList activeTab={activeTab} onTabChange={setActiveTab} tabs={TABS} />
         <TabPanel selected={activeTab} value="overview">
-          <Overview />
+          <Overview courseId={courseId} isEnrolled={isEnrolled} progress={progress} tree={tree} />
         </TabPanel>
         <TabPanel selected={activeTab} value="syllabus">
           <Syllabus
