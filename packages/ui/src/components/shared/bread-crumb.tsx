@@ -134,7 +134,7 @@ export const Breadcrumb = ({
   separator,
   homeHref = "/",
   showHome = false,
-  maxItems,
+  maxItems = 3,
   className,
   itemClassName,
   activeClassName,

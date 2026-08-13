@@ -10,13 +10,40 @@ export const cn = (...inputs: ClassValue[]): string => twMerge(clsx(inputs));
 export const normalize = (pathname: string): string =>
   pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const ID_RE = /^[0-9a-f]{16,}$|^\d+$|^[0-9a-f-]{20,}$/i;
+
+function isIdSegment(segment: string): boolean {
+  return UUID_RE.test(segment) || ID_RE.test(segment);
+}
+
+export interface BreadcrumbEntry {
+  label: string;
+  href: string;
+}
+
 /** Builds breadcrumb items from a pathname, e.g. "/courses/data-101" → Courses / Data 101. */
-export const buildBreadcrumbs = (pathname: string): { label: string; href: string }[] => {
+export const buildBreadcrumbs = (pathname: string): BreadcrumbEntry[] => {
   const segments = normalize(pathname).split("/").filter(Boolean);
-  return segments.map((segment, index) => ({
-    label: fromKebabCase(decodeURIComponent(segment)),
-    href: `/${segments.slice(0, index + 1).join("/")}`,
-  }));
+  const breadcrumbs: BreadcrumbEntry[] = [];
+  let href = "";
+
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i] || "";
+    href += `/${segment}`;
+    if (isIdSegment(segment)) {
+      const parentSegment = segments[i - 1];
+      const singular = parentSegment ? parentSegment.replace(/s$/, "") : "item";
+      breadcrumbs[breadcrumbs.length - 1] = {
+        label: `${fromKebabCase(decodeURIComponent(singular))} Details`,
+        href,
+      };
+    } else {
+      breadcrumbs.push({ label: fromKebabCase(decodeURIComponent(segment)), href });
+    }
+  }
+
+  return breadcrumbs;
 };
 
 export function removeNullorUndefined<
