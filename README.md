@@ -51,4 +51,23 @@ server. So one class of edit still rebuilds: dependencies, `next.config.ts`, and
 the postcss/tailwind configs. Re-run `make dev-frontends` after those.
 
 HMR polls rather than watching (`NEXT_WATCH_POLL_MS`, read by `next.config.ts`)
-because inotify events do not cross the Windows→Linux bind mount.
+because inotify events do not cross the Windows→Linux bind mount. That is also
+why the dev stage runs `next dev --webpack`: Turbopack accepts the same
+`watchOptions.pollIntervalMs` and, on 16.2.10, never acts on it.
+
+### Known limitation on Windows hosts
+
+This works, but not durably on a Windows-hosted checkout. Under a bundler's
+sustained recursive `stat` load, Docker Desktop's Windows↔Linux file share
+starts returning `EIO: i/o error` on `scandir`/`lstat` for the bind-mounted
+paths, and the dev servers die on the unhandled rejection. Observed after a
+period of working normally; it survived a Docker Desktop restart and a full
+`wsl --shutdown`. The host filesystem is fine (a full recursive read from
+Windows returns every file with no errors), and a single `ls` of the failing
+directory succeeds — it is the concurrent load the share cannot take.
+
+There is no fix for it inside this repo. The two ways around it are to run the
+frontends on the host (`pnpm --filter web dev`) against the Dockerized
+backends — `.env.local` already points at the gateway on `localhost:8080` — or
+to move the checkout onto the WSL2 filesystem, where the mount is native ext4
+and inotify works, so no polling is needed at all.

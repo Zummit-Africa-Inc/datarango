@@ -1,11 +1,19 @@
 "use client";
 
-import { ArrowLeft, ChevronDown, Clapperboard, FileText, HelpCircle, Lock, Volume2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import MuxPlayer from "@mux/mux-player-react";
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import {
+  ArrowLeft,
+  ChevronDown,
+  Clapperboard,
+  FileText,
+  HelpCircle,
+  Lock,
+  Volume2,
+} from "lucide-react";
 
 import { Badge, Button, cn, PageLayout, Skeleton } from "@datarango/ui";
 import { QuizRunner } from "@/components/learning/quiz-runner";
@@ -87,6 +95,12 @@ export default function LessonPlayerPage() {
 
   return (
     <PageLayout
+      // From lg up the page stops scrolling and becomes two panes that scroll
+      // themselves. A flex column is what makes that work without arithmetic:
+      // the title block and the back-link take their natural heights and the
+      // grid below claims whatever is left, so neither pane can outgrow the
+      // viewport no matter how the heading wraps.
+      className="lg:flex lg:flex-col"
       title={current.lesson.title}
       subtitle={`${current.moduleTitle} · Lesson ${index + 1} of ${ordered.length}`}
       actions={[
@@ -99,43 +113,64 @@ export default function LessonPlayerPage() {
     >
       <Link
         href={`/dashboard/courses/${courseId}`}
-        className="text-muted-foreground hover:text-ink inline-flex items-center gap-1 text-sm transition-colors"
+        // self-start keeps the hit area the width of the text: as a flex item
+        // under the lg layout it would otherwise stretch the full row.
+        className="text-muted-foreground hover:text-ink inline-flex items-center gap-1 text-sm transition-colors lg:self-start"
       >
         <ArrowLeft className="size-3.5" />
         Course overview
       </Link>
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
-        <LessonBody
-          lesson={current.lesson}
-          courseId={courseId}
-          courseVersionId={enrollment.courseVersionId}
-        />
-        {/* Lesson sidebar */}
-        <div className="border-hairline bg-card space-y-1 border p-3">
-          <h4 className="text-sm font-medium px-1 pb-2">Modules</h4>
+      {/* `min-h-0` is what actually stops the overflow: a flex item's default
+          `min-height: auto` refuses to shrink below its content, so without it
+          a long module list pushes this row past the bottom of the screen
+          instead of scrolling inside it. */}
+      <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-5">
+        {/* Grid placement lives here rather than on the bodies themselves, so
+            every lesson kind lands in the same four columns — the quiz branch
+            carried no span at all and was rendering a fifth of the width. Both
+            panes stretch to the row height by default and scroll their own
+            overflow, which is what keeps the video in place while the module
+            list moves, without pinning anything. */}
+        <div className="col-span-1 lg:col-span-4 lg:min-h-0 lg:overflow-y-auto">
+          <LessonBody
+            lesson={current.lesson}
+            courseId={courseId}
+            courseVersionId={enrollment.courseVersionId}
+          />
+        </div>
+        {/* Lesson sidebar: stretched to the full height of the row, so the card
+            always runs floor to ceiling, and scrolling its own overflow rather
+            than the page's. */}
+        <div className="border-hairline bg-card space-y-1 border p-3 lg:min-h-0 lg:overflow-y-auto">
+          <h4 className="px-1 pb-2 text-sm font-medium">Modules</h4>
           {tree.modules.map((mod, modIndex) => {
             const modProgress = progress?.modules.find((m) => m.moduleId === mod.id);
-            const prevModProgress = modIndex > 0 ? progress?.modules.find((m) => m.moduleId === tree.modules[modIndex - 1]!.id) : null;
+            const prevModProgress =
+              modIndex > 0
+                ? progress?.modules.find((m) => m.moduleId === tree.modules[modIndex - 1]!.id)
+                : null;
             const isLocked = modIndex > 0 && !!progress && !prevModProgress?.completed;
             const isExpanded = expandedModuleId === mod.id;
             return (
               <div key={mod.id}>
                 <button
-                  className="flex w-full items-center justify-between rounded-xs px-2 py-1.5 text-left hover:bg-muted/50 transition-colors"
+                  className="hover:bg-muted/50 flex w-full items-center justify-between rounded-xs px-2 py-1.5 text-left transition-colors"
                   onClick={() => !isLocked && handleExpandModule(mod.id)}
                   disabled={isLocked}
                 >
-                  <span className="text-xs font-medium truncate flex-1 pr-2">{mod.title}</span>
-                  <span className="flex items-center gap-1.5 shrink-0">
+                  <span className="flex-1 truncate pr-2 text-xs font-medium">{mod.title}</span>
+                  <span className="flex shrink-0 items-center gap-1.5">
                     {modProgress && (
                       <span className="text-muted-foreground text-[10px]">
                         {modProgress.lessonsCompleted}/{modProgress.lessonsTotal}
                       </span>
                     )}
                     {isLocked ? (
-                      <Lock className="size-3.5 text-muted-foreground" />
+                      <Lock className="text-muted-foreground size-3.5" />
                     ) : (
-                      <ChevronDown className={cn("size-3.5 transition-transform", isExpanded && "rotate-180")} />
+                      <ChevronDown
+                        className={cn("size-3.5 transition-transform", isExpanded && "rotate-180")}
+                      />
                     )}
                   </span>
                 </button>
@@ -148,22 +183,30 @@ export default function LessonPlayerPage() {
                     {mod.lessons.map((lesson) => {
                       const isActive = lesson.id === lessonId;
                       const LessonIcon =
-                        lesson.kind === "video" ? Clapperboard
-                        : lesson.kind === "audio" ? Volume2
-                        : lesson.kind === "quiz" ? HelpCircle
-                        : FileText;
+                        lesson.kind === "video"
+                          ? Clapperboard
+                          : lesson.kind === "audio"
+                            ? Volume2
+                            : lesson.kind === "quiz"
+                              ? HelpCircle
+                              : FileText;
                       return (
                         <button
                           key={lesson.id}
                           className={cn(
-                            "flex w-full items-center gap-2 rounded-xs px-2 py-1.5 text-left text-xs transition-colors hover:bg-muted/50",
+                            "hover:bg-muted/50 flex w-full items-center gap-2 rounded-xs px-2 py-1.5 text-left text-xs transition-colors",
                             isActive && "bg-muted font-medium",
                           )}
                           onClick={() =>
                             router.push(`/dashboard/courses/${courseId}/lessons/${lesson.id}`)
                           }
                         >
-                          <LessonIcon className={cn("size-3.5 shrink-0", isActive ? "text-ink" : "text-muted-foreground")} />
+                          <LessonIcon
+                            className={cn(
+                              "size-3.5 shrink-0",
+                              isActive ? "text-ink" : "text-muted-foreground",
+                            )}
+                          />
                           <span className="truncate">{lesson.title}</span>
                         </button>
                       );
@@ -214,7 +257,7 @@ const LessonBody = ({
     // guessing at which, and does not render a player with nothing to play.
     if (!lesson.muxPlaybackId) {
       return (
-        <div className="border-hairline bg-card col-span-1 rounded-xs border px-6 py-12 text-center lg:col-span-4">
+        <div className="border-hairline bg-card rounded-xs border px-6 py-12 text-center">
           <Icon className="text-muted-foreground mx-auto size-8" strokeWidth={1.5} />
           <p className="text-ink font-heading mt-3 text-lg">
             {lesson.kind === "video" ? "Video" : "Audio"} isn&apos;t available yet

@@ -22,7 +22,7 @@ interface Props {
  * `<main>`, so this adds none. Access gating lives at the route.
  */
 export const PageLayout = ({ children, title, subtitle, actions, className }: Props) => (
-  <div className={cn("w-full space-y-6", className)}>
+  <div className={cn("h-full w-full space-y-6", className)}>
     <div className="flex w-full items-start justify-between gap-4">
       <div className="min-w-0 space-y-1">
         <h1 className="font-heading text-ink truncate text-xl">{title}</h1>

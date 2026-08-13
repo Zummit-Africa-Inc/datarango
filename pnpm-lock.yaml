@@ -272,6 +272,9 @@ importers:
       axios:
         specifier: ^1.18.1
         version: 1.18.1
+      framer-motion:
+        specifier: ^12.0.0
+        version: 12.42.2(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react:
         specifier: ^0.545.0
         version: 0.545.0(react@19.2.7)
