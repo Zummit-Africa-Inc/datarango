@@ -136,11 +136,11 @@ export const LessonBodyDialog = ({
                   placeholder={
                     '## Key idea\n\nExplain it here.\n\n- a list\n- of points\n\n```python\nprint("or code")\n```'
                   }
-                  className="font-code min-h-[320px] text-xs leading-relaxed"
+                  className="font-code min-h-80 text-xs leading-relaxed"
                   autoFocus
                 />
               ) : (
-                <div className="border-hairline bg-card max-h-[320px] overflow-y-auto overscroll-contain rounded-sm border p-4">
+                <div className="border-hairline bg-card max-h-80 overflow-y-auto overscroll-contain rounded-sm border p-4">
                   {draft.trim() ? (
                     <Markdown>{draft}</Markdown>
                   ) : (

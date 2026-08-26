@@ -108,10 +108,10 @@ export const CourseOverviewEditor = ({ course }: { course: Course }) => {
             placeholder={
               "## What this course covers\n\nStart with the problem it solves.\n\n- how it's structured\n- what you'll build"
             }
-            className="font-code mt-3 min-h-[220px] text-xs leading-relaxed"
+            className="font-code mt-3 min-h-55 text-xs leading-relaxed"
           />
         ) : (
-          <div className="border-hairline bg-surface-strong/40 mt-3 max-h-[280px] overflow-y-auto overscroll-contain rounded-sm border p-4">
+          <div className="border-hairline bg-surface-strong/40 mt-3 max-h-70 overflow-y-auto overscroll-contain rounded-sm border p-4">
             {overview.trim() ? (
               <Markdown>{overview}</Markdown>
             ) : (

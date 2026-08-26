@@ -188,7 +188,7 @@ export const CreateCompetitionDialog = () => {
                 value={summary}
                 onChange={(e) => setSummary(e.target.value)}
                 placeholder="What competitors are predicting, and how it's judged."
-                className="mt-2 min-h-[80px]"
+                className="mt-2 min-h-20"
               />
             </div>
 
