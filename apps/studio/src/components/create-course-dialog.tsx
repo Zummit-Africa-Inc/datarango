@@ -39,6 +39,7 @@ export const CreateCourseDialog = () => {
   // title-derived default on every keystroke.
   const [slug, setSlug] = useState("");
   const [slugTouched, setSlugTouched] = useState(false);
+  const [imageUrl, setImageUrl] = useState("");
 
   const effectiveSlug = slugTouched ? slug : slugify(title);
   const canSubmit = title.trim().length > 0 && effectiveSlug.length > 0;
@@ -48,6 +49,7 @@ export const CreateCourseDialog = () => {
     setSummary("");
     setSlug("");
     setSlugTouched(false);
+    setImageUrl("");
   };
 
   const submit = (e: React.FormEvent) => {
@@ -61,6 +63,7 @@ export const CreateCourseDialog = () => {
         summary: summary.trim(),
         prices: [],
         creatorRevenueShareBps: 0,
+        ...(imageUrl.trim() ? { imageUrl: imageUrl.trim() } : {}),
       },
       {
         onSuccess: (course) => {
@@ -126,6 +129,20 @@ export const CreateCourseDialog = () => {
                 placeholder="What a learner walks away with."
                 rows={3}
               />
+            </div>
+
+            <div className="space-y-1.5">
+              <Label htmlFor="course-image-url">Cover image URL</Label>
+              <Input
+                id="course-image-url"
+                type="url"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
+                placeholder="https://…"
+              />
+              <p className="text-muted-foreground text-xs">
+                Optional — an absolute http(s) link to a cover image. You can change it later.
+              </p>
             </div>
           </div>
 

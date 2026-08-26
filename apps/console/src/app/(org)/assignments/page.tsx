@@ -125,7 +125,7 @@ export default function AssignmentsPage() {
                 : "Nothing has been published to the catalogue yet. Courses are authored in Studio."}
             </Notice>
           ) : (
-            <div className="max-h-64 space-y-1 overflow-y-auto">
+            <div className="max-h-64 space-y-1 overflow-y-auto overscroll-contain">
               {courses.map((course) => (
                 <CourseRow
                   key={course.id}
@@ -154,7 +154,7 @@ export default function AssignmentsPage() {
               <Notice title="No active members">Invite people from the Members page first.</Notice>
             ) : (
               <>
-                <div className="border-hairline max-h-64 overflow-y-auto rounded-xs border">
+                <div className="border-hairline max-h-64 overflow-y-auto overscroll-contain rounded-xs border">
                   {activeMembers.map((member) => (
                     <MemberRow
                       key={member.userId}

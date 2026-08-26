@@ -104,7 +104,7 @@ export const AsyncSelect = ({
             />
           </div>
         </div>
-        <div className="max-h-52 overflow-y-auto p-1">
+        <div className="max-h-52 overflow-y-auto overscroll-contain p-1">
           {loading ? (
             <p className="text-muted-foreground py-4 text-center text-xs">Loading...</p>
           ) : options.length === 0 ? (

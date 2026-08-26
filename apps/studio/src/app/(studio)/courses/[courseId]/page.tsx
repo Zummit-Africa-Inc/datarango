@@ -7,6 +7,8 @@ import { ArrowLeft, Plus } from "lucide-react";
 
 import { Button, Input, PageLayout, Skeleton } from "@datarango/ui";
 
+import { CourseCover } from "@/components/course-cover";
+import { CourseOverviewEditor } from "@/components/course-overview-editor";
 import { CourseStatusBadge } from "@/components/course-status-badge";
 import { ModuleCard } from "@/components/module-card";
 import { SortableItem, SortableList } from "@/components/sortable";
@@ -130,9 +132,19 @@ export default function CourseBuilderPage() {
 
       {frozen && (
         <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
-          This course is published and frozen. Editing it means publishing a new version.
+          <p className="text-ink font-medium">Published and frozen</p>
+          <p className="text-muted-foreground mt-1">
+            Structure and lesson content are fixed — changing them means publishing a new version.
+            The overview below stays editable: it&apos;s what someone reads while deciding whether
+            to enrol, and every published version keeps its own copy, so a correction never rewrites
+            what existing learners signed up to.
+          </p>
         </div>
       )}
+
+      <CourseCover courseId={courseId} imageUrl={tree.course.imageUrl} frozen={!!frozen} />
+
+      <CourseOverviewEditor course={tree.course} />
 
       {inReview && (
         <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">

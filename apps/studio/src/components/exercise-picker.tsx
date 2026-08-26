@@ -42,11 +42,16 @@ export const ExercisePicker = ({
   pending: boolean;
 }) => {
   const [open, setOpen] = useState(false);
-  const { data, isLoading } = useMyQuizzes();
+  // The library is paged now (it always claimed to be; the server ignored it).
+  // A page rather than the whole library, and `total` says so out loud below
+  // instead of letting a long library quietly end at the fold.
+  const PAGE_SIZE = 100;
+  const { data, isLoading } = useMyQuizzes({ pageSize: PAGE_SIZE });
 
   const publishable = (data?.quizzes ?? []).filter((q) => q.status === "published");
   const drafts = (data?.quizzes ?? []).filter((q) => q.status === "draft");
   const current = (data?.quizzes ?? []).find((q) => q.id === exerciseId);
+  const unlisted = Math.max(0, (data?.total ?? 0) - (data?.quizzes.length ?? 0));
 
   const choose = (quizId: string) => {
     onSelect(quizId);
@@ -84,7 +89,7 @@ export const ExercisePicker = ({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="max-h-80 space-y-1 overflow-y-auto py-2">
+        <div className="max-h-80 space-y-1 overflow-y-auto overscroll-contain py-2">
           {isLoading ? (
             <p className="text-muted-foreground text-sm">Loading your quizzes…</p>
           ) : publishable.length === 0 ? (
@@ -131,6 +136,15 @@ export const ExercisePicker = ({
         {current && (
           <p className="text-muted-foreground text-xs">
             Currently set to <span className="text-ink font-medium">{current.title}</span>.
+          </p>
+        )}
+
+        {unlisted > 0 && (
+          // Said rather than hidden: a picker that silently shows the first
+          // hundred of a longer library looks identical to one showing all of
+          // them, and the quiz you want is simply never there.
+          <p className="text-muted-foreground text-xs">
+            Showing your {PAGE_SIZE} most recently updated quizzes — {unlisted} more not listed.
           </p>
         )}
 

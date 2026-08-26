@@ -7,6 +7,7 @@ import { Badge, Button, Input } from "@datarango/ui";
 
 import { ExercisePicker } from "@/components/exercise-picker";
 import { InlineEdit } from "@/components/inline-edit";
+import { LessonBodyDialog } from "@/components/lesson-body-dialog";
 import { LessonMedia } from "@/components/lesson-media";
 import { SortableItem, SortableList, type DragHandleProps } from "@/components/sortable";
 import {
@@ -171,6 +172,12 @@ export const ModuleCard = ({
                         />
                       )}
                     </div>
+
+                    {/* Quiz bodies hold a quiz id rather than prose, so they
+                        are the one kind without a content editor. */}
+                    {lesson.kind !== "quiz" && (
+                      <LessonBodyDialog courseId={courseId} lesson={lesson} frozen={frozen} />
+                    )}
 
                     {/* Playback ids are written by platform.media, never by the
                         catalog — so this is the one lesson control that stays

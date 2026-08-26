@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { Search } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { Badge, Button, Input, PageLayout, Skeleton } from "@datarango/ui";
@@ -78,7 +79,28 @@ export default function CoursesPage() {
                 className="border-hairline bg-card hover:border-primary-500/40 flex flex-col rounded-xs border transition-colors"
                 key={course.id}
               >
-                <div className="bg-primary-500 relative h-40 w-full"></div>
+                {/*
+                  Cover URLs are creator-supplied and can name any host, so
+                  optimization is off: next/image's server-side loader would
+                  otherwise need an allowlist of every host on earth (or fetch
+                  attacker-chosen URLs itself). The browser loads the bytes
+                  straight from the origin, same as a plain img — unoptimized
+                  just keeps Next's lint and pipeline happy about it.
+                */}
+                {course.imageUrl ? (
+                  <div className="bg-muted relative h-40 w-full">
+                    <Image
+                      src={course.imageUrl}
+                      alt=""
+                      fill
+                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
+                      className="object-cover"
+                      unoptimized
+                    />
+                  </div>
+                ) : (
+                  <div className="bg-primary-500 relative h-40 w-full" />
+                )}
                 <div className="flex-1 space-y-4 p-4">
                   <div className="flex items-start justify-between gap-3">
                     <h2 className="font-heading text-ink text-xl leading-snug">{course.title}</h2>

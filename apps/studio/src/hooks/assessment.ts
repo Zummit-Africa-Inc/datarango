@@ -84,10 +84,23 @@ const quizKey = (quizId: string) => ["assessment-quiz-authoring", quizId];
 
 // ── Quizzes ────────────────────────────────────────────────────────────────
 
-export const useMyQuizzes = () =>
-  useApi.query<{ quizzes: Quiz[] }>(QUIZZES, "/learning/assessment/quizzes", {
-    orgScoped: false,
-  });
+/**
+ * The author's own quizzes, drafts included.
+ *
+ * Paged. It did not used to be: the route accepted page/pageSize, the gateway
+ * dropped them, and the handler returned every row — so a caller that paged
+ * correctly received page one forever. `total` is the unpaged count, which is
+ * what lets a caller tell "that's all of them" from "that's the first hundred".
+ */
+export const useMyQuizzes = (options: { page?: number; pageSize?: number } = {}) =>
+  useApi.query<{ quizzes: Quiz[]; total: number }>(
+    [...QUIZZES, String(options.page ?? 1), String(options.pageSize ?? 20)],
+    "/learning/assessment/quizzes",
+    {
+      orgScoped: false,
+      params: { page: options.page, pageSize: options.pageSize },
+    },
+  );
 
 /**
  * The authoring read — a **different endpoint** from the learner's
