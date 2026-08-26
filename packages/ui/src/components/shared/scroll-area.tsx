@@ -20,7 +20,7 @@ export const ScrollArea = ({
   return (
     <div
       className={cn(
-        "scroll-area overflow-auto",
+        "scroll-area overflow-auto overscroll-contain",
         orientation === "vertical" && "overflow-x-hidden overflow-y-auto",
         orientation === "horizontal" && "overflow-x-auto overflow-y-hidden",
         orientation === "both" && "overflow-auto",

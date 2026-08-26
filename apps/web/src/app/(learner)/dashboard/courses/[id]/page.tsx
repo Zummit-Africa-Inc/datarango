@@ -3,6 +3,7 @@
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { ArrowLeft } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
 import { useCourseProgress, useCourseTree, useEnroll, useMyEnrollments } from "@/hooks/learning";
@@ -78,6 +79,22 @@ export default function CourseDetailPage() {
         <ArrowLeft className="size-3.5" />
         All courses
       </Link>
+
+      {tree.course.imageUrl && (
+        // Creator-supplied URL of unknown host — unoptimized, see the
+        // discovery grid for the reasoning.
+        <div className="border-hairline relative h-56 w-full overflow-hidden rounded-xs border sm:h-72">
+          <Image
+            src={tree.course.imageUrl}
+            alt=""
+            fill
+            sizes="(min-width: 1024px) 100vw, 100vw"
+            className="object-cover"
+            priority
+            unoptimized
+          />
+        </div>
+      )}
 
       {isEnrolled && progress && !progress.completed && (
         <div className="border-hairline bg-card rounded-xs border p-4">

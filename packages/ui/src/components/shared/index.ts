@@ -10,6 +10,7 @@ export * from "./illustration";
 export * from "./kanban";
 export * from "./loader";
 export * from "./logo";
+export * from "./markdown";
 export * from "./multi-select";
 export * from "./otp-input";
 export * from "./page-layout";

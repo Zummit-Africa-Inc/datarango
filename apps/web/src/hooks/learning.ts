@@ -27,6 +27,18 @@ export interface Course {
   status: CourseStatus;
   currentVersionId: string | null;
   updatedAt: string;
+  /** Cover image as an absolute http(s) URL, or null when none was set. */
+  imageUrl: string | null;
+  /**
+   * Long-form markdown describing the course, or null when the creator hasn't
+   * written one. Rendered through the shared `Markdown` component, which parses
+   * no raw HTML — creator-authored content stays inert.
+   */
+  overview: string | null;
+  /** "What you'll learn". Never null; an empty array means none were listed. */
+  learningOutcomes: string[];
+  prerequisites: string[];
+  targetAudience: string | null;
 }
 
 export interface CourseList {
@@ -76,6 +88,13 @@ export interface ModuleProgress {
   lessonsCompleted: number;
   exercisePassed: boolean;
   completed: boolean;
+  /**
+   * Which lessons are done, in the module's own lesson order — not just how
+   * many. Never null; an empty array means none. This is what lets a lesson list
+   * show a tick and "resume" land on the right lesson when somebody has worked
+   * out of order, both of which a count alone can only guess at.
+   */
+  completedLessonIds: string[];
 }
 
 export interface ProgressSnapshot {

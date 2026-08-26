@@ -36,6 +36,22 @@ export interface Course {
   currentVersionId: string | null;
   createdAt: string;
   updatedAt: string;
+  /**
+   * Cover image, as an absolute http(s) URL, or null when the creator has set
+   * none. Not a media-library asset id: that bucket is private and its GETs
+   * expire, so a card cannot render one without a signing round trip.
+   */
+  imageUrl: string | null;
+  /**
+   * Long-form markdown shown on the learner's course page. Separate from
+   * `summary`, which is the one-line card copy — truncating markdown to card
+   * length cuts through its own syntax.
+   */
+  overview: string | null;
+  /** "What you'll learn", one entry per outcome. Never null; empty when unset. */
+  learningOutcomes: string[];
+  prerequisites: string[];
+  targetAudience: string | null;
 }
 
 export interface CourseVersion {
@@ -46,6 +62,17 @@ export interface CourseVersion {
   publishedAt: string | null;
   publishedBy: string | null;
   moduleCount: number;
+  /** The cover frozen at publish time, not the live course's current one. */
+  imageUrl: string | null;
+  /**
+   * The description frozen at publish time. This is what learners on this
+   * version actually enrolled against — the live course row above may have been
+   * corrected since, which is exactly what these columns exist to make safe.
+   */
+  overview: string | null;
+  learningOutcomes: string[];
+  prerequisites: string[];
+  targetAudience: string | null;
 }
 
 export interface Lesson {
@@ -126,6 +153,7 @@ export interface CreateCourseInput {
   summary: string;
   prices: Price[];
   creatorRevenueShareBps: number;
+  imageUrl?: string;
 }
 
 export const useCreateCourse = () =>
@@ -135,14 +163,47 @@ export const useCreateCourse = () =>
   });
 
 export const useUpdateCourse = (courseId: string) =>
-  useApi.mutation<{ title?: string; summary?: string }, Course>(
-    `/learning/catalog/courses/${courseId}`,
+  useApi.mutation<
     {
-      method: "PATCH",
-      invalidates: [COURSES, courseTreeKey(courseId)],
-      toast: { success: "Course updated" },
+      title?: string;
+      summary?: string;
+      /** Empty string clears the cover; absent leaves it alone. */
+      imageUrl?: string;
     },
-  );
+    Course
+  >(`/learning/catalog/courses/${courseId}`, {
+    method: "PATCH",
+    invalidates: [COURSES, courseTreeKey(courseId)],
+    toast: { success: "Course updated" },
+  });
+
+/**
+ * The description fields, on their own route because they are the one course
+ * edit a PUBLISHED course accepts.
+ *
+ * Every other write refuses with `catalog.published_immutable` so that what a
+ * learner is working through cannot change underneath them. These four are the
+ * shop window instead: what someone reads while deciding whether to enrol. Each
+ * published version snapshots them, so correcting the live course leaves every
+ * existing learner with the promise they signed up to.
+ *
+ * Omit a field to leave it alone. An empty array clears a list; an empty string
+ * clears a scalar — absent already means "don't touch", so removal needs its own
+ * signal, the same bargain `imageUrl` makes above.
+ */
+export interface CourseOverviewInput {
+  overview?: string;
+  learningOutcomes?: string[];
+  prerequisites?: string[];
+  targetAudience?: string;
+}
+
+export const useUpdateCourseOverview = (courseId: string) =>
+  useApi.mutation<CourseOverviewInput, Course>(`/learning/catalog/courses/${courseId}/overview`, {
+    method: "PUT",
+    invalidates: [COURSES, courseTreeKey(courseId)],
+    toast: { success: "Overview saved" },
+  });
 
 /**
  * Hands the draft to the platform for review.

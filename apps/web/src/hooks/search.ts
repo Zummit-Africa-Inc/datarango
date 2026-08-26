@@ -33,8 +33,11 @@ export interface SearchHit {
   slug: string | null;
   creatorId: string | null;
   updatedAt: string;
-  /** Kind-specific extras a result card renders: moduleCount, questionCount, … */
-  facets: Record<string, number> | null;
+  /**
+   * Kind-specific extras a result card renders. Numbers are counts
+   * (moduleCount, questionCount); courses may also carry an `imageUrl` string.
+   */
+  facets: Record<string, number | string> | null;
 }
 
 export interface SearchResults {

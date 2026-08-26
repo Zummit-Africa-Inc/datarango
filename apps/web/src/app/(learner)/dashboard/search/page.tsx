@@ -2,6 +2,7 @@
 
 import { Suspense, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { BookOpen, FileQuestion, ListChecks, Search as SearchIcon } from "lucide-react";
 
@@ -166,8 +167,11 @@ const ResultRow = ({ hit }: { hit: SearchHit }) => {
   const href =
     hit.kind === "quiz" ? `/dashboard/quizzes/${hit.id}` : `/dashboard/courses/${hit.id}`;
 
-  const moduleCount = hit.facets?.moduleCount;
-  const questionCount = hit.facets?.questionCount;
+  const moduleCount =
+    typeof hit.facets?.moduleCount === "number" ? hit.facets.moduleCount : undefined;
+  const questionCount =
+    typeof hit.facets?.questionCount === "number" ? hit.facets.questionCount : undefined;
+  const imageUrl = typeof hit.facets?.imageUrl === "string" ? hit.facets.imageUrl : null;
 
   return (
     <li>
@@ -175,31 +179,42 @@ const ResultRow = ({ hit }: { hit: SearchHit }) => {
         href={href}
         className="border-hairline bg-card hover:border-primary-500/40 block rounded-xs border px-4 py-3 transition-colors"
       >
-        <div className="flex items-start justify-between gap-3">
-          <p className="text-ink text-sm font-medium">{hit.title}</p>
-          <Badge variant="ghost">{hit.kind === "quiz" ? "Quiz" : "Course"}</Badge>
-        </div>
-
-        {hit.summary && (
-          <p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-relaxed">
-            {hit.summary}
-          </p>
-        )}
-
-        <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 text-xs">
-          {moduleCount !== undefined && (
-            <span className="inline-flex items-center gap-1">
-              <ListChecks className="size-3.5" />
-              {moduleCount} module{moduleCount === 1 ? "" : "s"}
-            </span>
+        <div className="flex items-start gap-4">
+          {imageUrl && (
+            // Creator-supplied URL of unknown host — unoptimized, see the
+            // discovery grid for the reasoning.
+            <div className="bg-muted relative hidden h-16 w-24 shrink-0 overflow-hidden rounded-xs sm:block">
+              <Image src={imageUrl} alt="" fill sizes="96px" className="object-cover" unoptimized />
+            </div>
           )}
-          {questionCount !== undefined && (
-            <span className="inline-flex items-center gap-1">
-              <ListChecks className="size-3.5" />
-              {questionCount} question{questionCount === 1 ? "" : "s"}
-            </span>
-          )}
-          <span>updated {new Date(hit.updatedAt).toLocaleDateString()}</span>
+          <div className="min-w-0 flex-1">
+            <div className="flex items-start justify-between gap-3">
+              <p className="text-ink text-sm font-medium">{hit.title}</p>
+              <Badge variant="ghost">{hit.kind === "quiz" ? "Quiz" : "Course"}</Badge>
+            </div>
+
+            {hit.summary && (
+              <p className="text-muted-foreground mt-1 line-clamp-2 text-sm leading-relaxed">
+                {hit.summary}
+              </p>
+            )}
+
+            <div className="text-muted-foreground mt-2 flex flex-wrap items-center gap-x-3 text-xs">
+              {moduleCount !== undefined && (
+                <span className="inline-flex items-center gap-1">
+                  <ListChecks className="size-3.5" />
+                  {moduleCount} module{moduleCount === 1 ? "" : "s"}
+                </span>
+              )}
+              {questionCount !== undefined && (
+                <span className="inline-flex items-center gap-1">
+                  <ListChecks className="size-3.5" />
+                  {questionCount} question{questionCount === 1 ? "" : "s"}
+                </span>
+              )}
+              <span>updated {new Date(hit.updatedAt).toLocaleDateString()}</span>
+            </div>
+          </div>
         </div>
       </Link>
     </li>

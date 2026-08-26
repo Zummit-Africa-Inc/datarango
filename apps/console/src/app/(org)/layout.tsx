@@ -65,7 +65,7 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
   const activeTenant = tenants.find((t) => t.id === activeOrgId) ?? tenants[0]!;
 
   return (
-    <div className="flex h-screen">
+    <div className="flex h-dvh overflow-hidden">
       <Sidebar
         collapsed={collapsed}
         logoHref="/overview"
@@ -92,7 +92,15 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
           overviewPaths={["/overview"]}
           search={{ value: search, onChange: setSearch, placeholder: "Search members, courses…" }}
         />
-        <main className="min-h-0 flex-1 overflow-y-auto p-6">{children}</main>
+        {/* `flex flex-col` is load-bearing, not decoration: a *block* scroll
+            container drops its bottom padding once the content overflows, so the
+            last row of every page sat flush against the window edge. A flex
+            scroll container keeps its end padding in the scrollable area.
+            `overscroll-contain` stops the gesture chaining to the document at
+            the end of the scroll. */}
+        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain p-6">
+          {children}
+        </main>
       </div>
     </div>
   );

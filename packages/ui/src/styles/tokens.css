@@ -200,12 +200,18 @@
 
   html {
     scroll-behavior: smooth;
+    /* Kills the viewport rubber-band. The app shells scroll inside a `main`,
+       so when that scroller hits its end the browser would otherwise chain the
+       gesture up to the document and bounce the whole shell, exposing the page
+       background above the sidebar and below the header. */
+    overscroll-behavior: none;
   }
 
   body {
     background: var(--canvas);
     color: var(--body-text);
     overflow-x: hidden;
+    overscroll-behavior: none;
     width: 100%;
     letter-spacing: 0.01em;
   }

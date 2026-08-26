@@ -1,11 +1,11 @@
 "use client";
 
+import { ArrowRight, BookOpen, CheckCircle2, FileBadge, ListChecks } from "lucide-react";
 import { useMemo } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, CheckCircle2, FileBadge, ListChecks } from "lucide-react";
 
 import { Badge, Button, Skeleton, Statistics } from "@datarango/ui";
-
+import { useMyAttempts, type QuizAttempt } from "@/hooks/assessment";
 import {
   useCourseProgress,
   useDiscoverCourses,
@@ -13,7 +13,6 @@ import {
   useMyEnrollments,
   type Enrollment,
 } from "@/hooks/learning";
-import { useMyAttempts, type QuizAttempt } from "@/hooks/assessment";
 
 const CONTINUE_LIMIT = 3;
 const RECENT_ATTEMPTS = 5;
