@@ -14,6 +14,7 @@ import {
   type QuestionDraft,
 } from "@/components/question-form";
 import { QuestionCard } from "@/components/question-card";
+import { RewardConfig } from "@/components/reward-config";
 import { SortableItem, SortableList } from "@/components/sortable";
 import {
   useAddQuestion,
@@ -136,6 +137,14 @@ export default function QuizBuilderPage() {
           onSave={(next) => updateQuiz.mutate(next)}
         />
       )}
+
+      {/* Deliberately outside the `frozen` branch above. Publishing freezes the
+          grading contract — questions and point values — because a recorded
+          score must keep meaning what it meant. The reward is not part of that
+          contract: it is what the platform pays from now on, and every token
+          already granted stays granted. A published quiz is exactly when a
+          creator most wants to attach one. */}
+      <RewardConfig label="Reward for passing" scope="quiz" targetId={quizId} />
 
       {!frozen && questions.length === 0 && (
         <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">

@@ -104,23 +104,57 @@ export const NotificationInbox = () => {
   );
 };
 
-/** Best-effort copy per template, degrading to the template name rather than to nothing. */
+/**
+ * Best-effort copy per template, degrading to the template name rather than to
+ * nothing.
+ *
+ * **The names here are the server's, and were wrong until 2026-08-28.** Every
+ * consumer in platform.notification writes kebab-case (`course-published`,
+ * `certificate`, `media-failed`); this switch matched on dotted names
+ * (`course.published`) that nothing has ever produced, so every case was dead
+ * and every notification fell through to the default — the inbox has been
+ * rendering the raw template string as its own message this whole time. The
+ * fallback is what kept it from looking broken, which is also why nobody
+ * noticed.
+ *
+ * Payload field names come from the consumer that writes them, so they are
+ * read defensively and each case names the one it needs.
+ */
 const describe = (entry: InboxEntry): string => {
   const payload = entry.payload ?? {};
   const text = (key: string) =>
     typeof payload[key] === "string" ? (payload[key] as string) : null;
+  const num = (key: string) =>
+    typeof payload[key] === "number" ? (payload[key] as number) : null;
 
   switch (entry.template) {
-    case "course.published":
-      return `Your course ${text("courseTitle") ?? ""} is published.`.replace("  ", " ");
-    case "course.rejected":
-      return `Your course ${text("courseTitle") ?? ""} needs changes${
+    // `title` — see ReviewNotificationConsumer.
+    case "course-published":
+      return `Your course ${text("title") ?? ""} is published.`.replace(/\s{2,}/g, " ");
+    case "course-rejected":
+      return `Your course ${text("title") ?? ""} needs changes${
         text("reason") ? `: ${text("reason")}` : "."
-      }`;
-    case "course.submitted":
-      return `${text("courseTitle") ?? "A course"} was submitted for review.`;
-    case "certificate.issued":
+      }`.replace(/\s{2,}/g, " ");
+    case "course-completed":
+      return "You finished a course — nice work.";
+    case "course-assigned":
+      return "A course was assigned to you.";
+    case "certificate":
       return `Certificate issued for ${text("courseTitle") ?? "a completed course"}.`;
+    case "media-failed":
+      return `An upload could not be processed${text("error") ? `: ${text("error")}` : "."}`;
+
+    // Phase 5 — the two celebrations. Everything they render rides on the
+    // event, so neither needs a lookup.
+    case "level-up": {
+      const to = num("toLevel");
+      return to === null ? "You levelled up." : `You reached level ${to}.`;
+    }
+    case "badge-earned":
+      return `Badge earned: ${text("name") ?? "a new badge"}${
+        text("description") ? ` — ${text("description")}` : "."
+      }`;
+
     default:
       return text("message") ?? text("title") ?? entry.template;
   }

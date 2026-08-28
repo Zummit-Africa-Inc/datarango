@@ -9,6 +9,7 @@ import { Button, Input, PageLayout, Skeleton } from "@datarango/ui";
 
 import { CourseCover } from "@/components/course-cover";
 import { CourseOverviewEditor } from "@/components/course-overview-editor";
+import { CoursePriceEditor } from "@/components/course-price";
 import { CourseStatusBadge } from "@/components/course-status-badge";
 import { ModuleCard } from "@/components/module-card";
 import { SortableItem, SortableList } from "@/components/sortable";
@@ -145,6 +146,12 @@ export default function CourseBuilderPage() {
       <CourseCover courseId={courseId} imageUrl={tree.course.imageUrl} frozen={!!frozen} />
 
       <CourseOverviewEditor course={tree.course} />
+
+      {/* Not gated on `frozen`. A price is what the NEXT learner pays; the
+          amount somebody already paid is copied onto their redemption when they
+          paid it, so repricing cannot restate history — and a published course
+          is exactly when a creator wants to price it. */}
+      <CoursePriceEditor courseId={courseId} />
 
       {inReview && (
         <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
