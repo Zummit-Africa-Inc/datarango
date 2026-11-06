@@ -44,7 +44,7 @@ RUN pnpm install --frozen-lockfile --prefer-offline
 # rebuild. Anything under src/ does not.
 FROM workspace AS dev
 ARG APP
-ARG PORT=3000
+ARG PORT=4000
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV HOSTNAME=0.0.0.0
 ENV PORT=${PORT}
@@ -96,7 +96,7 @@ RUN mkdir -p apps/${APP}/public
 # ── runtime ──────────────────────────────────────────────────────────────────
 FROM ${NODE_IMAGE} AS runner
 ARG APP
-ARG PORT=3000
+ARG PORT=4000
 WORKDIR /app
 
 ENV NODE_ENV=production

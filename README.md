@@ -1,3 +1,5 @@
+![datarango](./packages/ui/src/assets/logo_light.png)
+
 # datarango-frontend
 
 Turborepo + pnpm monorepo for all Datarango frontend apps. Companion to `FRONTEND-HANDOFF.md`.
@@ -6,10 +8,10 @@ Turborepo + pnpm monorepo for all Datarango frontend apps. Companion to `FRONTEN
 
 | App       | Port (dev) | Domain                            | Persona                                                            |
 | --------- | ---------- | --------------------------------- | ------------------------------------------------------------------ |
-| `web`     | 3000       | datarango.com / app.datarango.com | visitors + learners (marketing lives in `(marketing)` route group) |
-| `console` | 3001       | console.datarango.com             | org owners/admins/managers/instructors                             |
-| `studio`  | 3002       | studio.datarango.com              | creators/instructors (content authors)                             |
-| `admin`   | 3003       | admin.datarango.com               | platform staff (IP-restricted)                                     |
+| `web`     | 4000       | datarango.com / app.datarango.com | visitors + learners (marketing lives in `(marketing)` route group) |
+| `console` | 4001       | console.datarango.com             | org owners/admins/managers/instructors                             |
+| `studio`  | 4002       | studio.datarango.com              | creators/instructors (content authors)                             |
+| `admin`   | 4003       | admin.datarango.com               | platform staff (IP-restricted)                                     |
 
 ## Packages
 

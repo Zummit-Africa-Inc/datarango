@@ -10,7 +10,7 @@ import { expect, type APIRequestContext, type Page } from "@playwright/test";
  */
 
 export const GATEWAY = "http://localhost:8080";
-export const STUDIO = "http://localhost:3002";
+export const STUDIO = "http://localhost:4002";
 
 export interface StudioUser {
   email: string;
@@ -50,7 +50,7 @@ export const signIn = async (page: Page, user: StudioUser) => {
   await page.goto(`${STUDIO}/courses`);
 
   // The guard should send us to web's sign-in rather than render the studio.
-  await page.waitForURL(/localhost:3000\/signin/, { timeout: 30_000 });
+  await page.waitForURL(/localhost:4000\/signin/, { timeout: 30_000 });
 
   await page.getByRole("textbox", { name: /email/i }).fill(user.email);
   await page.locator('input[type="password"]').first().fill(user.password);
@@ -62,7 +62,7 @@ export const signIn = async (page: Page, user: StudioUser) => {
   await page.locator('form button[type="submit"]').first().click();
 
   // ...and back into the studio, authenticated.
-  await page.waitForURL(/localhost:3002/, { timeout: 45_000 });
+  await page.waitForURL(/localhost:4002/, { timeout: 45_000 });
 };
 
 /**

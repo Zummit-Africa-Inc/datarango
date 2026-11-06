@@ -33,7 +33,7 @@ export default defineConfig({
   timeout: 90_000,
 
   use: {
-    baseURL: "http://localhost:3002",
+    baseURL: "http://localhost:4002",
     trace: "retain-on-failure",
     screenshot: "only-on-failure",
   },
@@ -43,7 +43,7 @@ export default defineConfig({
   webServer: [
     {
       command: "pnpm start",
-      url: "http://localhost:3002",
+      url: "http://localhost:4002",
       reuseExistingServer: true,
       timeout: 120_000,
     },
@@ -52,7 +52,7 @@ export default defineConfig({
       // origin, so studio's guard completes through here.
       command: "pnpm --filter web start",
       cwd: "../..",
-      url: "http://localhost:3000",
+      url: "http://localhost:4000",
       reuseExistingServer: true,
       timeout: 120_000,
     },

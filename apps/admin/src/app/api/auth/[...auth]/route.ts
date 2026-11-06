@@ -9,7 +9,7 @@ const handlers = createAuthHandlers({
   // code exchange has to dial the gateway on the compose network instead.
   tokenIssuer: process.env.AUTH_ISSUER_INTERNAL,
   clientId: process.env.AUTH_CLIENT_ID ?? "datarango-admin",
-  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3003",
+  appUrl: process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:4003",
   cookieDomain: process.env.AUTH_COOKIE_DOMAIN,
 });
 
