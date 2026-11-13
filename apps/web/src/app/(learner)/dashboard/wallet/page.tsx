@@ -133,7 +133,9 @@ const StatementRow = ({ entry }: { entry: StatementLine }) => {
       />
 
       <div className="min-w-0 flex-1">
-        <p className="text-ink truncate font-medium">{entry.memo || TRANSACTION_LABELS[entry.kind]}</p>
+        <p className="text-ink truncate font-medium">
+          {entry.memo || TRANSACTION_LABELS[entry.kind]}
+        </p>
         <p className="text-muted-foreground mt-0.5 text-xs">
           {TRANSACTION_LABELS[entry.kind]} ·{" "}
           {new Date(entry.createdAt).toLocaleDateString(undefined, {

@@ -15,11 +15,7 @@ import { useApi } from "@datarango/api";
  */
 
 export type TransactionKind =
-  | "reward"
-  | "redemptionReserve"
-  | "redemptionCommit"
-  | "redemptionRelease"
-  | "adjustment";
+  "reward" | "redemptionReserve" | "redemptionCommit" | "redemptionRelease" | "adjustment";
 
 export type RedemptionStatus = "reserved" | "committed" | "compensated";
 
@@ -112,9 +108,13 @@ export const useWalletStatement = (options: { page?: number; pageSize?: number }
   );
 
 export const useRedemptions = () =>
-  useApi.query<{ redemptions: Redemption[] }>(["wallet-redemptions"], "/economy/wallet/redemptions", {
-    orgScoped: false,
-  });
+  useApi.query<{ redemptions: Redemption[] }>(
+    ["wallet-redemptions"],
+    "/economy/wallet/redemptions",
+    {
+      orgScoped: false,
+    },
+  );
 
 /**
  * Spends tokens on a course.
@@ -163,11 +163,7 @@ export const useCoursePrice = (courseId: string) =>
 // ── Gamification ────────────────────────────────────────────────────────────
 
 export type BadgeCriterion =
-  | "xpTotal"
-  | "streakDays"
-  | "quizzesPassed"
-  | "lessonsCompleted"
-  | "coursesCompleted";
+  "xpTotal" | "streakDays" | "quizzesPassed" | "lessonsCompleted" | "coursesCompleted";
 
 export interface Standing {
   xp: number;
@@ -262,7 +258,13 @@ export const useMyCoursePrices = () =>
 
 export const useUpsertRewardRule = () =>
   useApi.mutation<
-    { scope: RewardScope; targetId: string; amount: number; maxAwardsPerUser?: number; enabled?: boolean },
+    {
+      scope: RewardScope;
+      targetId: string;
+      amount: number;
+      maxAwardsPerUser?: number;
+      enabled?: boolean;
+    },
     { rule: RewardRule }
   >((v) => `/economy/rewards/rules/${v.scope}/${v.targetId}`, {
     method: "PUT",
@@ -271,11 +273,11 @@ export const useUpsertRewardRule = () =>
   });
 
 export const useUpsertCoursePrice = () =>
-  useApi.mutation<{ courseId: string; tokenPrice: number; enabled?: boolean }, { price: CoursePrice }>(
-    (v) => `/economy/prices/${v.courseId}`,
-    {
-      method: "PUT",
-      invalidates: [["wallet-course-prices"], ["wallet-course-price"]],
-      toast: { success: "Price saved." },
-    },
-  );
+  useApi.mutation<
+    { courseId: string; tokenPrice: number; enabled?: boolean },
+    { price: CoursePrice }
+  >((v) => `/economy/prices/${v.courseId}`, {
+    method: "PUT",
+    invalidates: [["wallet-course-prices"], ["wallet-course-price"]],
+    toast: { success: "Price saved." },
+  });

@@ -64,8 +64,7 @@ export const RewardConfig = ({
     Number.isInteger(perUserValue) &&
     perUserValue >= 1;
 
-  const changed =
-    !rule || amountValue !== rule.amount || perUserValue !== rule.maxAwardsPerUser;
+  const changed = !rule || amountValue !== rule.amount || perUserValue !== rule.maxAwardsPerUser;
 
   const save = (event: React.FormEvent) => {
     event.preventDefault();
@@ -114,7 +113,12 @@ export const RewardConfig = ({
           />
         </div>
 
-        <Button disabled={!valid || !changed || upsert.isPending} size="sm" type="submit" variant="outline">
+        <Button
+          disabled={!valid || !changed || upsert.isPending}
+          size="sm"
+          type="submit"
+          variant="outline"
+        >
           {upsert.isPending ? "Saving…" : rule ? "Update reward" : "Set reward"}
         </Button>
 

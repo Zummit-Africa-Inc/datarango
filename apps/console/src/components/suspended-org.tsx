@@ -44,8 +44,8 @@ export const SuspendedOrgGate = ({ children }: { children: ReactNode }) => {
           <CircleAlert className="text-destructive mt-0.5 size-4 shrink-0" aria-hidden />
           <p>
             {membership.orgName}&apos;s subscription is suspended. Members can&apos;t use the
-            platform until the outstanding invoice is paid. Everything is kept and comes back
-            as it was.
+            platform until the outstanding invoice is paid. Everything is kept and comes back as it
+            was.
           </p>
         </div>
         {children}

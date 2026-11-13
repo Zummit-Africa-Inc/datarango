@@ -80,7 +80,12 @@ export const CoursePriceEditor = ({ courseId }: { courseId: string }) => {
           />
         </div>
 
-        <Button disabled={!valid || !changed || upsert.isPending} size="sm" type="submit" variant="outline">
+        <Button
+          disabled={!valid || !changed || upsert.isPending}
+          size="sm"
+          type="submit"
+          variant="outline"
+        >
           {upsert.isPending ? "Saving…" : live ? "Update price" : "Set price"}
         </Button>
 

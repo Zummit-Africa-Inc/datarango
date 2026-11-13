@@ -61,10 +61,7 @@ export const useUpsertRewardRule = (scope: RewardScope, targetId: string) =>
     { rule: RewardRule }
   >(`/economy/rewards/rules/${scope}/${targetId}`, {
     method: "PUT",
-    invalidates: [
-      ["reward-rule", scope, targetId],
-      ["reward-rules"],
-    ],
+    invalidates: [["reward-rule", scope, targetId], ["reward-rules"]],
     toast: { success: "Reward saved." },
   });
 
@@ -73,10 +70,7 @@ export const useDeleteRewardRule = (scope: RewardScope, targetId: string) =>
     (v) => `/economy/rewards/rules/${v.ruleId}`,
     {
       method: "DELETE",
-      invalidates: [
-        ["reward-rule", scope, targetId],
-        ["reward-rules"],
-      ],
+      invalidates: [["reward-rule", scope, targetId], ["reward-rules"]],
       // Says what removal actually does, because the obvious assumption is
       // wrong: the server keeps every grant it already made.
       toast: { success: "Reward removed. Tokens already earned are untouched." },

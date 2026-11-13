@@ -124,8 +124,7 @@ const describe = (entry: InboxEntry): string => {
   const payload = entry.payload ?? {};
   const text = (key: string) =>
     typeof payload[key] === "string" ? (payload[key] as string) : null;
-  const num = (key: string) =>
-    typeof payload[key] === "number" ? (payload[key] as number) : null;
+  const num = (key: string) => (typeof payload[key] === "number" ? (payload[key] as number) : null);
 
   switch (entry.template) {
     // `title` — see ReviewNotificationConsumer.
