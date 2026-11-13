@@ -52,7 +52,7 @@ export const RewardConfig = ({
   useEffect(() => {
     setAmount(rule ? String(rule.amount) : "");
     setPerUser(rule ? String(rule.maxAwardsPerUser) : "1");
-  }, [rule?.id, rule?.updatedAt]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [rule?.id, rule?.updatedAt]);
 
   const amountValue = Number(amount);
   const perUserValue = Number(perUser);

@@ -36,7 +36,7 @@ export const CoursePriceEditor = ({ courseId }: { courseId: string }) => {
   // save. Keyed on id + updatedAt so a save resyncs without stomping typing.
   useEffect(() => {
     setTokens(price ? String(price.tokenPrice) : "");
-  }, [price?.id, price?.updatedAt]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [price?.id, price?.updatedAt]);
 
   const value = Number(tokens);
   const valid = tokens.trim().length > 0 && Number.isInteger(value) && value > 0;
