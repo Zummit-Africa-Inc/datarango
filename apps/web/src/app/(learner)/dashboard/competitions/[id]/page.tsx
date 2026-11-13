@@ -19,8 +19,39 @@ import {
   useLeaderboard,
   useMySubmissions,
   putSubmissionToTicket,
+  type LeaderboardEntry,
   type SubmissionStatus,
 } from "@/hooks/arena";
+
+/** One board's standings. Rank comes from the API, so ties share a place. */
+function StandingsTable({
+  entries,
+  scoreLabel,
+}: {
+  entries: LeaderboardEntry[];
+  scoreLabel: string;
+}) {
+  return (
+    <table className="w-full text-sm">
+      <thead>
+        <tr className="bg-muted/50 text-muted-foreground border-hairline border-b text-left">
+          <th className="px-4 py-2.5 font-medium">#</th>
+          <th className="px-4 py-2.5 font-medium">Participant</th>
+          <th className="px-4 py-2.5 text-right font-medium">{scoreLabel}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {entries.map((entry) => (
+          <tr key={entry.submissionId} className="border-hairline border-b last:border-b-0">
+            <td className="px-4 py-3 font-medium">{entry.rank}</td>
+            <td className="text-ink px-4 py-3">{entry.displayName}</td>
+            <td className="px-4 py-3 text-right font-mono">{entry.score}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+}
 
 const submissionBadge = (status: SubmissionStatus) => {
   switch (status) {
@@ -45,6 +76,8 @@ export default function CompetitionDetailPage() {
 
   const { data: leaderboard } = useLeaderboard(competitionId, isOpen);
   const { data: mine } = useMySubmissions(competitionId, joined);
+  // A closed competition with a hidden split ranks on the private rows.
+  const finalBoard = leaderboard?.board === "private";
 
   const join = useJoinCompetition(competitionId);
   const ticket = useCreateSubmissionUpload(competitionId);
@@ -202,13 +235,27 @@ export default function CompetitionDetailPage() {
         <div className="flex items-baseline justify-between">
           <h2 className="font-heading text-ink inline-flex items-center gap-2 text-lg">
             <Trophy className="size-4" />
-            Leaderboard
+            {finalBoard ? "Final standings (private)" : "Leaderboard"}
           </h2>
           <span className="text-muted-foreground text-sm">
             {leaderboard?.participantCount ?? 0} participant
             {(leaderboard?.participantCount ?? 0) === 1 ? "" : "s"}
           </span>
         </div>
+        {finalBoard ? (
+          <p className="text-muted-foreground text-sm">
+            Ranked on the hidden {100 - competition.publicSharePercent}% of the test rows, using
+            each participant&apos;s best submission on the public board.
+          </p>
+        ) : (
+          competition.publicSharePercent < 100 && (
+            <p className="text-muted-foreground text-sm">
+              Scored on {competition.publicSharePercent}% of the test rows. The final ranking uses
+              the other {100 - competition.publicSharePercent}%, revealed when the competition
+              closes.
+            </p>
+          )
+        )}
         {!leaderboard || leaderboard.entries.length === 0 ? (
           <div className="border-hairline bg-card rounded-xs border px-6 py-10 text-center">
             <p className="text-ink font-medium">No scores yet</p>
@@ -218,27 +265,22 @@ export default function CompetitionDetailPage() {
           </div>
         ) : (
           <div className="border-hairline bg-card overflow-hidden rounded-xs border">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-muted/50 text-muted-foreground border-hairline border-b text-left">
-                  <th className="px-4 py-2.5 font-medium">#</th>
-                  <th className="px-4 py-2.5 font-medium">Participant</th>
-                  <th className="px-4 py-2.5 text-right font-medium">
-                    Best {METRIC_LABELS[competition.metric]}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {leaderboard.entries.map((entry, index) => (
-                  <tr key={entry.submissionId} className="border-hairline border-b last:border-b-0">
-                    <td className="px-4 py-3 font-medium">{index + 1}</td>
-                    <td className="text-ink px-4 py-3">{entry.displayName}</td>
-                    <td className="px-4 py-3 text-right font-mono">{entry.score}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <StandingsTable
+              entries={leaderboard.entries}
+              scoreLabel={`${finalBoard ? "Private" : "Best"} ${METRIC_LABELS[competition.metric]}`}
+            />
           </div>
+        )}
+        {finalBoard && leaderboard?.publicEntries && leaderboard.publicEntries.length > 0 && (
+          <details className="border-hairline bg-card rounded-xs border">
+            <summary className="text-muted-foreground cursor-pointer px-4 py-2.5 text-sm">
+              Public leaderboard at close
+            </summary>
+            <StandingsTable
+              entries={leaderboard.publicEntries}
+              scoreLabel={`Public ${METRIC_LABELS[competition.metric]}`}
+            />
+          </details>
         )}
       </section>
 
@@ -307,7 +349,19 @@ export default function CompetitionDetailPage() {
                   <span className="text-ink">{submission.fileName}</span>
                   <span className="flex items-center gap-3">
                     {submission.status === "scored" && submission.score !== null && (
-                      <span className="font-mono">{submission.score}</span>
+                      <span className="font-mono">
+                        {submission.privateScore !== null &&
+                        submission.privateScore !== submission.score ? (
+                          <>
+                            <span className="text-muted-foreground text-xs">public </span>
+                            {submission.score}
+                            <span className="text-muted-foreground text-xs"> · private </span>
+                            {submission.privateScore}
+                          </>
+                        ) : (
+                          submission.score
+                        )}
+                      </span>
                     )}
                     {submission.submittedAt && (
                       <span className="text-muted-foreground text-xs">

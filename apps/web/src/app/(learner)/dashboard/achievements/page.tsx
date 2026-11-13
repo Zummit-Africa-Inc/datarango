@@ -76,11 +76,7 @@ export default function AchievementsPage() {
                   : "Come back tomorrow to start one"
               }
             />
-            <Statistics
-              label="Badges"
-              value={`${earned.length}/${badges.length}`}
-              icon={Award}
-            />
+            <Statistics label="Badges" value={`${earned.length}/${badges.length}`} icon={Award} />
             <Statistics
               label="Certificates"
               value={String(issued.length)}
@@ -93,7 +89,10 @@ export default function AchievementsPage() {
 
           <section>
             <h2 className="font-heading text-ink mb-3 text-lg">
-              Badges {earned.length > 0 && <span className="text-muted-foreground text-sm">· {earned.length} earned</span>}
+              Badges{" "}
+              {earned.length > 0 && (
+                <span className="text-muted-foreground text-sm">· {earned.length} earned</span>
+              )}
             </h2>
             {badges.length === 0 ? (
               <p className="text-muted-foreground border-hairline bg-card rounded-xs border px-4 py-8 text-center text-sm">
@@ -184,13 +183,22 @@ const LevelBar = ({ standing }: { standing: Standing }) => {
         className="bg-muted mt-2 h-1.5 w-full overflow-hidden rounded-full"
         role="progressbar"
       >
-        <div className="bg-primary-500 h-full rounded-full transition-[width]" style={{ width: `${percent}%` }} />
+        <div
+          className="bg-primary-500 h-full rounded-full transition-[width]"
+          style={{ width: `${percent}%` }}
+        />
       </div>
     </div>
   );
 };
 
-const BadgeCard = ({ badge, standing }: { badge: EarnableBadge; standing: Standing | undefined }) => {
+const BadgeCard = ({
+  badge,
+  standing,
+}: {
+  badge: EarnableBadge;
+  standing: Standing | undefined;
+}) => {
   const isEarned = badge.earnedAt !== null;
   const progress = Math.min(badgeProgress(badge, standing), badge.threshold);
 

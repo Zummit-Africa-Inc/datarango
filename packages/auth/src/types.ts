@@ -26,6 +26,11 @@ export interface Membership {
   orgName: string;
   role: OrgRole;
   permissions?: string[];
+  /**
+   * The org's subscription is suspended by billing. The gateway freezes the
+   * org's routes (403 `org.suspended`) except billing for owners and admins.
+   */
+  suspended?: boolean;
 }
 
 /** The authenticated user held in the session store. */

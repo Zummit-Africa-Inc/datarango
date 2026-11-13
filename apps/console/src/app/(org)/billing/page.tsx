@@ -65,9 +65,8 @@ export default function BillingPage() {
         <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
           <p className="text-ink font-medium">You can&apos;t see billing here</p>
           <p className="text-muted-foreground mt-1">
-            Viewing billing needs the{" "}
-            <code className="font-code text-xs">org.billing.view</code> permission — ask an owner
-            or admin.
+            Viewing billing needs the <code className="font-code text-xs">org.billing.view</code>{" "}
+            permission — ask an owner or admin.
           </p>
         </div>
       </PageLayout>
@@ -110,9 +109,7 @@ export default function BillingPage() {
               label="Renews"
               value={formatDate(subscription.currentPeriodEnd)}
               description={
-                seats
-                  ? formatMoney(seats.renewalAmountMinor, seats.currency)
-                  : undefined
+                seats ? formatMoney(seats.renewalAmountMinor, seats.currency) : undefined
               }
             />
           </div>
@@ -157,7 +154,9 @@ const StatusBanner = ({
   if (subscription.cancelAtPeriodEnd) {
     return (
       <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
-        <p className="text-ink font-medium">Cancelled — active until {formatDate(subscription.currentPeriodEnd)}</p>
+        <p className="text-ink font-medium">
+          Cancelled — active until {formatDate(subscription.currentPeriodEnd)}
+        </p>
         <p className="text-muted-foreground mt-1">
           This period is paid for, so nothing changes until then. Members keep their access and
           their seats for the rest of it.
@@ -202,9 +201,7 @@ const StatusBanner = ({
           size="sm"
           variant="outline"
         >
-          {pay.isPending
-            ? "Retrying…"
-            : `Retry ${formatMoney(unpaid.totalMinor, unpaid.currency)}`}
+          {pay.isPending ? "Retrying…" : `Retry ${formatMoney(unpaid.totalMinor, unpaid.currency)}`}
         </Button>
       )}
     </div>
@@ -400,8 +397,8 @@ const SeatControl = ({ seats, canManage }: { seats: SeatLedger; canManage: boole
       {seats.pendingLicensed != null && (
         <p className="text-muted-foreground border-hairline mt-3 border-t pt-3 text-xs">
           Queued: dropping to <strong className="text-ink">{seats.pendingLicensed}</strong> seats on{" "}
-          {formatDate(seats.renewsOn)} —{" "}
-          {formatMoney(seats.renewalAmountMinor, seats.currency)} at renewal.
+          {formatDate(seats.renewsOn)} — {formatMoney(seats.renewalAmountMinor, seats.currency)} at
+          renewal.
         </p>
       )}
     </div>
@@ -419,9 +416,7 @@ const InvoiceList = ({ invoices, canManage }: { invoices: Invoice[]; canManage: 
       </h2>
 
       {invoices.length === 0 ? (
-        <p className="text-muted-foreground px-4 py-8 text-center text-sm">
-          No invoices yet.
-        </p>
+        <p className="text-muted-foreground px-4 py-8 text-center text-sm">No invoices yet.</p>
       ) : (
         <ul>
           {invoices.map((invoice) => (
@@ -468,7 +463,8 @@ const InvoiceBadge = ({ status }: { status: Invoice["status"] }) => {
     noCharge: "No charge",
   };
 
-  const variant = status === "paid" ? "success" : status === "uncollectible" ? "destructive" : "outline";
+  const variant =
+    status === "paid" ? "success" : status === "uncollectible" ? "destructive" : "outline";
 
   return (
     <Badge variant={variant}>
@@ -496,8 +492,8 @@ const PaymentMethods = () => (
     </p>
     <p className="text-muted-foreground mt-1">
       Invoices are issued, collected and chased on the real schedule, but against a development
-      processor — so there is no card on file to show you, and nothing here is charging anyone.
-      Card and bank details arrive with the payment provider.
+      processor — so there is no card on file to show you, and nothing here is charging anyone. Card
+      and bank details arrive with the payment provider.
     </p>
   </div>
 );

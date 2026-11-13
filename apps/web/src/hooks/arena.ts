@@ -88,6 +88,8 @@ export interface Competition {
   startsAt: string | null;
   endsAt: string | null;
   maxSubmissionsPerDay: number;
+  /** Share of the test rows the live board scores (100 = no hidden private split). */
+  publicSharePercent: number;
   tokenRewardTotal: number;
   tokenRewardPlacements: number;
   createdAt: string;
@@ -105,6 +107,8 @@ export interface CompetitionDetail {
 }
 
 export interface LeaderboardEntry {
+  /** Shared by tied entries. */
+  rank: number;
   userId: string;
   displayName: string;
   score: string;
@@ -112,7 +116,14 @@ export interface LeaderboardEntry {
 }
 
 export interface Leaderboard {
+  /**
+   * "public" while the competition runs. "private" once it has closed: `entries`
+   * is then the final ranking (on the hidden rows) and `publicEntries` the board
+   * people watched during the run.
+   */
+  board: "public" | "private";
   entries: LeaderboardEntry[];
+  publicEntries: LeaderboardEntry[] | null;
   participantCount: number;
 }
 
@@ -124,6 +135,8 @@ export interface Submission {
   sizeBytes: number;
   status: SubmissionStatus;
   score: string | null;
+  /** Score on the hidden rows; only revealed once the competition has closed. */
+  privateScore: string | null;
   scoredAt: string | null;
   submittedAt: string | null;
 }
