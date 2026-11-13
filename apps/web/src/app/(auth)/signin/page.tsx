@@ -31,6 +31,10 @@ const SSO_ERRORS: Record<string, string> = {
   sso_no_email: "Your identity provider didn't share an email address with us.",
   sso_domain_mismatch:
     "That account's email domain isn't verified for the organization you signed in to.",
+  // Not SSO-specific: accounts redirects here from /connect/authorize when an
+  // org-managed account's organization has been suspended for non-payment.
+  org_suspended:
+    "Your organization's access to Datarango is suspended. Contact your organization's administrator.",
 };
 
 /** Enough of an address to be worth asking about — not a validity check. */

@@ -14,6 +14,7 @@ import {
 } from "@datarango/ui";
 
 import { CreateFirstOrg } from "@/components/create-first-org";
+import { SuspendedOrgGate } from "@/components/suspended-org";
 import { useMyOrgs } from "@/hooks/orgs";
 import { ORG_ROUTES } from "@/config/routes";
 
@@ -99,7 +100,7 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
             `overscroll-contain` stops the gesture chaining to the document at
             the end of the scroll. */}
         <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain p-6">
-          {children}
+          <SuspendedOrgGate>{children}</SuspendedOrgGate>
         </main>
       </div>
     </div>
