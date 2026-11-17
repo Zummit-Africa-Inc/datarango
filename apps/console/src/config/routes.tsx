@@ -7,6 +7,7 @@ import {
   ListChecks,
   Settings,
   Shield,
+  Sparkles,
   Trophy,
   Users,
 } from "lucide-react";
@@ -21,6 +22,7 @@ export const ORG_ROUTES: RouteGroup[] = [
       { href: "/overview", label: "Overview", icon: LayoutDashboard },
       { href: "/members", label: "Members", icon: Users },
       { href: "/roles", label: "Roles", icon: Shield },
+      { href: "/ai", label: "AI", icon: Sparkles },
     ],
   },
   {
