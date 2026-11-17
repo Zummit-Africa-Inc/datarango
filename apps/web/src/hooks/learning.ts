@@ -1,6 +1,6 @@
 "use client";
 
-import { useApi } from "@datarango/api";
+import { getApi, useApi } from "@datarango/api";
 
 /**
  * Learner-facing learning API.
@@ -113,7 +113,11 @@ export interface Certificate {
   serial: string;
   courseTitle: string;
   issuedAt: string;
-  pdfUrl: string | null;
+  /**
+   * The rendered PDF's media asset, once platform.media has made it (a few
+   * seconds after issue). Downloaded through `requestCertificatePdfUrl`.
+   */
+  pdfAssetId: string | null;
 }
 
 const DISCOVER = ["learning-discover"];
@@ -187,3 +191,14 @@ export const useMyCertificates = () =>
   useApi.query<{ certificates: Certificate[] }>(CERTIFICATES, "/learning/enrollment/certificates", {
     orgScoped: false,
   });
+
+/**
+ * A short-lived download link for a certificate PDF, fetched at the moment of
+ * the click. Not a query: the link expires in minutes, so a cached one would
+ * eventually be dead. The asset is owned by the learner, so media refuses
+ * anyone else.
+ */
+export const requestCertificatePdfUrl = (assetId: string) =>
+  getApi().get<{ assetId: string; url: string; expiresAt: string }>(
+    `/platform/media/${assetId}/download`,
+  );
