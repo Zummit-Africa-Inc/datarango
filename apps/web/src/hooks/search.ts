@@ -23,7 +23,7 @@ import { useApi } from "@datarango/api";
  * cross-tenant cache the query-key discipline exists to prevent.
  */
 
-export type SearchKind = "course" | "quiz";
+export type SearchKind = "course" | "quiz" | "dataset" | "competition";
 
 export interface SearchHit {
   id: string;
@@ -34,10 +34,11 @@ export interface SearchHit {
   creatorId: string | null;
   updatedAt: string;
   /**
-   * Kind-specific extras a result card renders. Numbers are counts
-   * (moduleCount, questionCount); courses may also carry an `imageUrl` string.
+   * Kind-specific extras a result card renders: counts (moduleCount,
+   * questionCount, fileCount), a course `imageUrl`, a competition's `status`,
+   * `metric` and `endsAt` (epoch seconds), a dataset's `tags`.
    */
-  facets: Record<string, number | string> | null;
+  facets: Record<string, number | string | string[]> | null;
 }
 
 export interface SearchResults {
