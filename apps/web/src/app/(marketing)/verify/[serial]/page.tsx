@@ -23,7 +23,6 @@ interface VerifiedCertificate {
   serial: string;
   courseTitle: string;
   issuedAt: string;
-  pdfUrl: string | null;
 }
 
 const gatewayUrl = () =>
@@ -109,14 +108,6 @@ export default async function VerifyCertificatePage({
               This certificate was issued by Datarango on completion of every lesson and
               end-of-module exercise in the course.
             </p>
-
-            {certificate.pdfUrl && (
-              <Button asChild className="mt-6" variant="outline">
-                <a href={certificate.pdfUrl} rel="noopener noreferrer" target="_blank">
-                  Download PDF
-                </a>
-              </Button>
-            )}
           </div>
         ) : (
           <div className="border-hairline bg-card rounded-xs border p-8 text-center">

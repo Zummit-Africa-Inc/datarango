@@ -2,11 +2,11 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BadgeCheck, Check, Copy, ExternalLink } from "lucide-react";
+import { BadgeCheck, Check, Copy, Download, ExternalLink, Loader2 } from "lucide-react";
 
 import { Button, PageLayout, Skeleton } from "@datarango/ui";
 
-import { useMyCertificates } from "@/hooks/learning";
+import { requestCertificatePdfUrl, useMyCertificates } from "@/hooks/learning";
 
 export default function CertificatesPage() {
   const { data, isLoading } = useMyCertificates();
@@ -57,6 +57,7 @@ export default function CertificatesPage() {
 
               <div className="flex items-center gap-2">
                 <CopyLinkButton serial={certificate.serial} />
+                <DownloadPdfButton assetId={certificate.pdfAssetId} />
                 <Button asChild size="sm" variant="outline">
                   {/* The public page — what a hiring manager actually opens. */}
                   <Link href={`/verify/${certificate.serial}`} target="_blank">
@@ -72,6 +73,45 @@ export default function CertificatesPage() {
     </PageLayout>
   );
 }
+
+/**
+ * Downloads the certificate PDF through a link fetched at click time. Until
+ * platform.media has rendered it (seconds after issue) the button says so
+ * rather than disappearing, so the learner knows one is coming.
+ */
+const DownloadPdfButton = ({ assetId }: { assetId: string | null }) => {
+  const [busy, setBusy] = useState(false);
+  const [failed, setFailed] = useState(false);
+
+  if (!assetId) {
+    return (
+      <Button disabled size="sm" title="Your PDF is being prepared" variant="ghost">
+        <Download className="size-3.5" />
+        PDF soon
+      </Button>
+    );
+  }
+
+  const download = async () => {
+    setBusy(true);
+    setFailed(false);
+    try {
+      const { url } = await requestCertificatePdfUrl(assetId);
+      window.location.assign(url);
+    } catch {
+      setFailed(true);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <Button disabled={busy} onClick={download} size="sm" variant="ghost">
+      {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Download className="size-3.5" />}
+      {failed ? "Try again" : "PDF"}
+    </Button>
+  );
+};
 
 /**
  * Copies the public verification URL rather than the serial alone — pasting a
