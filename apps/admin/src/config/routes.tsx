@@ -5,6 +5,7 @@ import {
   CreditCard,
   Flag,
   LayoutDashboard,
+  MailWarning,
   ScrollText,
   Users,
 } from "lucide-react";
@@ -33,6 +34,7 @@ export const ADMIN_ROUTES: RouteGroup[] = [
     group: "System",
     routes: [
       { href: "/audit", label: "Audit log", icon: ScrollText },
+      { href: "/notifications", label: "Failed notifications", icon: MailWarning },
       { href: "/flags", label: "Feature flags", icon: Flag },
     ],
   },
