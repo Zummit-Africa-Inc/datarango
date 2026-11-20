@@ -10,7 +10,8 @@ import { useApi } from "@datarango/api";
  * because a requeue sends real email to real people.
  */
 
-export type NotificationChannel = "email" | "inApp" | "push";
+/** Wire names of the server enum (WebPush serialises as "webPush"). */
+export type NotificationChannel = "email" | "inApp" | "webPush";
 
 export interface DeadLetter {
   id: string;

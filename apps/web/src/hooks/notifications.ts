@@ -69,3 +69,37 @@ export const useMarkAllRead = () =>
     invalidates: [INBOX],
     toast: { success: "All caught up" },
   });
+
+// ── Preferences ────────────────────────────────────────────────────────────
+
+/** Channels a preference addresses. Push arrives with web push. */
+export type PreferenceChannel = "email" | "inApp";
+
+export interface NotificationPreference {
+  category: string;
+  channel: PreferenceChannel;
+  enabled: boolean;
+}
+
+const PREFERENCES = ["platform-notification-preferences"];
+
+/**
+ * The caller's opt-outs. Security mail (verification, password resets) is not
+ * in the list: it cannot be turned off, by design.
+ */
+export const useNotificationPreferences = () =>
+  useApi.query<{ preferences: NotificationPreference[] }>(
+    PREFERENCES,
+    "/platform/notifications/preferences",
+    { orgScoped: false },
+  );
+
+export const useSetNotificationPreferences = () =>
+  useApi.mutation<
+    { preferences: NotificationPreference[] },
+    { preferences: NotificationPreference[] }
+  >("/platform/notifications/preferences", {
+    method: "PUT",
+    invalidates: [PREFERENCES],
+    toast: { success: "Preferences saved" },
+  });
