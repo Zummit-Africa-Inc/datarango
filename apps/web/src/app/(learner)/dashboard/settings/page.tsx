@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PageLayout, TabList, TabPanel } from "@datarango/ui";
 
 import { EmailStatus } from "@/components/settings/email-status";
 import { MfaSection } from "@/components/settings/mfa-section";
 import { NotificationInbox } from "@/components/settings/notification-inbox";
+import { NotificationPreferences } from "@/components/settings/notification-preferences";
 
 const TABS = [
   { label: "Account", value: "account" },
@@ -17,6 +18,14 @@ const TABS = [
 
 export default function SettingsPage() {
   const [activeTab, setActiveTab] = useState("account");
+
+  // ?tab=notifications is where every email's unsubscribe link lands. Read
+  // after mount rather than with useSearchParams, which would need a Suspense
+  // boundary around the whole page for static rendering.
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    if (tab && TABS.some((t) => t.value === tab)) setActiveTab(tab);
+  }, []);
 
   return (
     <PageLayout title="Settings" subtitle="Manage your account and security.">
@@ -48,10 +57,10 @@ export default function SettingsPage() {
             </div>
           </TabPanel>
           <TabPanel selected={activeTab} value="notifications">
-            {/* The inbox, not preferences: what platform.notification actually
-                offers is a read surface, and it had no consumer at all. Delivery
-                preferences need a backend that doesn't exist yet. */}
-            <NotificationInbox />
+            <div className="space-y-6">
+              <NotificationPreferences />
+              <NotificationInbox />
+            </div>
           </TabPanel>
         </div>
       </div>

@@ -19,7 +19,7 @@ const CHANNELS: { value: NotificationChannel | undefined; label: string }[] = [
   { value: undefined, label: "All" },
   { value: "email", label: "Email" },
   { value: "inApp", label: "In-app" },
-  { value: "push", label: "Push" },
+  { value: "webPush", label: "Push" },
 ];
 
 /**
