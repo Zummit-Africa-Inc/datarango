@@ -32,7 +32,8 @@ export interface CodeEditorProps {
 const theme = EditorView.theme({
   "&": { fontSize: "13px", backgroundColor: "transparent" },
   "&.cm-focused": { outline: "none" },
-  ".cm-content": { fontFamily: "var(--font-code, ui-monospace, monospace)", padding: "8px 0" },
+  "&, .cm-content, .cm-tooltip": { fontFamily: "var(--font-code, ui-monospace, monospace)" },
+  ".cm-content": { padding: "8px 0" },
   ".cm-line": { padding: "0 12px" },
   ".cm-gutters": { display: "none" },
   ".cm-placeholder": { color: "var(--muted-foreground, #9ca3af)" },
