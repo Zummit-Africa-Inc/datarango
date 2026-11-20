@@ -1,4 +1,4 @@
-import { DM_Mono, EB_Garamond, Inter, JetBrains_Mono } from "next/font/google";
+import { DM_Mono, EB_Garamond, Inter, Space_Mono } from "next/font/google";
 import type { Metadata } from "next";
 import "./globals.css";
 
@@ -20,9 +20,11 @@ const dmMono = DM_Mono({
   variable: "--font-dm-mono",
 });
 
-const jetbrainsMono = JetBrains_Mono({
+const spaceMono = Space_Mono({
   subsets: ["latin"],
-  variable: "--font-jetbrains-mono",
+  // Space Mono ships only these two weights.
+  weight: ["400", "700"],
+  variable: "--font-space-mono",
 });
 
 export const metadata: Metadata = {
@@ -38,7 +40,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${ebGaramond.variable} ${inter.variable} ${dmMono.variable} ${jetbrainsMono.variable}`}
+        className={`${ebGaramond.variable} ${inter.variable} ${dmMono.variable} ${spaceMono.variable}`}
       >
         <Providers>{children}</Providers>
       </body>

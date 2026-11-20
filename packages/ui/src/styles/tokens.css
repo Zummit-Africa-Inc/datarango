@@ -22,7 +22,7 @@
   --font-sans: var(--font-inter, "Inter"), sans-serif;
   --font-serif: var(--font-ebgaramond, "EB Garamond"), serif;
   --font-mono-data: var(--font-dm-mono, "DM Mono"), ui-monospace, monospace;
-  --font-code: var(--font-jetbrains-mono, "JetBrains Mono"), ui-monospace, monospace;
+  --font-code: var(--font-space-mono, "Space Mono"), ui-monospace, monospace;
 
   /* canvas & ink */
   --canvas: #faf8f4;
@@ -165,7 +165,9 @@
   --font-heading: var(--font-serif, "EB Garamond"), "Times New Roman", serif;
   --font-sans: var(--font-sans, "Inter"), sans-serif;
   --font-mono-data: var(--font-mono-data, "DM Mono"), ui-monospace, monospace;
-  --font-code: var(--font-code, "JetBrains Mono"), ui-monospace, monospace;
+  --font-code: var(--font-code, "Space Mono"), ui-monospace, monospace;
+  /* Tailwind's `font-mono` is code too (slugs, permission names, snippets). */
+  --font-mono: var(--font-code, "Space Mono"), ui-monospace, monospace;
 
   /* radius — Warp geometry: 3px buttons, 6px inputs, 10px cards */
   --radius-xs: 2px;
@@ -249,6 +251,17 @@
   kbd,
   samp {
     font-family: var(--font-code);
+  }
+
+  /* `*` above sets the sans font on every element directly, so without this
+     anything nested in code (traceback spans, highlighted tokens, CodeMirror's
+     lines) would drop back to sans. More specific than `*`, so it wins. */
+  code *,
+  pre *,
+  kbd *,
+  samp *,
+  .cm-editor * {
+    font-family: inherit;
   }
 
   a,

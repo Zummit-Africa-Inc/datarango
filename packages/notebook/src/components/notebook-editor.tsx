@@ -323,8 +323,9 @@ export const NotebookEditor = ({ sessionId, path, kernel, kernelStatus }: Notebo
   const ready = !!kernel && (kernelStatus === "idle" || kernelStatus === "busy");
   const anyRunning = cells.some((c) => c.run !== "idle");
 
+  // The app disables text selection globally; code and outputs must be copyable.
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 [&_*]:select-text">
       <div className="border-hairline bg-card sticky top-0 z-10 flex flex-wrap items-center gap-1.5 rounded-xs border px-2 py-1.5">
         <Button
           size="sm"
