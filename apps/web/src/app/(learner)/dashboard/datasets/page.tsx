@@ -1,16 +1,33 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
-import { Badge, Button, Input, PageLayout, Skeleton } from "@datarango/ui";
+import {
+  Badge,
+  Button,
+  Input,
+  PageLayout,
+  Skeleton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@datarango/ui";
 
 import { useDiscoverDatasets } from "@/hooks/arena";
 
-const PAGE_SIZE = 12;
+const PAGE_SIZE = 20;
+
+const updated = (iso: string) =>
+  new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 
 export default function DatasetsPage() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
   const [submitted, setSubmitted] = useState("");
   const [page, setPage] = useState(1);
@@ -60,51 +77,87 @@ export default function DatasetsPage() {
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {datasets.map((dataset) => (
-            <div
-              className="border-hairline bg-card hover:border-primary-500/40 flex flex-col rounded-xs border transition-colors"
-              key={dataset.id}
-            >
-              <div className="bg-primary-500 flex h-24 w-full items-end justify-end p-3">
-                <Badge variant="outline">{dataset.license}</Badge>
-              </div>
-              <div className="flex flex-1 flex-col gap-3 p-4">
-                <h2 className="font-heading text-ink truncate text-xl leading-snug">
-                  {dataset.title}
-                </h2>
-                <p className="text-muted-foreground line-clamp-2 flex-1 text-sm leading-relaxed">
-                  {dataset.summary || "No summary yet."}
-                </p>
-                {dataset.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5">
-                    {dataset.tags.slice(0, 4).map((tag) => (
-                      <Badge key={tag} variant="secondary">
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                )}
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-muted-foreground inline-flex items-center gap-1 text-xs">
-                    <Download className="size-3.5" />
-                    {dataset.downloadCount} download{dataset.downloadCount === 1 ? "" : "s"}
-                  </span>
-                  <Button asChild size="sm">
-                    <Link href={`/dashboard/datasets/${dataset.id}`}>View →</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          ))}
+        <div className="border-hairline bg-card overflow-x-auto rounded-xs border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className="min-w-64">Dataset</TableHead>
+                <TableHead className="hidden lg:table-cell">Tags</TableHead>
+                <TableHead className="hidden sm:table-cell">License</TableHead>
+                <TableHead className="text-right">Downloads</TableHead>
+                <TableHead className="hidden md:table-cell">Updated</TableHead>
+                <TableHead className="w-0">
+                  <span className="sr-only">Open</span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {datasets.map((dataset) => {
+                const href = `/dashboard/datasets/${dataset.id}`;
+                return (
+                  // The whole row opens the dataset; the title link keeps it
+                  // reachable by keyboard and middle-click.
+                  <TableRow
+                    key={dataset.id}
+                    className="cursor-pointer"
+                    onClick={() => router.push(href)}
+                  >
+                    <TableCell className="max-w-md py-3 whitespace-normal">
+                      <Link
+                        href={href}
+                        onClick={(e) => e.stopPropagation()}
+                        className="text-ink font-medium hover:underline"
+                      >
+                        {dataset.title}
+                      </Link>
+                      <p className="text-muted-foreground mt-0.5 line-clamp-1 text-xs">
+                        {dataset.summary || "No summary yet."}
+                      </p>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">
+                      <div className="flex flex-wrap gap-1">
+                        {dataset.tags.slice(0, 3).map((tag) => (
+                          <Badge key={tag} variant="secondary">
+                            {tag}
+                          </Badge>
+                        ))}
+                        {dataset.tags.length > 3 && (
+                          <span className="text-muted-foreground text-xs">
+                            +{dataset.tags.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </TableCell>
+                    <TableCell className="hidden sm:table-cell">
+                      <Badge variant="outline">{dataset.license}</Badge>
+                    </TableCell>
+                    <TableCell className="text-right tabular-nums">
+                      {dataset.downloadCount.toLocaleString()}
+                    </TableCell>
+                    <TableCell className="text-muted-foreground hidden md:table-cell">
+                      {updated(dataset.updatedAt)}
+                    </TableCell>
+                    <TableCell>
+                      <Button asChild size="sm" variant="ghost">
+                        <Link href={href} onClick={(e) => e.stopPropagation()}>
+                          View →
+                        </Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
       )}
-      {lastPage > 1 && (
+      {total > 0 && (
         <div className="flex items-center justify-between">
           <p className="text-muted-foreground text-sm">
-            Page {page} of {lastPage} · {total} dataset{total === 1 ? "" : "s"}
+            {lastPage > 1 && `Page ${page} of ${lastPage} · `}
+            {total} dataset{total === 1 ? "" : "s"}
           </p>
-          <div className="flex gap-2">
+          <div className={lastPage > 1 ? "flex gap-2" : "hidden"}>
             <Button
               size="sm"
               variant="outline"
