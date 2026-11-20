@@ -50,7 +50,8 @@ export const GradingAnswerRow = ({
               <p
                 className={cn(
                   "text-ink mt-1 text-sm whitespace-pre-wrap",
-                  answer.kind === "codeSnippet" && "bg-muted rounded-xs p-2 font-mono text-xs",
+                  (answer.kind === "codeSnippet" || answer.kind === "notebook") &&
+                    "bg-muted max-h-96 overflow-auto rounded-xs p-2 font-mono text-xs",
                 )}
               >
                 {response}
@@ -59,6 +60,7 @@ export const GradingAnswerRow = ({
               <p className="text-muted-foreground mt-1 text-sm italic">Left blank</p>
             )}
           </div>
+          {answer.autoGradeReport && <TestReport json={answer.autoGradeReport} />}
         </div>
 
         <div className="shrink-0 text-right">
@@ -148,5 +150,56 @@ export const GradingAnswerRow = ({
         </p>
       )}
     </li>
+  );
+};
+
+type Report =
+  | {
+      passed: number;
+      total: number;
+      tests?: { name: string; passed: boolean; message: string | null }[];
+    }
+  | { error: string };
+
+/** The notebook test run, so a reviewer marks the code knowing what passed. */
+const TestReport = ({ json }: { json: string }) => {
+  let report: Report;
+  try {
+    report = JSON.parse(json) as Report;
+  } catch {
+    return null;
+  }
+  return (
+    <div className="mt-3">
+      <p className="text-muted-foreground text-xs">Tests</p>
+      {"error" in report ? (
+        <pre className="bg-destructive/5 text-ink mt-1 overflow-x-auto rounded-xs px-2 py-1.5 text-xs whitespace-pre-wrap">
+          {report.error}
+        </pre>
+      ) : (
+        <>
+          <p className="text-ink mt-1 text-sm">
+            {report.passed} of {report.total} passed
+          </p>
+          <ul className="mt-1 space-y-0.5">
+            {report.tests?.map((test) => (
+              <li key={test.name} className="flex items-start gap-2 text-xs">
+                {test.passed ? (
+                  <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-600" />
+                ) : (
+                  <XCircle className="mt-0.5 size-3.5 shrink-0 text-amber-600" />
+                )}
+                <span className="min-w-0">
+                  <code className="text-ink">{test.name}</code>
+                  {!test.passed && test.message && (
+                    <span className="text-muted-foreground block break-words">{test.message}</span>
+                  )}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </div>
   );
 };

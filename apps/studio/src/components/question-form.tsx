@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 
+import { CodeEditor } from "@datarango/notebook";
 import { Button, Checkbox, Input, Label, Textarea } from "@datarango/ui";
 
 import {
@@ -13,7 +14,14 @@ import {
   type QuizOption,
 } from "@/hooks/assessment";
 
-const KINDS: QuestionKind[] = ["mcq", "multiSelect", "shortAnswer", "codeSnippet"];
+const KINDS: QuestionKind[] = ["mcq", "multiSelect", "shortAnswer", "codeSnippet", "notebook"];
+
+const TEST_TEMPLATE = `# Runs after the learner's code, in the same namespace.
+# Each test_* function is one test; an assert message is what the learner sees.
+
+def test_example():
+    assert add(1, 2) == 3, "add(1, 2) should be 3"
+`;
 
 export interface QuestionDraft {
   kind: QuestionKind;
@@ -22,6 +30,7 @@ export interface QuestionDraft {
   options: QuizOption[];
   correct: string[];
   requiresManualGrading: boolean;
+  starterCode: string;
 }
 
 /** Option ids only have to be unique within their question, so a letter is plenty. */
@@ -44,6 +53,7 @@ export const emptyDraft = (): QuestionDraft => ({
   ],
   correct: [],
   requiresManualGrading: false,
+  starterCode: "",
 });
 
 export const draftFromQuestion = (question: AuthoredQuestion): QuestionDraft => ({
@@ -52,7 +62,8 @@ export const draftFromQuestion = (question: AuthoredQuestion): QuestionDraft => 
   points: question.points,
   options: question.options.length > 0 ? question.options : [{ id: "a", text: "" }],
   correct: question.correct,
-  requiresManualGrading: question.requiresManualGrading,
+  requiresManualGrading: question.requiresManualGrading ?? false,
+  starterCode: question.starterCode ?? "",
 });
 
 /**
@@ -62,6 +73,14 @@ export const draftFromQuestion = (question: AuthoredQuestion): QuestionDraft => 
  */
 export const draftProblem = (draft: QuestionDraft): string | null => {
   if (!draft.prompt.trim()) return "Give the question a prompt.";
+
+  if (draft.kind === "notebook") {
+    const tests = draft.correct[0]?.trim() ?? "";
+    if (!tests) {
+      return draft.requiresManualGrading ? null : "Write the tests, or mark this one yourself.";
+    }
+    return tests.includes("def test_") ? null : "The tests need at least one test_* function.";
+  }
 
   // A manually-graded question is the one case with no key to validate — the
   // usual "needs an answer" rule is inverted, so it returns before reaching it.
@@ -89,6 +108,12 @@ export const draftProblem = (draft: QuestionDraft): string | null => {
 
 /** Drops blank options so a half-filled row never reaches the answer key. */
 export const cleanDraft = (draft: QuestionDraft): QuestionDraft => {
+  // Notebook questions may carry tests *and* a reviewer (hybrid); blank tests
+  // on a reviewed one just mean "review only".
+  if (draft.kind === "notebook") {
+    const tests = draft.correct[0] ?? "";
+    return { ...draft, options: [], correct: tests.trim() ? [tests] : [] };
+  }
   // The server refuses a manual question that also carries a key, so the key is
   // dropped here rather than sent and bounced.
   if (draft.requiresManualGrading) {
@@ -134,11 +159,21 @@ export const QuestionForm = ({
     // Switching between a choice kind and a text kind makes the old key
     // meaningless — option ids are not patterns and vice versa — so it is
     // dropped rather than carried across and silently mis-graded.
-    const crossing = isChoiceKind(kind) !== isChoiceKind(draft.kind);
+    // A notebook question's key is a test file — no other kind's key carries over.
+    const crossing =
+      isChoiceKind(kind) !== isChoiceKind(draft.kind) ||
+      (kind === "notebook") !== (draft.kind === "notebook");
     onChange({
       ...draft,
       kind,
-      correct: crossing ? [] : kind === "mcq" ? draft.correct.slice(0, 1) : draft.correct,
+      correct:
+        kind === "notebook" && crossing
+          ? [TEST_TEMPLATE]
+          : crossing
+            ? []
+            : kind === "mcq"
+              ? draft.correct.slice(0, 1)
+              : draft.correct,
       // Moving to a choice kind turns manual marking off rather than leaving an
       // invalid combination for the submit to reject: choice questions grade
       // themselves and the server refuses the pairing outright.
@@ -205,14 +240,20 @@ export const QuestionForm = ({
         <Label htmlFor="question-prompt">Prompt</Label>
         <Textarea
           id="question-prompt"
-          rows={2}
+          rows={draft.kind === "notebook" ? 5 : 2}
           value={draft.prompt}
           onChange={(e) => onChange({ ...draft, prompt: e.target.value })}
-          placeholder="What are you asking?"
+          placeholder={
+            draft.kind === "notebook"
+              ? "Describe the task. Markdown works: `code`, lists, tables."
+              : "What are you asking?"
+          }
         />
       </div>
 
-      {isChoiceKind(draft.kind) ? (
+      {draft.kind === "notebook" ? (
+        <NotebookFields draft={draft} onChange={onChange} />
+      ) : isChoiceKind(draft.kind) ? (
         <div className="space-y-2">
           <Label>
             Options
@@ -346,3 +387,71 @@ export const QuestionForm = ({
     </form>
   );
 };
+
+/**
+ * The notebook half of the form: what the learner starts from, the hidden
+ * tests that score them, and whether a person reviews the code as well.
+ */
+const NotebookFields = ({
+  draft,
+  onChange,
+}: {
+  draft: QuestionDraft;
+  onChange: (next: QuestionDraft) => void;
+}) => (
+  <div className="space-y-3">
+    <div className="space-y-1.5">
+      <Label>
+        Starter code
+        <span className="text-muted-foreground ml-2 font-normal">
+          what the learner&apos;s editor opens with — never the answer
+        </span>
+      </Label>
+      <div className="border-hairline bg-muted/40 overflow-hidden rounded-xs border">
+        <CodeEditor
+          value={draft.starterCode}
+          language="python"
+          onChange={(starterCode) => onChange({ ...draft, starterCode })}
+          placeholder={"def add(a, b):\n    ..."}
+        />
+      </div>
+    </div>
+
+    <div className="space-y-1.5">
+      <Label>
+        Hidden tests
+        <span className="text-muted-foreground ml-2 font-normal">
+          learners see each test&apos;s name and result, never this code
+        </span>
+      </Label>
+      <div className="border-hairline bg-muted/40 overflow-hidden rounded-xs border">
+        <CodeEditor
+          value={draft.correct[0] ?? ""}
+          language="python"
+          onChange={(tests) => onChange({ ...draft, correct: [tests] })}
+          placeholder="def test_something():"
+        />
+      </div>
+      <p className="text-muted-foreground text-xs">
+        Points are split across tests: passing 2 of 3 earns two thirds, rounded down.
+      </p>
+    </div>
+
+    <label className="flex items-start gap-2">
+      <Checkbox
+        className="mt-0.5"
+        checked={draft.requiresManualGrading}
+        onCheckedChange={(checked) =>
+          onChange({ ...draft, requiresManualGrading: checked === true })
+        }
+      />
+      <span className="text-sm">
+        I&apos;ll review the code too
+        <span className="text-muted-foreground block text-xs">
+          With tests, they score it first and the submission then waits in your grading queue with
+          the test report, where you set the final mark. Without tests, you mark it alone.
+        </span>
+      </span>
+    </label>
+  </div>
+);

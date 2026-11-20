@@ -1,16 +1,23 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
-import { AlertTriangle, CheckCircle2, Clock, XCircle } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useQueryClient } from "@tanstack/react-query";
+import { AlertTriangle, CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
 
-import { Badge, Button, Input, Textarea, cn } from "@datarango/ui";
+import { CodeEditor } from "@datarango/notebook";
+import { Badge, Button, Input, Markdown, Textarea, cn } from "@datarango/ui";
 
 import {
+  useAttempt,
   useQuiz,
   useSubmitQuiz,
+  type AttemptAnswerDetail,
   type AttemptContext,
   type AttemptResult,
+  type AttemptStatus,
   type QuizQuestion,
+  type QuizTakeView,
+  type TestReport,
 } from "@/hooks/assessment";
 
 /**
@@ -86,8 +93,16 @@ export const QuizRunner = ({
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // A notebook question nobody typed into still submits what its editor
+    // shows — the starter code — rather than nothing.
+    const responses: Answers = { ...answers };
+    for (const question of quiz?.questions ?? []) {
+      if (question.kind === "notebook" && !responses[question.id]?.length) {
+        responses[question.id] = [question.starterCode];
+      }
+    }
     submit.mutate(
-      { context, courseId, courseVersionId, lessonId, moduleId, responses: answers },
+      { context, courseId, courseVersionId, lessonId, moduleId, responses },
       {
         onSuccess: (attempt) => {
           setResult(attempt);
@@ -117,7 +132,7 @@ export const QuizRunner = ({
   }
 
   if (result) {
-    return <QuizResult quiz={quiz.title} result={result} context={context} />;
+    return <QuizResult quiz={quiz} result={result} context={context} />;
   }
 
   const exhausted = attemptsLeft === 0;
@@ -196,7 +211,12 @@ const QuestionField = ({
         {String(index + 1).padStart(2, "0")}
       </span>
       <div className="min-w-0 flex-1">
-        <p className="text-ink text-sm font-medium">{question.prompt}</p>
+        {question.kind === "notebook" ? (
+          // Exercise prompts are written like lesson text: code, lists, data.
+          <Markdown className="text-ink text-sm">{question.prompt}</Markdown>
+        ) : (
+          <p className="text-ink text-sm font-medium">{question.prompt}</p>
+        )}
         <p className="text-muted-foreground mt-0.5 text-xs">
           {question.points} point{question.points === 1 ? "" : "s"}
           {question.kind === "multiSelect" && " · select all that apply"}
@@ -243,6 +263,21 @@ const QuestionField = ({
             />
           )}
 
+          {question.kind === "notebook" && (
+            <div className="border-hairline bg-muted/40 overflow-hidden rounded-xs border">
+              <CodeEditor
+                value={value[0] ?? question.starterCode}
+                language="python"
+                onChange={(code) => onChange([code])}
+                placeholder="Write your Python here"
+              />
+              <p className="border-hairline text-muted-foreground border-t px-3 py-1.5 text-xs">
+                Hidden tests run against this code when you submit. Try it out in your notebook
+                first if you like.
+              </p>
+            </div>
+          )}
+
           {question.kind === "codeSnippet" && (
             <Textarea
               aria-label={`Answer to question ${index + 1}`}
@@ -263,56 +298,101 @@ const QuestionField = ({
 
 const QuizResult = ({
   quiz,
-  result,
+  result: submitted,
   context,
 }: {
-  quiz: string;
+  quiz: QuizTakeView;
   result: AttemptResult;
   context: AttemptContext;
 }) => {
-  // An attempt with a question still under review has no verdict at all.
-  // Reading `passed` here would render a perfectly good submission as "not
-  // passed yet" and show a score that is only the auto-graded floor — telling
-  // the learner they fell short of a mark nobody has finished awarding.
-  const pending = result.status === "pendingReview";
-  const awaiting = result.answers.filter((a) => a.awaitingReview).length;
+  // Notebook answers are graded after the submit returns, by a test run on the
+  // notebook service. Their attempt is re-read (and polled while tests run) so
+  // the screen follows it to a verdict and can show each test.
+  const hasNotebook = quiz.questions.some((q) => q.kind === "notebook");
+  const { data: detail } = useAttempt(submitted.attemptId, hasNotebook);
+
+  const status: AttemptStatus = detail?.status ?? submitted.status;
+  const passed = detail?.passed ?? submitted.passed;
+  const scorePercent = detail?.scorePercent ?? submitted.scorePercent;
+  const pointsAwarded = detail?.pointsAwarded ?? submitted.pointsAwarded;
+  const pointsAvailable = detail?.pointsAvailable ?? submitted.pointsAvailable;
+  const answers = detail?.answers ?? null;
+
+  // The pass (and its course progress) is applied server-side when the tests
+  // land, after the submit already invalidated these — so refresh them again.
+  const queryClient = useQueryClient();
+  const wasTesting = useRef(submitted.status === "pendingAutoGrade");
+  useEffect(() => {
+    if (wasTesting.current && status !== "pendingAutoGrade") {
+      wasTesting.current = false;
+      for (const key of [
+        ["learning-progress"],
+        ["learning-certificates"],
+        ["assessment-attempts"],
+      ]) {
+        void queryClient.invalidateQueries({ queryKey: key });
+      }
+    }
+  }, [status, queryClient]);
+
+  // An attempt with tests running or a question under review has no verdict.
+  // Reading `passed` then would render a perfectly good submission as "not
+  // passed yet" and show a score that is only the floor already earned.
+  const testing = status === "pendingAutoGrade";
+  const reviewing = status === "pendingReview";
+  const awaiting = answers
+    ? answers.filter((a) => a.awaitingReview).length
+    : submitted.answers.filter((a) => a.awaitingReview).length;
 
   return (
     <div className="space-y-4">
       <div
         className={cn(
           "border-hairline bg-card flex items-start gap-3 rounded-xs border p-5",
-          pending
+          testing || reviewing
             ? "border-sky-600/40"
-            : result.passed
+            : passed
               ? "border-emerald-600/40"
               : "border-amber-600/40",
         )}
       >
-        {pending ? (
+        {testing ? (
+          <Loader2 className="mt-0.5 size-5 shrink-0 animate-spin text-sky-600" />
+        ) : reviewing ? (
           <Clock className="mt-0.5 size-5 shrink-0 text-sky-600" />
-        ) : result.passed ? (
+        ) : passed ? (
           <CheckCircle2 className="mt-0.5 size-5 shrink-0 text-emerald-600" />
         ) : (
           <XCircle className="mt-0.5 size-5 shrink-0 text-amber-600" />
         )}
         <div>
           <p className="font-heading text-ink text-lg">
-            {pending ? "Submitted — awaiting review" : result.passed ? "Passed" : "Not passed yet"}
+            {testing
+              ? "Running your tests…"
+              : reviewing
+                ? "Submitted — awaiting review"
+                : passed
+                  ? "Passed"
+                  : "Not passed yet"}
           </p>
 
-          {pending ? (
+          {testing ? (
+            <p className="text-muted-foreground mt-1 text-sm">
+              {quiz.title} — your code is running against the exercise&apos;s tests. This usually
+              takes a few seconds; you can leave and come back.
+            </p>
+          ) : reviewing ? (
             <>
               <p className="text-muted-foreground mt-1 text-sm">
-                {quiz} — {awaiting} answer{awaiting === 1 ? "" : "s"}{" "}
+                {quiz.title} — {awaiting} answer{awaiting === 1 ? "" : "s"}{" "}
                 {awaiting === 1 ? "is" : "are"} with a marker. You&apos;ll be notified when
                 it&apos;s scored.
               </p>
               {/* Deliberately no percentage: the auto-graded floor would read as
                   a final mark and it can only go up from here. */}
               <p className="text-muted-foreground mt-2 text-xs">
-                {result.pointsAvailable - result.pointsAwarded} of {result.pointsAvailable} points
-                are still to be decided, so there&apos;s no score to show yet.
+                {pointsAvailable - pointsAwarded} of {pointsAvailable} points are still to be
+                decided, so there&apos;s no score to show yet.
               </p>
               {context !== "standalone" && (
                 <p className="text-muted-foreground mt-2 text-sm">
@@ -323,19 +403,20 @@ const QuizResult = ({
           ) : (
             <>
               <p className="text-muted-foreground mt-1 text-sm">
-                {quiz} — {result.pointsAwarded} of {result.pointsAvailable} points (
-                {result.scorePercent}%).
+                {quiz.title} — {pointsAwarded} of {pointsAvailable} points ({scorePercent}%).
               </p>
 
               {/* Say plainly whether this counted, rather than leaving it implied. */}
-              {result.passed && context !== "standalone" && (
+              {passed && context !== "standalone" && (
                 <p className="mt-2 text-sm text-emerald-700">
-                  {result.courseProgressAdvanced
-                    ? "Your course progress has been updated."
-                    : "Scored, but it didn't update a course — you may not be enrolled."}
+                  {detail
+                    ? "This counts towards your course."
+                    : submitted.courseProgressAdvanced
+                      ? "Your course progress has been updated."
+                      : "Scored, but it didn't update a course — you may not be enrolled."}
                 </p>
               )}
-              {result.passed && context === "standalone" && (
+              {passed && context === "standalone" && (
                 <p className="text-muted-foreground mt-2 text-sm">
                   Taken from the library, so this doesn&apos;t change any course progress.
                 </p>
@@ -349,26 +430,106 @@ const QuizResult = ({
         <p className="border-hairline text-muted-foreground border-b px-4 py-2 text-xs font-medium uppercase">
           Per question
         </p>
-        <ul className="px-4 py-2">
-          {result.answers.map((answer, index) => (
-            <li className="flex items-center gap-3 py-1.5 text-sm" key={answer.questionId}>
-              {answer.awaitingReview ? (
-                <Clock className="size-4 shrink-0 text-sky-600" />
-              ) : answer.correct ? (
-                <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+        <ul className="divide-hairline divide-y px-4">
+          {(answers ?? submitted.answers).map((answer, index) => (
+            <AnswerRow
+              key={answer.questionId}
+              index={index}
+              answer={answer}
+              detail={answers ? (answer as AttemptAnswerDetail) : null}
+            />
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+const AnswerRow = ({
+  index,
+  answer,
+  detail,
+}: {
+  index: number;
+  answer: {
+    questionId: string;
+    correct: boolean;
+    pointsAwarded: number;
+    pointsAvailable: number;
+    awaitingReview: boolean;
+  };
+  detail: AttemptAnswerDetail | null;
+}) => {
+  const awaitingTests = detail?.awaitingTests ?? false;
+  const pending = awaitingTests || answer.awaitingReview;
+  return (
+    <li className="py-2 text-sm">
+      <div className="flex items-center gap-3">
+        {awaitingTests ? (
+          <Loader2 className="size-4 shrink-0 animate-spin text-sky-600" />
+        ) : answer.awaitingReview ? (
+          <Clock className="size-4 shrink-0 text-sky-600" />
+        ) : answer.correct ? (
+          <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+        ) : (
+          <XCircle className="text-muted-foreground size-4 shrink-0" />
+        )}
+        <span className="flex-1">
+          Question {index + 1}
+          {awaitingTests && <span className="text-muted-foreground"> · running tests</span>}
+        </span>
+        <span className="text-muted-foreground text-xs tabular-nums">
+          {pending && !detail?.testReport
+            ? `— /${answer.pointsAvailable}`
+            : `${answer.pointsAwarded}/${answer.pointsAvailable}`}
+        </span>
+      </div>
+      {detail?.testReport && <TestReportView report={detail.testReport} />}
+      {detail?.feedback && (
+        <p className="text-muted-foreground mt-1.5 ml-7 text-xs">
+          <span className="text-ink font-medium">Marker&apos;s note:</span> {detail.feedback}
+        </p>
+      )}
+    </li>
+  );
+};
+
+/** One line per test; the failure message is the author's assert message. */
+const TestReportView = ({ report }: { report: TestReport }) => {
+  if ("error" in report) {
+    return (
+      <div className="mt-2 ml-7">
+        <p className="text-ink text-xs font-medium">Your code didn&apos;t run to the end</p>
+        <pre className="bg-destructive/5 text-ink mt-1 overflow-x-auto rounded-xs px-2 py-1.5 text-xs whitespace-pre-wrap">
+          {report.error}
+        </pre>
+      </div>
+    );
+  }
+  return (
+    <div className="mt-2 ml-7">
+      <p className="text-muted-foreground text-xs">
+        {report.passed} of {report.total} test{report.total === 1 ? "" : "s"} passed
+      </p>
+      {report.tests && (
+        <ul className="mt-1 space-y-0.5">
+          {report.tests.map((test) => (
+            <li key={test.name} className="flex items-start gap-2 text-xs">
+              {test.passed ? (
+                <CheckCircle2 className="mt-0.5 size-3.5 shrink-0 text-emerald-600" />
               ) : (
-                <XCircle className="text-muted-foreground size-4 shrink-0" />
+                <XCircle className="mt-0.5 size-3.5 shrink-0 text-amber-600" />
               )}
-              <span className="flex-1">Question {index + 1}</span>
-              <span className="text-muted-foreground text-xs">
-                {answer.awaitingReview
-                  ? `— /${answer.pointsAvailable}`
-                  : `${answer.pointsAwarded}/${answer.pointsAvailable}`}
+              <span className="min-w-0">
+                <code className="text-ink">{test.name}</code>
+                {!test.passed && test.message && (
+                  <span className="text-muted-foreground block break-words">{test.message}</span>
+                )}
               </span>
             </li>
           ))}
         </ul>
-      </div>
+      )}
     </div>
   );
 };

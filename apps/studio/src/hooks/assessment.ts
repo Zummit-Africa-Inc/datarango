@@ -17,7 +17,7 @@ import { useApi } from "@datarango/api";
  * varies by org.
  */
 
-export type QuestionKind = "mcq" | "multiSelect" | "shortAnswer" | "codeSnippet";
+export type QuestionKind = "mcq" | "multiSelect" | "shortAnswer" | "codeSnippet" | "notebook";
 export type QuizStatus = "draft" | "published";
 
 export interface QuizOption {
@@ -60,8 +60,13 @@ export interface AuthoredQuestion {
    * this way: a choice question grades itself, and the server refuses the
    * combination rather than letting an author queue work that never needed
    * doing.
+   *
+   * A notebook question may have both: its tests score it, then a person
+   * reviews the code with the test report in front of them (hybrid).
    */
   requiresManualGrading: boolean;
+  /** What a notebook question's editor opens with. Empty for other kinds. */
+  starterCode: string;
 }
 
 export interface QuizAuthoringView {
@@ -173,6 +178,8 @@ export interface AddQuestionInput {
   /** Omitted means append; the server resolves a negative position to last. */
   position?: number;
   requiresManualGrading?: boolean;
+  /** Notebook questions only — the server refuses it on any other kind. */
+  starterCode?: string;
 }
 
 export const useAddQuestion = (quizId: string) =>
@@ -197,9 +204,11 @@ export interface UpdateQuestionInput {
   /**
    * Switching *to* manual drops the key server-side, so it need not be cleared
    * here. Switching *away* leaves the question with no key, which the server
-   * then rejects — send `correct` in the same edit.
+   * then rejects — send `correct` in the same edit. Notebook questions keep
+   * their tests when review is switched on.
    */
   requiresManualGrading?: boolean;
+  starterCode?: string;
 }
 
 export const useUpdateQuestion = (quizId: string) =>
@@ -232,6 +241,7 @@ export const QUESTION_KIND_LABELS: Record<QuestionKind, string> = {
   multiSelect: "Multi-select",
   shortAnswer: "Short answer",
   codeSnippet: "Code snippet",
+  notebook: "Notebook exercise",
 };
 
 /** True for the kinds whose answer key is option ids rather than a pattern. */
