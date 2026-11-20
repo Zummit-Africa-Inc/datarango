@@ -59,6 +59,7 @@ export const QuestionCard = ({
         options: cleaned.options,
         correct: cleaned.correct,
         requiresManualGrading: cleaned.requiresManualGrading,
+        starterCode: cleaned.kind === "notebook" ? cleaned.starterCode : undefined,
       },
       { onSuccess: () => setEditing(false) },
     );

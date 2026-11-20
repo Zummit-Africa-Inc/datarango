@@ -11,7 +11,7 @@ import { useApi } from "@datarango/api";
  * add a `correct` field here expecting the server to fill it.
  */
 
-export type QuestionKind = "mcq" | "multiSelect" | "shortAnswer" | "codeSnippet";
+export type QuestionKind = "mcq" | "multiSelect" | "shortAnswer" | "codeSnippet" | "notebook";
 
 /**
  * Where the attempt is being taken from. This is not bookkeeping: only the
@@ -32,6 +32,8 @@ export interface QuizQuestion {
   prompt: string;
   points: number;
   options: QuizOption[];
+  /** What a notebook question's editor opens with. Empty for other kinds. */
+  starterCode: string;
 }
 
 export interface QuizTakeView {
@@ -54,7 +56,7 @@ export interface QuizTakeView {
  * verdict** — `passed` is false because nothing has been decided, not because
  * the learner got it wrong. Branch on this, never on `passed` alone.
  */
-export type AttemptStatus = "graded" | "pendingReview";
+export type AttemptStatus = "graded" | "pendingReview" | "pendingAutoGrade";
 
 export interface GradedAnswer {
   questionId: string;
@@ -162,6 +164,52 @@ export interface QuizAttempt {
   status: AttemptStatus;
 }
 
+/**
+ * A notebook answer's test run, as the runner reported it: each `test_*`
+ * function with a one-line failure message, or an `error` when the code could
+ * not run at all. Never the test source.
+ */
+export type TestReport =
+  | {
+      passed: number;
+      total: number;
+      tests?: { name: string; passed: boolean; message: string | null }[];
+      truncated?: boolean;
+    }
+  | { error: string };
+
+export interface AttemptAnswerDetail {
+  questionId: string;
+  position: number;
+  kind: QuestionKind;
+  prompt: string;
+  /** What the learner submitted (their code, for a notebook question). */
+  response: string[];
+  pointsAwarded: number;
+  pointsAvailable: number;
+  /** A verdict only when neither `awaitingTests` nor `awaitingReview` is set. */
+  correct: boolean;
+  awaitingTests: boolean;
+  awaitingReview: boolean;
+  feedback: string | null;
+  testReport: TestReport | null;
+}
+
+/** The learner's own attempt with every answer — re-read while tests run. */
+export interface AttemptDetail {
+  attemptId: string;
+  quizId: string;
+  quizTitle: string;
+  status: AttemptStatus;
+  passed: boolean;
+  scorePercent: number;
+  pointsAwarded: number;
+  pointsAvailable: number;
+  passThresholdPercent: number;
+  submittedAt: string | null;
+  answers: AttemptAnswerDetail[];
+}
+
 const quizKey = (quizId: string) => ["assessment-quiz", quizId];
 const LIBRARY = ["assessment-library"];
 const ATTEMPTS = ["assessment-attempts"];
@@ -222,4 +270,21 @@ export const useMyAttempts = (quizId?: string) =>
     [...ATTEMPTS, quizId ?? "all"],
     "/learning/assessment/attempts",
     { orgScoped: false, params: { quizId } },
+  );
+
+/**
+ * One of the learner's own attempts in full. Polled every two seconds while
+ * notebook tests are running (`pendingAutoGrade`): the result arrives from the
+ * notebook service on its own schedule, and nothing pushes it to the page.
+ */
+export const useAttempt = (attemptId: string | null, enabled = true) =>
+  useApi.query<AttemptDetail>(
+    ["assessment-attempt", attemptId ?? "none"],
+    `/learning/assessment/attempts/${attemptId}`,
+    {
+      orgScoped: false,
+      enabled: enabled && !!attemptId,
+      staleTime: 0,
+      refetchInterval: (data) => (!data || data.status === "pendingAutoGrade" ? 2000 : false),
+    },
   );

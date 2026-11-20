@@ -66,6 +66,7 @@ export default function QuizBuilderPage() {
         options: cleaned.options,
         correct: cleaned.correct,
         requiresManualGrading: cleaned.requiresManualGrading,
+        starterCode: cleaned.kind === "notebook" ? cleaned.starterCode : undefined,
       },
       {
         onSuccess: () => {

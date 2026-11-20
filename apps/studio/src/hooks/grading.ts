@@ -16,7 +16,7 @@ import { useApi } from "@datarango/api";
  * ownership, not whichever org they happen to be looking at.
  */
 
-export type QuestionKind = "mcq" | "multiSelect" | "shortAnswer" | "codeSnippet";
+export type QuestionKind = "mcq" | "multiSelect" | "shortAnswer" | "codeSnippet" | "notebook";
 
 export interface GradingQueueItem {
   attemptId: string;
@@ -57,6 +57,12 @@ export interface GradingAnswer {
   graded: boolean;
   pointsAwarded: number;
   feedback: string | null;
+  /**
+   * A notebook answer's test run as JSON (`{passed, total, tests}` or
+   * `{error}`), present once its tests have run. A hybrid answer reaches the
+   * queue only after that, so the grader always has it.
+   */
+  autoGradeReport?: string | null;
 }
 
 export interface GradingAttempt {

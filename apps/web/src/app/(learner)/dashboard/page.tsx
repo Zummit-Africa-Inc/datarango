@@ -225,6 +225,10 @@ const AttemptRow = ({ attempt }: { attempt: QuizAttempt }) => (
       <Badge variant="outline" className="shrink-0">
         Being marked
       </Badge>
+    ) : attempt.status === "pendingAutoGrade" ? (
+      <Badge variant="outline" className="shrink-0">
+        Running tests
+      </Badge>
     ) : (
       <Badge variant={attempt.passed ? "success" : "outline"} className="shrink-0">
         {attempt.scorePercent}%
