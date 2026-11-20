@@ -1,187 +1,364 @@
 /*
- * Datarango design tokens — generated from DESIGN.md (v1.0).
- * Precision on milk: milky-white canvas, warm ink, ember as the only action
- * color, petrol as the analytical counterweight. Serif display type, Inter
- * body, mono for every number that matters. Light theme only (dark mode
- * deferred — ink islands cover the dark-surface needs).
+ * Datarango design tokens (DESIGN-HANDOFF.md §2). The only place colours,
+ * fonts, radii and shadows are defined. Components use the semantic and
+ * accent tokens; the "legacy aliases" block maps the v1.1 names onto them
+ * until the purge phase removes those names.
  */
 
 @import "tw-animate-css";
 
-/* Dark mode is deferred (DESIGN.md): gate dark: behind a class that is never
- * applied, so leftover dark: utilities stay inert even for dark-OS visitors. */
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 :root {
+  color-scheme: light;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
 
-  --font-sans: var(--font-inter, "Inter"), sans-serif;
-  --font-serif: var(--font-ebgaramond, "EB Garamond"), serif;
-  --font-mono-data: var(--font-dm-mono, "DM Mono"), ui-monospace, monospace;
-  --font-code: var(--font-space-mono, "Space Mono"), ui-monospace, monospace;
+  --font-display: var(--font-space-grotesk, "Space Grotesk"), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist, "Geist"), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono, "Space Mono"), ui-monospace, monospace;
 
-  /* canvas & ink */
-  --canvas: #faf8f4;
-  --canvas-soft: #fdfcfa;
-  --surface-card: #ffffff;
-  --surface-strong: #f3f0ea;
-  --surface-ink: #191512;
-  --surface-ink-elevated: #241f1b;
-  --ink: #1c1713;
-  --body-text: #4a423b;
-  --muted-text: #7d746b;
-  --muted-soft: #aaa196;
-  --hairline: #e9e4dc;
-  --hairline-strong: #d8d1c6;
-  --on-primary: #ffffff;
-  --on-ink: #f6f2ec;
-  --on-ink-muted: #a89e92;
-
-  /* semantic */
-  --success: #177245;
-  --success-soft: #e7f3ec;
-  --warning: #a36205;
-  --warning-soft: #faf1e0;
-  --error: #b3261e;
-  --error-soft: #f9e9e8;
-  --info: #116063;
-  --info-soft: #e7f1f1;
-
-  /* shadcn semantic mapping */
-  --background: var(--canvas);
-  --foreground: var(--ink);
-  --card: var(--surface-card);
-  --card-foreground: var(--ink);
-  --popover: var(--surface-card);
-  --popover-foreground: var(--ink);
+  --background: #ffffff;
+  --background-subtle: #fafaf9;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --sidebar: #fafaf9;
+  --border: #e7e5e4;
+  --border-strong: #d6d3d1;
+  --foreground: #1c1917;
+  --foreground-muted: #78716c;
+  --foreground-subtle: #a8a29e;
+  --muted: #f5f5f4;
   --primary: #c23f00;
-  --primary-foreground: var(--on-primary);
-  --secondary: var(--surface-strong);
-  --secondary-foreground: var(--ink);
-  --muted: var(--surface-strong);
-  --muted-foreground: var(--muted-text);
-  --accent: #fef2ec;
-  --accent-foreground: #802100;
-  --destructive: var(--error);
-  --destructive-foreground: #ffffff;
-  --border: var(--hairline);
-  --input: var(--hairline-strong);
-  --ring: #c23f00;
+  --primary-hover: #ce4300;
+  --primary-pressed: #8b2a00;
+  --primary-foreground: #ffffff;
+  --primary-soft: #fff4f1;
+  --primary-soft-foreground: #8b2a00;
+  --ring: #e9500a;
 
-  /* data-viz sequence (ember and petrol alternating leads) */
-  --chart-1: #c23f00;
-  --chart-2: #116063;
-  --chart-3: #e35509;
-  --chart-4: #40989a;
-  --chart-5: #8a6d3b;
-  --chart-6: #601700;
+  --band: #0c0a09;
+  --band-elevated: #1c1917;
+  --on-band: #fafaf9;
+  --on-band-muted: #a8a29e;
 
-  --radius: 10px;
+  --success: #047857;
+  --success-soft: #d1fae5;
+  --warning: #92400e;
+  --warning-soft: #fef3c7;
+  --danger: #b91c1c;
+  --danger-soft: #fee2e2;
+  --danger-solid: #b91c1c;
+  --info: #0369a1;
+  --info-soft: #e0f2fe;
+
+  --violet-soft: #ede9fe;
+  --violet-soft-foreground: #6d28d9;
+  --violet-tile: #ddd6fe;
+  --violet-tile-foreground: #4c1d95;
+  --violet-shape: #c4b5fd;
+  --violet-solid: #8b5cf6;
+
+  --lime-soft: #d9f99d;
+  --lime-soft-foreground: #3f6212;
+  --lime-tile: #bef264;
+  --lime-tile-foreground: #1a2e05;
+  --lime-shape: #bef264;
+  --lime-solid: #84cc16;
+
+  --amber-soft: #fef3c7;
+  --amber-soft-foreground: #92400e;
+  --amber-tile: #fde68a;
+  --amber-tile-foreground: #78350f;
+  --amber-shape: #fcd34d;
+  --amber-solid: #f59e0b;
+
+  --sky-soft: #e0f2fe;
+  --sky-soft-foreground: #0369a1;
+  --sky-tile: #bae6fd;
+  --sky-tile-foreground: #0c4a6e;
+  --sky-shape: #7dd3fc;
+  --sky-solid: #0ea5e9;
+
+  --rose-soft: #ffe4e6;
+  --rose-soft-foreground: #be123c;
+  --rose-tile: #fecdd3;
+  --rose-tile-foreground: #881337;
+  --rose-shape: #fda4af;
+  --rose-solid: #f43f5e;
+
+  --teal-soft: #ccfbf1;
+  --teal-soft-foreground: #0f766e;
+  --teal-tile: #99f6e4;
+  --teal-tile-foreground: #134e4a;
+  --teal-shape: #5eead4;
+  --teal-solid: #14b8a6;
+
+  --chart-1: var(--primary);
+  --chart-2: var(--violet-solid);
+  --chart-3: var(--sky-solid);
+  --chart-4: var(--lime-solid);
+  --chart-5: var(--rose-solid);
+  --chart-6: var(--teal-solid);
+  --chart-muted: #e7e5e4;
+
+
+  --legacy-primary-50: #fff4f1;
+  --legacy-primary-100: #ffe7df;
+  --legacy-primary-200: #ffcebe;
+  --legacy-primary-300: #ffa88b;
+  --legacy-primary-400: #ce4300;
+  --legacy-primary-500: #c23f00;
+  --legacy-primary-600: #8b2a00;
+  --legacy-primary-700: #8b2a00;
+  --legacy-primary-800: #6c1f00;
+  --legacy-primary-900: #431000;
+  --legacy-primary-950: #431000;
+  --radius: 12px;
+}
+
+:root:where(.dark) {
+  color-scheme: dark;
+
+  --background: #0c0a09;
+  --background-subtle: #1c1917;
+  --surface: #1c1917;
+  --surface-raised: #292524;
+  --sidebar: #141210;
+  --border: #292524;
+  --border-strong: #44403c;
+  --foreground: #fafaf9;
+  --foreground-muted: #a8a29e;
+  --foreground-subtle: #78716c;
+  --muted: #292524;
+  --primary: #e9500a;
+  --primary-hover: #fc7242;
+  --primary-pressed: #ce4300;
+  --primary-foreground: #0c0a09;
+  --primary-soft: #431000;
+  --primary-soft-foreground: #ffa88b;
+  --ring: #fc7242;
+
+  --band: #141210;
+  --band-elevated: #292524;
+  --on-band: #fafaf9;
+  --on-band-muted: #a8a29e;
+
+  --success: #6ee7b7;
+  --success-soft: #022c22;
+  --warning: #fcd34d;
+  --warning-soft: #451a03;
+  --danger: #fca5a5;
+  --danger-soft: #450a0a;
+  --danger-solid: #dc2626;
+  --info: #7dd3fc;
+  --info-soft: #082f49;
+
+  --violet-soft: #2e1065;
+  --violet-soft-foreground: #c4b5fd;
+  --violet-tile: #4c1d95;
+  --violet-tile-foreground: #ede9fe;
+  --violet-shape: #6d28d9;
+
+  --lime-soft: #1a2e05;
+  --lime-soft-foreground: #bef264;
+  --lime-tile: #365314;
+  --lime-tile-foreground: #ecfccb;
+  --lime-shape: #4d7c0f;
+
+  --amber-soft: #451a03;
+  --amber-soft-foreground: #fcd34d;
+  --amber-tile: #78350f;
+  --amber-tile-foreground: #fef3c7;
+  --amber-shape: #b45309;
+
+  --sky-soft: #082f49;
+  --sky-soft-foreground: #7dd3fc;
+  --sky-tile: #0c4a6e;
+  --sky-tile-foreground: #e0f2fe;
+  --sky-shape: #0369a1;
+
+  --rose-soft: #4c0519;
+  --rose-soft-foreground: #fda4af;
+  --rose-tile: #881337;
+  --rose-tile-foreground: #ffe4e6;
+  --rose-shape: #be123c;
+
+  --teal-soft: #042f2e;
+  --teal-soft-foreground: #5eead4;
+  --teal-tile: #134e4a;
+  --teal-tile-foreground: #ccfbf1;
+  --teal-shape: #0f766e;
+
+  --chart-muted: #44403c;
+
+  --legacy-primary-50: #431000;
+  --legacy-primary-100: #431000;
+  --legacy-primary-200: #6c1f00;
+  --legacy-primary-300: #8b2a00;
+  --legacy-primary-400: #fc7242;
+  --legacy-primary-500: #e9500a;
+  --legacy-primary-600: #fc7242;
+  --legacy-primary-700: #ffa88b;
+  --legacy-primary-800: #ffa88b;
+  --legacy-primary-900: #ffcebe;
+  --legacy-primary-950: #ffe7df;
 }
 
 @theme inline {
-  /* semantic tokens */
+  --font-display: var(--font-space-grotesk, "Space Grotesk"), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-geist, "Geist"), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-space-mono, "Space Mono"), ui-monospace, monospace;
+
+  --color-ember-50: #fff4f1;
+  --color-ember-100: #ffe7df;
+  --color-ember-200: #ffcebe;
+  --color-ember-300: #ffa88b;
+  --color-ember-400: #fc7242;
+  --color-ember-500: #e9500a;
+  --color-ember-600: #ce4300;
+  --color-ember-700: #c23f00;
+  --color-ember-800: #8b2a00;
+  --color-ember-900: #6c1f00;
+  --color-ember-950: #431000;
+
   --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
+  --color-background-subtle: var(--background-subtle);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-sidebar: var(--sidebar);
   --color-border: var(--border);
-  --color-input: var(--input);
+  --color-border-strong: var(--border-strong);
+  --color-foreground: var(--foreground);
+  --color-foreground-muted: var(--foreground-muted);
+  --color-foreground-subtle: var(--foreground-subtle);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-pressed: var(--primary-pressed);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-primary-soft-foreground: var(--primary-soft-foreground);
   --color-ring: var(--ring);
+
+  --color-band: var(--band);
+  --color-band-elevated: var(--band-elevated);
+  --color-on-band: var(--on-band);
+  --color-on-band-muted: var(--on-band-muted);
+
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-info: var(--info);
+  --color-info-soft: var(--info-soft);
+
+  --color-violet-soft: var(--violet-soft);
+  --color-violet-soft-foreground: var(--violet-soft-foreground);
+  --color-violet-tile: var(--violet-tile);
+  --color-violet-tile-foreground: var(--violet-tile-foreground);
+  --color-violet-shape: var(--violet-shape);
+  --color-violet-solid: var(--violet-solid);
+  --color-lime-soft: var(--lime-soft);
+  --color-lime-soft-foreground: var(--lime-soft-foreground);
+  --color-lime-tile: var(--lime-tile);
+  --color-lime-tile-foreground: var(--lime-tile-foreground);
+  --color-lime-shape: var(--lime-shape);
+  --color-lime-solid: var(--lime-solid);
+  --color-amber-soft: var(--amber-soft);
+  --color-amber-soft-foreground: var(--amber-soft-foreground);
+  --color-amber-tile: var(--amber-tile);
+  --color-amber-tile-foreground: var(--amber-tile-foreground);
+  --color-amber-shape: var(--amber-shape);
+  --color-amber-solid: var(--amber-solid);
+  --color-sky-soft: var(--sky-soft);
+  --color-sky-soft-foreground: var(--sky-soft-foreground);
+  --color-sky-tile: var(--sky-tile);
+  --color-sky-tile-foreground: var(--sky-tile-foreground);
+  --color-sky-shape: var(--sky-shape);
+  --color-sky-solid: var(--sky-solid);
+  --color-rose-soft: var(--rose-soft);
+  --color-rose-soft-foreground: var(--rose-soft-foreground);
+  --color-rose-tile: var(--rose-tile);
+  --color-rose-tile-foreground: var(--rose-tile-foreground);
+  --color-rose-shape: var(--rose-shape);
+  --color-rose-solid: var(--rose-solid);
+  --color-teal-soft: var(--teal-soft);
+  --color-teal-soft-foreground: var(--teal-soft-foreground);
+  --color-teal-tile: var(--teal-tile);
+  --color-teal-tile-foreground: var(--teal-tile-foreground);
+  --color-teal-shape: var(--teal-shape);
+  --color-teal-solid: var(--teal-solid);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
   --color-chart-6: var(--chart-6);
+  --color-chart-muted: var(--chart-muted);
 
-  /* canvas & ink utilities */
-  --color-canvas: var(--canvas);
-  --color-canvas-soft: var(--canvas-soft);
-  --color-surface-card: var(--surface-card);
-  --color-surface-strong: var(--surface-strong);
-  --color-ink: var(--surface-ink);
-  --color-ink-elevated: var(--surface-ink-elevated);
-  --color-body: var(--body-text);
-  --color-muted-soft: var(--muted-soft);
-  --color-hairline: var(--hairline);
-  --color-hairline-strong: var(--hairline-strong);
-  --color-on-ink: var(--on-ink);
-  --color-on-ink-muted: var(--on-ink-muted);
+  /* shadcn primitives */
+  --color-card: var(--surface);
+  --color-card-foreground: var(--foreground);
+  --color-popover: var(--surface-raised);
+  --color-popover-foreground: var(--foreground);
+  --color-secondary: var(--muted);
+  --color-secondary-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--foreground-muted);
+  --color-accent: var(--muted);
+  --color-accent-foreground: var(--foreground);
+  --color-destructive: var(--danger-solid);
+  --color-destructive-foreground: #ffffff;
+  --color-input: var(--border-strong);
 
-  /* semantic status */
-  --color-success: var(--success);
-  --color-success-soft: var(--success-soft);
-  --color-warning: var(--warning);
-  --color-warning-soft: var(--warning-soft);
-  --color-error: var(--error);
-  --color-error-soft: var(--error-soft);
-  --color-info: var(--info);
-  --color-info-soft: var(--info-soft);
+  /* legacy aliases (v1.1 names) — removed in the purge phase */
+  --font-heading: var(--font-display);
+  --font-mono-data: var(--font-mono);
+  --font-code: var(--font-mono);
+  --color-canvas: var(--background-subtle);
+  --color-canvas-soft: var(--background);
+  --color-surface-card: var(--surface);
+  --color-surface-strong: var(--muted);
+  --color-ink: var(--foreground);
+  --color-body: var(--foreground);
+  --color-muted-soft: var(--foreground-subtle);
+  --color-hairline: var(--border);
+  --color-hairline-strong: var(--border-strong);
+  --color-error: var(--danger);
+  --color-error-soft: var(--danger-soft);
+  --color-primary-50: var(--legacy-primary-50);
+  --color-primary-100: var(--legacy-primary-100);
+  --color-primary-200: var(--legacy-primary-200);
+  --color-primary-300: var(--legacy-primary-300);
+  --color-primary-400: var(--legacy-primary-400);
+  --color-primary-500: var(--legacy-primary-500);
+  --color-primary-600: var(--legacy-primary-600);
+  --color-primary-700: var(--legacy-primary-700);
+  --color-primary-800: var(--legacy-primary-800);
+  --color-primary-900: var(--legacy-primary-900);
+  --color-primary-950: var(--legacy-primary-950);
+  --shadow-low: var(--shadow-sm);
+  --shadow-medium: var(--shadow-sm);
+  --shadow-high: var(--shadow-md);
 
-  /* ember (primary) scale */
-  --color-primary-50: #fef2ec;
-  --color-primary-100: #fddfd0;
-  --color-primary-200: #fbbca2;
-  --color-primary-300: #f89773;
-  --color-primary-400: #e35509;
-  --color-primary-500: #c23f00;
-  --color-primary-600: #a02e00;
-  --color-primary-700: #802100;
-  --color-primary-800: #601700;
-  --color-primary-900: #451000;
-  --color-primary-950: #250800;
+  --radius-xs: 8px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+  --radius-3xl: 32px;
 
-  /* petrol (secondary) scale — the analytical counterweight, never a CTA */
-  --color-secondary-50: #eef7f6;
-  --color-secondary-100: #d5ecea;
-  --color-secondary-200: #abd8d6;
-  --color-secondary-300: #7bbfbd;
-  --color-secondary-400: #40989a;
-  --color-secondary-500: #1b7a7d;
-  --color-secondary-600: #116063;
-  --color-secondary-700: #0c4b4e;
-  --color-secondary-800: #093a3d;
-  --color-secondary-900: #062b2e;
-  --color-secondary-950: #031a1c;
+  --shadow-sm: 0 1px 2px rgb(12 10 9 / 0.06), 0 1px 3px rgb(12 10 9 / 0.04);
+  --shadow-md: 0 8px 24px rgb(12 10 9 / 0.08);
 
-  /* type — serif display (Waldenburg when licensed; EB Garamond until then) */
-  --font-heading: var(--font-serif, "EB Garamond"), "Times New Roman", serif;
-  --font-sans: var(--font-sans, "Inter"), sans-serif;
-  --font-mono-data: var(--font-mono-data, "DM Mono"), ui-monospace, monospace;
-  --font-code: var(--font-code, "Space Mono"), ui-monospace, monospace;
-  /* Tailwind's `font-mono` is code too (slugs, permission names, snippets). */
-  --font-mono: var(--font-code, "Space Mono"), ui-monospace, monospace;
-
-  /* radius — Warp geometry: 3px buttons, 6px inputs, 10px cards */
-  --radius-xs: 2px;
-  --radius-sm: 3px;
-  --radius-md: 6px;
-  --radius-lg: 10px;
-  --radius-xl: 16px;
-  --radius-2xl: 24px;
-  --radius-3xl: 24px;
-
-  /* elevation — three tiers, nothing else */
-  --shadow-low: 0 1px 2px rgba(28, 23, 19, 0.05);
-  --shadow-medium: 0 4px 16px rgba(28, 23, 19, 0.06);
-  --shadow-high: 0 12px 32px rgba(28, 23, 19, 0.1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 @layer base {
@@ -192,7 +369,7 @@
   }
 
   * {
-    border-color: var(--hairline);
+    border-color: var(--border);
     margin: 0;
     padding: 0;
     scrollbar-width: none;
@@ -202,30 +379,23 @@
 
   html {
     scroll-behavior: smooth;
-    /* Kills the viewport rubber-band. The app shells scroll inside a `main`,
-       so when that scroller hits its end the browser would otherwise chain the
-       gesture up to the document and bounce the whole shell, exposing the page
-       background above the sidebar and below the header. */
     overscroll-behavior: none;
   }
 
   body {
-    background: var(--canvas);
-    color: var(--body-text);
+    background: var(--background);
+    color: var(--foreground);
+    font-size: 0.9375rem;
+    line-height: 1.6;
     overflow-x: hidden;
     overscroll-behavior: none;
     width: 100%;
-    letter-spacing: 0.01em;
   }
 
   ::-ms-scrollbar,
   ::-webkit-scrollbar {
     display: none;
     width: 0px;
-  }
-
-  img {
-    image-rendering: crisp-edges -moz-crisp-edges;
   }
 
   h1,
@@ -240,9 +410,9 @@
   h4 span,
   h5 span,
   h6 span {
-    font-family: var(--font-heading);
-    font-weight: 400;
-    color: var(--ink);
+    font-family: var(--font-display);
+    font-weight: 600;
+    color: var(--foreground);
     letter-spacing: -0.02em;
   }
 
@@ -250,12 +420,11 @@
   pre,
   kbd,
   samp {
-    font-family: var(--font-code);
+    font-family: var(--font-mono);
   }
 
-  /* `*` above sets the sans font on every element directly, so without this
-     anything nested in code (traceback spans, highlighted tokens, CodeMirror's
-     lines) would drop back to sans. More specific than `*`, so it wins. */
+  /* `*` sets the sans font on every element, so nested code (highlighted
+     tokens, CodeMirror lines) must inherit explicitly to stay monospace. */
   code *,
   pre *,
   kbd *,
@@ -267,11 +436,13 @@
   a,
   button {
     cursor: pointer;
-    transition: all 0.5s ease-in-out;
+    transition-property: color, background-color, border-color, opacity, transform, box-shadow;
+    transition-duration: 150ms;
+    transition-timing-function: ease-out;
   }
 
-  button:active {
-    transform: scale(0.99);
+  button:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   button:disabled {
@@ -299,34 +470,43 @@
   input:-webkit-autofill:focus,
   input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 30px transparent inset !important;
-    -webkit-text-fill-color: var(--ink) !important;
+    -webkit-text-fill-color: var(--foreground) !important;
     transition: background-color 5000s ease-in-out 0s;
   }
 
   :focus-visible {
-    outline: 2px solid var(--primary);
+    outline: 2px solid var(--ring);
     outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-/* mono for every number that matters */
 .mono-data {
-  font-family: var(--font-mono-data);
+  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
 }
 
-/* caption-uppercase — stat labels, product eyebrows */
 .caption-upper {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-/* link interaction */
 .link {
   position: relative;
-  transition: all 500ms;
+  transition: color 150ms ease-out;
 }
 
 .link::before {
@@ -337,14 +517,13 @@
   height: 1px;
   width: 0;
   transform-origin: left;
-  transition: all 500ms;
+  transition: width 200ms ease-out;
 }
 
 .link:hover::before {
   width: 100%;
 }
 
-/* skeleton shimmer sweep */
 @keyframes shimmer {
   0% {
     transform: translateX(-100%);
@@ -354,7 +533,6 @@
   }
 }
 
-/* running-cell loading idiom: ember pulsing bracket */
 @keyframes cell-pulse {
   0%,
   100% {
@@ -368,24 +546,22 @@
 .cell-running {
   animation: cell-pulse 1.2s ease-in-out infinite;
   color: var(--primary);
-  font-family: var(--font-mono-data);
+  font-family: var(--font-mono);
 }
 
-/* ember atmosphere bloom — marketing only, max two per viewport */
 .ember-bloom {
   background: radial-gradient(
     closest-side,
-    rgba(251, 188, 162, 0.45),
-    rgba(254, 242, 236, 0.25) 60%,
+    color-mix(in srgb, var(--primary) 30%, transparent),
+    color-mix(in srgb, var(--primary-soft) 40%, transparent) 60%,
     transparent
   );
   filter: blur(40px);
 }
 
-/* scroll area */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--hairline-strong) transparent;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -394,21 +570,20 @@
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: var(--surface-strong);
+  background: var(--muted);
   border-radius: 20px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: var(--hairline-strong);
+  background: var(--border-strong);
   border-radius: 6px;
-  border: 2px solid var(--surface-strong);
+  border: 2px solid var(--muted);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: var(--muted-soft);
+  background: var(--foreground-subtle);
 }
 
-/* hide scrollbar but keep functionality */
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;

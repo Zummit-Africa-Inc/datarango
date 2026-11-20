@@ -65,7 +65,7 @@ const Page = () => {
       </form>
       <p className="text-muted-foreground mt-6 text-center text-sm">
         Remembered it?{" "}
-        <Link className="link before:bg-ink text-foreground" href="/signin">
+        <Link className="link before:bg-band text-foreground" href="/signin">
           Back to sign in
         </Link>
       </p>

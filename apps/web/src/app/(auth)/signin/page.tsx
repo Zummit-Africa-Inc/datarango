@@ -180,7 +180,7 @@ const Page = () => {
                 Keep me signed in
               </Label>
             </div>
-            <Link className="link before:bg-ink text-sm" href="/forgot-password">
+            <Link className="link before:bg-band text-sm" href="/forgot-password">
               Forgot password?
             </Link>
           </div>
@@ -192,7 +192,7 @@ const Page = () => {
       </form>
       <p className="text-muted-foreground mt-6 text-center text-sm">
         New to Datarango?{" "}
-        <Link className="link before:bg-ink text-foreground" href="/signup">
+        <Link className="link before:bg-band text-foreground" href="/signup">
           Create account
         </Link>
       </p>

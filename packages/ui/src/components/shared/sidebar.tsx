@@ -38,9 +38,9 @@ const slideTransition: Transition = { duration: 0.22, ease: "easeInOut" };
 
 /** Active item: elevated ink fill + ember left-edge indicator (DESIGN.md). */
 const activeClasses =
-  "bg-ink-elevated text-on-ink before:absolute before:top-1/2 before:left-0 before:h-5 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-primary-400";
+  "bg-band-elevated text-on-band before:absolute before:top-1/2 before:left-0 before:h-5 before:w-0.5 before:-translate-y-1/2 before:rounded-full before:bg-primary-400";
 
-const itemBase = "relative text-on-ink-muted hover:text-on-ink";
+const itemBase = "relative text-on-band-muted hover:text-on-band";
 
 /** The deep-ink app sidebar — the one institutional-dark element in the light app. */
 export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/" }: Props) => {
@@ -88,7 +88,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
   return (
     <motion.aside
       className={cn(
-        "bg-ink text-on-ink flex h-full flex-col border-r border-white/5",
+        "bg-band text-on-band flex h-full flex-col border-r border-white/5",
         collapsed ? "w-16" : "w-60",
       )}
     >
@@ -112,7 +112,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
               className="absolute inset-0 flex flex-col"
             >
               <button
-                className="text-on-ink-muted hover:text-on-ink flex items-center gap-x-1 px-4 py-3 text-left text-sm font-medium"
+                className="text-on-band-muted hover:text-on-band flex items-center gap-x-1 px-4 py-3 text-left text-sm font-medium"
                 onClick={drillOut}
               >
                 <ChevronLeft className="size-4" />
@@ -134,7 +134,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                   )}
                   {drillRoute!.children!.map((group) => (
                     <motion.div className="space-y-1" key={group.group}>
-                      <p className="text-on-ink-muted/70 text-[10px] uppercase">{group.group}</p>
+                      <p className="text-on-band-muted/70 text-[10px] uppercase">{group.group}</p>
                       <motion.div className="space-y-1">
                         {group.routes.map((route) => {
                           const disabled = group.disabled || !!route.disabled;
@@ -146,7 +146,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                                 "flex items-center gap-x-2 rounded-xs px-3 py-2 text-left text-sm font-medium",
                                 itemBase,
                                 disabled
-                                  ? "text-on-ink-muted/40 pointer-events-none cursor-not-allowed"
+                                  ? "text-on-band-muted/40 pointer-events-none cursor-not-allowed"
                                   : active && activeClasses,
                               )}
                               href={disabled ? "#" : route.href}
@@ -179,7 +179,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                   {routes.map((group) => (
                     <motion.div className="space-y-1" key={group.group}>
                       {!collapsed && (
-                        <p className="text-on-ink-muted/70 text-[10px] uppercase">{group.group}</p>
+                        <p className="text-on-band-muted/70 text-[10px] uppercase">{group.group}</p>
                       )}
                       <motion.div className="space-y-1">
                         {group.routes.map((route) => {
@@ -193,7 +193,7 @@ export const Sidebar = ({ routes, collapsed = false, top, footer, logoHref = "/"
                               ? "aspect-square w-full shrink-0 justify-center"
                               : "gap-x-2 px-3 py-2",
                             disabled
-                              ? "text-on-ink-muted/40 pointer-events-none cursor-not-allowed"
+                              ? "text-on-band-muted/40 pointer-events-none cursor-not-allowed"
                               : active && activeClasses,
                             hasChildren && !collapsed && "justify-between",
                           );

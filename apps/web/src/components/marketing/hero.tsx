@@ -52,7 +52,7 @@ export const Hero = () => (
       <div className="relative hidden h-135 perspective-[1400px] lg:block" aria-hidden>
         <div className="ember-bloom absolute top-1/3 left-1/3 -z-10 size-96 rounded-full" />
         <TiltCard
-          className="bg-ink absolute top-6 left-0 w-95 rounded-xs p-5 text-white shadow-2xl"
+          className="bg-band absolute top-6 left-0 w-95 rounded-xs p-5 text-white shadow-2xl"
           rotateX={6}
           rotateY={-14}
           float

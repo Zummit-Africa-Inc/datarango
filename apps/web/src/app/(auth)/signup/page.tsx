@@ -14,7 +14,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080";
 const SignInPrompt = () => (
   <p className="text-muted-foreground mt-6 text-center text-sm">
     Already have an account?{" "}
-    <Link className="link before:bg-ink text-foreground" href="/signin">
+    <Link className="link before:bg-band text-foreground" href="/signin">
       Sign in
     </Link>
   </p>
