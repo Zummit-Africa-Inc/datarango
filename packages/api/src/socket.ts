@@ -32,6 +32,18 @@ interface Ticket {
 /** Backoff schedule, in ms. Caps rather than growing without bound. */
 const RETRY_DELAYS = [1_000, 2_000, 5_000, 10_000, 30_000];
 
+/** A reconnecting gateway socket that can also be written to. */
+export interface GatewayChannel {
+  /**
+   * Sends one JSON message. Returns false when the socket is not open — the
+   * caller decides whether that is worth queueing, since a reconnect may land
+   * on a different server-side state (a restarted kernel, say).
+   */
+  send: (data: unknown) => boolean;
+  /** Stops reconnection as well as closing the socket. */
+  close: () => void;
+}
+
 /**
  * Opens a reconnecting gateway socket.
  *
@@ -39,12 +51,19 @@ const RETRY_DELAYS = [1_000, 2_000, 5_000, 10_000, 30_000];
  *   socket — without that distinction a component unmounting mid-backoff leaves
  *   a timer that reconnects into nothing.
  */
-export const connectGatewaySocket = ({
+export const connectGatewaySocket = (options: GatewaySocketOptions): (() => void) =>
+  connectGatewayChannel(options).close;
+
+/**
+ * {@link connectGatewaySocket} with a `send`, for protocols where the client
+ * talks too (the notebook kernel channel).
+ */
+export const connectGatewayChannel = ({
   path,
   ticketPath,
   onMessage,
   onStatusChange,
-}: GatewaySocketOptions): (() => void) => {
+}: GatewaySocketOptions): GatewayChannel => {
   let socket: WebSocket | null = null;
   let retry = 0;
   let timer: ReturnType<typeof setTimeout> | null = null;
@@ -112,14 +131,21 @@ export const connectGatewaySocket = ({
 
   void open();
 
-  return () => {
-    disposed = true;
-    if (timer) clearTimeout(timer);
-    if (socket) {
-      // Drop the handler first: closing deliberately must not look like a
-      // dropped connection and schedule a reconnect.
-      socket.onclose = null;
-      socket.close();
-    }
+  return {
+    send: (data) => {
+      if (!socket || socket.readyState !== WebSocket.OPEN) return false;
+      socket.send(JSON.stringify(data));
+      return true;
+    },
+    close: () => {
+      disposed = true;
+      if (timer) clearTimeout(timer);
+      if (socket) {
+        // Drop the handler first: closing deliberately must not look like a
+        // dropped connection and schedule a reconnect.
+        socket.onclose = null;
+        socket.close();
+      }
+    },
   };
 };

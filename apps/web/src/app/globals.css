@@ -2,3 +2,4 @@
 @import "@datarango/ui/styles/tokens.css";
 
 @source "../../../../packages/ui/src";
+@source "../../../../packages/notebook/src";

@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, Clock, Loader2, NotebookPen, Square } from "lucide-react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { AlertTriangle, History, Loader2, NotebookPen, Plus, Square } from "lucide-react";
 
+import { NotebookWorkspace, useNewNotebook } from "@datarango/notebook";
 import { Badge, Button, PageLayout, Skeleton } from "@datarango/ui";
 
 import {
@@ -26,21 +28,64 @@ import {
  * reservation. So there is no notebooks list to build, and nothing to put behind
  * a per-notebook route.
  *
- * **Execution is not wired up here, and the page says so.** The sandbox runtime
- * is the outstanding Phase 3 blocker; `SimulatedSandbox` brings a session
- * through its lifecycle without running any code. Rendering a code cell that
- * silently did nothing would be worse than not offering one.
+ * Once the session is running, the notebook workspace (`@datarango/notebook`)
+ * opens below it: an editor whose cells run on the session's kernel, with the
+ * learner's `.ipynb` files (on their home volume) in a History side panel. New
+ * notebook and History sit in the header beside Stop. The open file is kept in
+ * the URL (`?file=`) so a reload or a shared link reopens it.
  */
 export default function NotebooksPage() {
+  // useSearchParams needs a Suspense boundary to keep the route prerenderable.
+  return (
+    <Suspense fallback={<Skeleton skeleton="page" />}>
+      <Notebooks />
+    </Suspense>
+  );
+}
+
+/** The open notebook, mirrored into `?file=`. */
+const useOpenFile = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const params = useSearchParams();
+  const file = params.get("file");
+
+  const open = useCallback(
+    (path: string | null) => {
+      const next = new URLSearchParams(params.toString());
+      if (path) next.set("file", path);
+      else next.delete("file");
+      const qs = next.toString();
+      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    },
+    [params, pathname, router],
+  );
+
+  return [file, open] as const;
+};
+
+const Notebooks = () => {
   const { data, isLoading } = useCurrentSession();
   const session = data?.session ?? null;
   const start = useRequestSession();
+  const [file, openFile] = useOpenFile();
+  const [historyOpen, setHistoryOpen] = useState(false);
+  const running = session?.status === "running";
 
   return (
     <PageLayout
       title="Notebooks"
       subtitle="A Jupyter kernel of your own, for working through course material and datasets."
       actions={[
+        ...(session && running
+          ? [
+              <NewNotebookButton key="new" sessionId={session.id} onOpen={openFile} />,
+              <Button key="history" variant="outline" onClick={() => setHistoryOpen(true)}>
+                <History className="size-3.5" />
+                History
+              </Button>,
+            ]
+          : []),
         session && isLive(session) ? (
           <StopButton key="stop" sessionId={session.id} />
         ) : (
@@ -54,7 +99,18 @@ export default function NotebooksPage() {
       {isLoading ? (
         <Skeleton skeleton="page" />
       ) : session ? (
-        <SessionCard session={session} />
+        <>
+          <SessionCard session={session} />
+          {running && (
+            <NotebookWorkspace
+              sessionId={session.id}
+              path={file}
+              onOpen={openFile}
+              historyOpen={historyOpen}
+              onHistoryOpenChange={setHistoryOpen}
+            />
+          )}
+        </>
       ) : (
         <div className="border-hairline bg-card rounded-xs border px-6 py-12 text-center">
           <NotebookPen className="text-muted-foreground mx-auto size-8" strokeWidth={1.5} />
@@ -65,21 +121,25 @@ export default function NotebooksPage() {
           </p>
         </div>
       )}
-
-      {/* Stated rather than implied by an absent button: somebody who starts a
-          session and finds no way to run code should be told why, not left to
-          conclude the page is broken. */}
-      <div className="border-hairline bg-muted/40 rounded-xs border px-4 py-3 text-sm">
-        <p className="text-ink font-medium">Code execution isn&apos;t live yet</p>
-        <p className="text-muted-foreground mt-1">
-          Sessions start, heartbeat, expire and stop for real — the sandboxed runtime that actually
-          executes cells is the remaining piece. Until it lands, a session is a reservation rather
-          than a working kernel.
-        </p>
-      </div>
     </PageLayout>
   );
-}
+};
+
+const NewNotebookButton = ({
+  sessionId,
+  onOpen,
+}: {
+  sessionId: string;
+  onOpen: (path: string) => void;
+}) => {
+  const { create, creating } = useNewNotebook(sessionId, onOpen);
+  return (
+    <Button variant="outline" disabled={creating} onClick={() => void create()}>
+      {creating ? <Loader2 className="size-3.5 animate-spin" /> : <Plus className="size-3.5" />}
+      New notebook
+    </Button>
+  );
+};
 
 const StopButton = ({ sessionId }: { sessionId: string }) => {
   const stop = useStopSession(sessionId);
@@ -131,30 +191,33 @@ const SessionCard = ({ session }: { session: NotebookSession }) => {
     return () => window.clearInterval(id);
   }, [live, beat]);
 
+  // One line: status, what it means, time left — the image off to the right.
   return (
-    <div className="border-hairline bg-card space-y-4 rounded-xs border p-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
-          {session.status === "pending" || session.status === "starting" ? (
-            <Loader2 className="text-muted-foreground size-4 animate-spin" />
-          ) : session.status === "failed" ? (
-            <AlertTriangle className="text-destructive size-4" />
-          ) : (
-            <NotebookPen className="text-muted-foreground size-4" />
-          )}
-          <Badge variant={meta.variant}>{meta.label}</Badge>
-          <span className="text-muted-foreground text-sm">{meta.note}</span>
-        </div>
-        <code className="text-muted-foreground font-code text-xs">{session.image}</code>
-      </div>
-
-      {session.stoppedReason && (
-        <p className="text-muted-foreground text-sm">
-          Reason: <span className="text-ink">{session.stoppedReason}</span>
-        </p>
+    <div className="border-hairline bg-card flex flex-wrap items-center gap-x-2.5 gap-y-1 rounded-xs border px-4 py-2.5">
+      {session.status === "pending" || session.status === "starting" ? (
+        <Loader2 className="text-muted-foreground size-4 animate-spin" />
+      ) : session.status === "failed" ? (
+        <AlertTriangle className="text-destructive size-4" />
+      ) : (
+        <NotebookPen className="text-muted-foreground size-4" />
       )}
-
-      {live && <Countdown expiresAt={session.expiresAt} />}
+      <Badge variant={meta.variant}>{meta.label}</Badge>
+      <span className="text-muted-foreground text-sm">
+        {meta.note}
+        {live && (
+          <>
+            {" "}
+            (<Countdown expiresAt={session.expiresAt} />)
+          </>
+        )}
+        {session.stoppedReason && (
+          <>
+            {" "}
+            Reason: <span className="text-ink">{session.stoppedReason}</span>
+          </>
+        )}
+      </span>
+      <code className="text-muted-foreground font-code ml-auto text-xs">{session.image}</code>
     </div>
   );
 };
@@ -179,17 +242,12 @@ const Countdown = ({ expiresAt }: { expiresAt: string }) => {
   const hours = Math.floor(remaining / 3_600_000);
   const minutes = Math.floor((remaining % 3_600_000) / 60_000);
 
-  return (
-    <p className="text-muted-foreground flex items-center gap-2 text-sm">
-      <Clock className="size-3.5 shrink-0" />
-      {remaining === 0 ? (
-        "Past its time limit — it will be reclaimed shortly."
-      ) : (
-        <>
-          {hours > 0 && `${hours}h `}
-          {minutes}m left on this session
-        </>
-      )}
-    </p>
+  return remaining === 0 ? (
+    <>past its time limit, reclaimed shortly</>
+  ) : (
+    <>
+      {hours > 0 && `${hours}h `}
+      {minutes}m left
+    </>
   );
 };
