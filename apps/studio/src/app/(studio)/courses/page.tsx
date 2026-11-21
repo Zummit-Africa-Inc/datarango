@@ -1,9 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 
-import { Button, PageLayout, Skeleton } from "@datarango/ui";
+import {
+  ListToolbar,
+  PageLayout,
+  Pagination,
+  Skeleton,
+  listParam,
+  useListParams,
+} from "@datarango/ui";
 
 import { CourseStatusBadge } from "@/components/course-status-badge";
 import { CreateCourseDialog } from "@/components/create-course-dialog";
@@ -11,8 +18,9 @@ import { useMyCourses, type CourseStatus } from "@/hooks/catalog";
 
 const PAGE_SIZE = 20;
 
-const FILTERS: { label: string; value: CourseStatus | "all" }[] = [
-  { label: "All", value: "all" },
+const STATUSES = ["draft", "review", "published", "archived"] as const satisfies CourseStatus[];
+
+const STATUS_OPTIONS = [
   { label: "Draft", value: "draft" },
   { label: "In review", value: "review" },
   { label: "Published", value: "published" },
@@ -20,25 +28,30 @@ const FILTERS: { label: string; value: CourseStatus | "all" }[] = [
 ];
 
 export default function CoursesPage() {
-  const [status, setStatus] = useState<CourseStatus | "all">("all");
-  const [page, setPage] = useState(1);
+  return (
+    <Suspense fallback={<Skeleton skeleton="table" rows={5} columns={3} />}>
+      <CourseList />
+    </Suspense>
+  );
+}
+
+const CourseList = () => {
+  const { params, set, reset } = useListParams({
+    status: listParam.manyOf(STATUSES),
+    page: listParam.number(1),
+  });
+  // The API filters on one status at a time, so the filter is single-select.
+  const status = params.status[0];
+  const page = params.page;
 
   const { data, isLoading } = useMyCourses({
-    status: status === "all" ? undefined : status,
+    status,
     page,
     pageSize: PAGE_SIZE,
   });
 
   const courses = data?.courses ?? [];
   const total = data?.total ?? 0;
-  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const changeFilter = (next: CourseStatus | "all") => {
-    setStatus(next);
-    // A filter change invalidates the current page number — page 3 of "all"
-    // is rarely page 3 of "draft".
-    setPage(1);
-  };
 
   return (
     <PageLayout
@@ -46,30 +59,30 @@ export default function CoursesPage() {
       subtitle="Everything you're authoring."
       actions={[<CreateCourseDialog key="create" />]}
     >
-      <div className="flex flex-wrap items-center gap-2">
-        {FILTERS.map((filter) => (
-          <Button
-            key={filter.value}
-            size="sm"
-            variant={status === filter.value ? "default" : "outline"}
-            onClick={() => changeFilter(filter.value)}
-          >
-            {filter.label}
-          </Button>
-        ))}
-      </div>
+      <ListToolbar
+        filters={[
+          {
+            key: "status",
+            label: "Status",
+            options: STATUS_OPTIONS,
+            value: params.status,
+            onChange: (value) => set({ status: value as CourseStatus[] }),
+          },
+        ]}
+        onClearAll={reset}
+      />
 
       {isLoading ? (
         <Skeleton skeleton="table" rows={5} columns={3} />
       ) : courses.length === 0 ? (
         <div className="border-hairline bg-card rounded-xs border px-6 py-16 text-center">
           <p className="font-heading text-ink text-lg">
-            {status === "all" ? "No courses yet" : `No ${status} courses`}
+            {status ? "No courses match these filters" : "No courses yet"}
           </p>
           <p className="text-muted-foreground mt-1 text-sm">
-            {status === "all"
-              ? "Create your first course to start building modules and lessons."
-              : "Try a different filter."}
+            {status
+              ? "Try a different filter."
+              : "Create your first course to start building modules and lessons."}
           </p>
         </div>
       ) : (
@@ -98,31 +111,13 @@ export default function CoursesPage() {
         </div>
       )}
 
-      {lastPage > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Page {page} of {lastPage} · {total} course{total === 1 ? "" : "s"}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page >= lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={total}
+        noun="course"
+        onPageChange={(next) => set({ page: next })}
+      />
     </PageLayout>
   );
-}
+};

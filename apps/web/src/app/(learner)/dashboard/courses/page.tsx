@@ -1,20 +1,35 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Search } from "lucide-react";
+import { Suspense, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { Badge, Button, Input, PageLayout, Skeleton } from "@datarango/ui";
+import {
+  Badge,
+  Button,
+  listParam,
+  ListToolbar,
+  PageLayout,
+  Pagination,
+  Skeleton,
+  useListParams,
+} from "@datarango/ui";
 
 import { useDiscoverCourses, useMyEnrollments } from "@/hooks/learning";
 
 const PAGE_SIZE = 12;
 
 export default function CoursesPage() {
-  const [search, setSearch] = useState("");
-  const [submitted, setSubmitted] = useState("");
-  const [page, setPage] = useState(1);
+  return (
+    <Suspense fallback={<Skeleton skeleton="list" rows={6} />}>
+      <CoursesList />
+    </Suspense>
+  );
+}
+
+const CoursesList = () => {
+  const { params, set } = useListParams({ q: listParam.string(), page: listParam.number(1) });
+  const { q: submitted, page } = params;
 
   const { data, isLoading } = useDiscoverCourses({
     search: submitted,
@@ -32,30 +47,12 @@ export default function CoursesPage() {
 
   const courses = data?.courses ?? [];
   const total = data?.total ?? 0;
-  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const runSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(search.trim());
-    // A new search invalidates the page number — page 3 of everything is rarely
-    // page 3 of the filtered set.
-    setPage(1);
-  };
 
   return (
     <PageLayout title="Courses" subtitle="Everything published on Datarango.">
-      <form onSubmit={runSearch} className="flex max-w-md items-center gap-2">
-        <Input
-          aria-label="Search courses"
-          placeholder="Search courses…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button type="submit" variant="outline">
-          <Search className="size-4" />
-          Search
-        </Button>
-      </form>
+      <ListToolbar
+        search={{ value: submitted, onChange: (q) => set({ q }), placeholder: "Search courses…" }}
+      />
 
       {isLoading ? (
         <Skeleton skeleton="list" rows={6} />
@@ -120,31 +117,13 @@ export default function CoursesPage() {
           })}
         </div>
       )}
-      {lastPage > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Page {page} of {lastPage} · {total} course{total === 1 ? "" : "s"}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page >= lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={total}
+        noun="course"
+        onPageChange={(next) => set({ page: next })}
+      />
     </PageLayout>
   );
-}
+};

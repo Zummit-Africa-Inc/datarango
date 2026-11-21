@@ -12,6 +12,7 @@ import {
   type ReactNode,
 } from "react";
 
+import { focusListSearch } from "../list-toolbar";
 import { flattenNav, type NavGroup } from "../../../config/nav";
 import {
   Command,
@@ -96,7 +97,8 @@ export const CommandPaletteProvider = ({
         setIsOpen((prev) => !prev);
       } else if (e.key === "/" && !e.metaKey && !e.ctrlKey && !isTypingTarget(e.target)) {
         e.preventDefault();
-        setIsOpen(true);
+        // On a list page `/` focuses the list's own search (§8); elsewhere it opens the palette.
+        if (!focusListSearch()) setIsOpen(true);
       }
     };
     window.addEventListener("keydown", onKey);

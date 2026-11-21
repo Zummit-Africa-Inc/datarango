@@ -1,10 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { CalendarClock, Search, Trophy, Users } from "lucide-react";
+import { Suspense } from "react";
+import { CalendarClock, Trophy, Users } from "lucide-react";
 import Link from "next/link";
 
-import { Badge, Button, Input, PageLayout, Skeleton } from "@datarango/ui";
+import {
+  Badge,
+  Button,
+  listParam,
+  ListToolbar,
+  PageLayout,
+  Pagination,
+  Skeleton,
+  useListParams,
+} from "@datarango/ui";
 
 import { METRIC_LABELS, useDiscoverCompetitions, type CompetitionStatus } from "@/hooks/arena";
 
@@ -18,9 +27,16 @@ const statusBadge = (status: CompetitionStatus) =>
   ) : null;
 
 export default function CompetitionsPage() {
-  const [search, setSearch] = useState("");
-  const [submitted, setSubmitted] = useState("");
-  const [page, setPage] = useState(1);
+  return (
+    <Suspense fallback={<Skeleton skeleton="list" rows={6} />}>
+      <CompetitionsList />
+    </Suspense>
+  );
+}
+
+const CompetitionsList = () => {
+  const { params, set } = useListParams({ q: listParam.string(), page: listParam.number(1) });
+  const { q: submitted, page } = params;
 
   const { data, isLoading } = useDiscoverCompetitions({
     search: submitted,
@@ -30,28 +46,16 @@ export default function CompetitionsPage() {
 
   const competitions = data?.competitions ?? [];
   const total = data?.total ?? 0;
-  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const runSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(search.trim());
-    setPage(1);
-  };
 
   return (
     <PageLayout title="Competitions" subtitle="Test your skills against the field.">
-      <form onSubmit={runSearch} className="flex max-w-md items-center gap-2">
-        <Input
-          aria-label="Search competitions"
-          placeholder="Search competitions…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button type="submit" variant="outline">
-          <Search className="size-4" />
-          Search
-        </Button>
-      </form>
+      <ListToolbar
+        search={{
+          value: submitted,
+          onChange: (q) => set({ q }),
+          placeholder: "Search competitions…",
+        }}
+      />
 
       {isLoading ? (
         <Skeleton skeleton="list" rows={6} />
@@ -111,31 +115,13 @@ export default function CompetitionsPage() {
           ))}
         </div>
       )}
-      {lastPage > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Page {page} of {lastPage} · {total} competition{total === 1 ? "" : "s"}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page >= lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={total}
+        noun="competition"
+        onPageChange={(next) => set({ page: next })}
+      />
     </PageLayout>
   );
-}
+};

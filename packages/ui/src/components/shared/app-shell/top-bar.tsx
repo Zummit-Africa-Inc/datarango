@@ -82,7 +82,7 @@ export const TopBar = ({
       >
         <Search aria-hidden="true" className="size-4" />
         <span className="truncate">{searchPlaceholder}</span>
-        <kbd className="border-border ml-auto rounded-xs border px-1.5 font-mono text-[0.6875rem]">
+        <kbd className="border-border ml-auto shrink-0 rounded-xs border px-1.5 font-mono text-[0.6875rem] whitespace-nowrap">
           {shortcut}
         </kbd>
       </button>

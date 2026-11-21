@@ -1,19 +1,34 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
-import { Clock, ListChecks, Search } from "lucide-react";
+import { Clock, ListChecks } from "lucide-react";
 
-import { Badge, Button, Input, PageLayout, Skeleton } from "@datarango/ui";
+import {
+  Badge,
+  listParam,
+  ListToolbar,
+  PageLayout,
+  Pagination,
+  Skeleton,
+  useListParams,
+} from "@datarango/ui";
 
 import { useDiscoverQuizzes, type QuizLibraryItem } from "@/hooks/assessment";
 
 const PAGE_SIZE = 12;
 
 export default function QuizzesPage() {
-  const [search, setSearch] = useState("");
-  const [submitted, setSubmitted] = useState("");
-  const [page, setPage] = useState(1);
+  return (
+    <Suspense fallback={<Skeleton skeleton="list" rows={6} />}>
+      <QuizzesList />
+    </Suspense>
+  );
+}
+
+const QuizzesList = () => {
+  const { params, set } = useListParams({ q: listParam.string(), page: listParam.number(1) });
+  const { q: submitted, page } = params;
 
   const { data, isLoading } = useDiscoverQuizzes({
     search: submitted,
@@ -23,31 +38,15 @@ export default function QuizzesPage() {
 
   const quizzes = data?.quizzes ?? [];
   const total = data?.total ?? 0;
-  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const runSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(search.trim());
-    setPage(1);
-  };
 
   return (
     <PageLayout
       title="Quizzes"
       subtitle="Practice quizzes published on Datarango. Taking one here is practice — it doesn't advance a course."
     >
-      <form onSubmit={runSearch} className="flex max-w-md items-center gap-2">
-        <Input
-          aria-label="Search quizzes"
-          placeholder="Search quizzes…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button type="submit" variant="outline">
-          <Search className="size-4" />
-          Search
-        </Button>
-      </form>
+      <ListToolbar
+        search={{ value: submitted, onChange: (q) => set({ q }), placeholder: "Search quizzes…" }}
+      />
 
       {isLoading ? (
         <Skeleton skeleton="list" count={6} />
@@ -70,34 +69,17 @@ export default function QuizzesPage() {
         </div>
       )}
 
-      {lastPage > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            Page {page} of {lastPage} · {total} quiz{total === 1 ? "" : "zes"}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page >= lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={total}
+        noun="quiz"
+        plural="quizzes"
+        onPageChange={(next) => set({ page: next })}
+      />
     </PageLayout>
   );
-}
+};
 
 const QuizCard = ({ quiz }: { quiz: QuizLibraryItem }) => {
   const exhausted = quiz.maxAttempts > 0 && quiz.attemptsUsed >= quiz.maxAttempts;
