@@ -109,7 +109,7 @@ export const Features = () => (
       {FEATURES.map((feature) => {
         return (
           <StaggerItem
-            className="group border-border bg-on-ink-muted rounded-xs border transition-colors"
+            className="group border-border bg-on-band-muted rounded-xs border transition-colors"
             key={feature.title}
           >
             <div className="h-30 space-y-2 p-4">
@@ -188,13 +188,13 @@ const TEAM_PROGRESS = [
 ];
 
 export const Teams = () => (
-  <section className="bg-ink text-white" id="teams">
+  <section className="bg-band text-white" id="teams">
     <div className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
       <FadeIn>
         <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
           Datarango for Teams & Schools
         </p>
-        <h2 className="font-heading text-on-ink mt-4 text-4xl tracking-tight lg:text-6xl">
+        <h2 className="font-heading text-on-band mt-4 text-4xl tracking-tight lg:text-6xl">
           Train a team like
           <br />
           you mean it

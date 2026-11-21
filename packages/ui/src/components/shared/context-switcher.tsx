@@ -50,8 +50,8 @@ export const ContextSwitcher = ({ user, onSignOut, contextToggle }: Props) => {
         <>
           <div className="flex items-center justify-between gap-x-4 py-2">
             <div>
-              <p className="text-on-ink text-sm">{contextToggle.title}</p>
-              <p className="text-on-ink-muted text-xs">{contextToggle.description}</p>
+              <p className="text-on-band text-sm">{contextToggle.title}</p>
+              <p className="text-on-band-muted text-xs">{contextToggle.description}</p>
             </div>
             <Switch
               checked={contextToggle.checked}
@@ -65,19 +65,19 @@ export const ContextSwitcher = ({ user, onSignOut, contextToggle }: Props) => {
         <div className="flex min-w-0 items-center gap-x-2">
           <Avatar className="size-7">
             <AvatarImage src={user.avatarUrl} />
-            <AvatarFallback className="bg-ink-elevated text-on-ink text-[10px]">
+            <AvatarFallback className="bg-band-elevated text-on-band text-[10px]">
               {initials}
             </AvatarFallback>
           </Avatar>
           <div className="min-w-0">
-            <p className="text-on-ink truncate text-sm font-medium">{user.name}</p>
-            <p className="text-on-ink-muted truncate text-xs">{user.email}</p>
+            <p className="text-on-band truncate text-sm font-medium">{user.name}</p>
+            <p className="text-on-band-muted truncate text-xs">{user.email}</p>
           </div>
         </div>
         <Dialog onOpenChange={setOpen} open={open}>
           <DialogTrigger asChild>
             <Button
-              className="text-on-ink-muted hover:text-on-ink hover:bg-white/10"
+              className="text-on-band-muted hover:text-on-band hover:bg-white/10"
               size="icon-sm"
               variant="ghost"
               aria-label="Sign out"

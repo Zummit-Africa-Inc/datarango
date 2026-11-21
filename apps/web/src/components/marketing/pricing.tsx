@@ -81,7 +81,7 @@ export const PricingPlans = () => (
           className={cn(
             "flex flex-col rounded-xs border p-8",
             plan.highlight
-              ? "bg-ink border-transparent text-white shadow-(--shadow-high)"
+              ? "bg-band border-transparent text-white shadow-(--shadow-high)"
               : "border-border bg-card",
           )}
           key={plan.name}

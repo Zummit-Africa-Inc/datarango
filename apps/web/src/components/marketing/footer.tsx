@@ -51,12 +51,12 @@ const ROWS = [
 
 /** The ink footer — the closing dark band of every marketing page. */
 export const MarketingFooter = () => (
-  <footer className="bg-ink text-on-ink">
+  <footer className="bg-band text-on-band">
     <div className="container mx-auto grid gap-12 px-4 py-16 lg:grid-cols-6 lg:px-8">
       <div className="space-y-16 lg:col-span-2">
         <div>
           <Logo onInk />
-          <p className="text-on-ink-muted mt-4 max-w-xs text-sm leading-relaxed">
+          <p className="text-on-band-muted mt-4 max-w-xs text-sm leading-relaxed">
             Learn data analytics, AI and ML by doing — courses, notebooks, datasets and competitions
             in one place.
           </p>
@@ -64,7 +64,7 @@ export const MarketingFooter = () => (
         <div className="flex items-center gap-x-4">
           {ROWS.map((row) => (
             <Link
-              className="text-on-ink hover:text-primary-400 link before:bg-primary-400 text-sm font-light"
+              className="text-on-band hover:text-primary-400 link before:bg-primary-400 text-sm font-light"
               href={row.href}
               key={row.label}
               target="_blank"
@@ -76,12 +76,12 @@ export const MarketingFooter = () => (
       </div>
       {COLUMNS.map((column) => (
         <div key={column.heading}>
-          <p className="text-on-ink text-sm font-medium">{column.heading}</p>
+          <p className="text-on-band text-sm font-medium">{column.heading}</p>
           <ul className="mt-4 space-y-2.5">
             {column.links.map((link) => (
               <li key={link.label}>
                 <Link
-                  className="text-on-ink-muted link before:bg-on-ink-muted hover:text-on-ink text-sm transition-colors"
+                  className="text-on-band-muted link before:bg-on-band-muted hover:text-on-band text-sm transition-colors"
                   href={link.href}
                 >
                   {link.label}
@@ -93,7 +93,7 @@ export const MarketingFooter = () => (
       ))}
     </div>
     <div className="border-t border-white/5">
-      <div className="text-on-ink-muted container mx-auto flex flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs lg:px-8">
+      <div className="text-on-band-muted container mx-auto flex flex-wrap items-center justify-between gap-4 px-4 py-6 text-xs lg:px-8">
         <span>© {new Date().getFullYear()} Datarango. All rights reserved.</span>
         <span>Made for builders, everywhere.</span>
       </div>

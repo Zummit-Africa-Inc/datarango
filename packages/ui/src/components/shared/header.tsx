@@ -7,6 +7,7 @@ import type { ReactNode } from "react";
 import { buildBreadcrumbs } from "../../lib";
 import { Breadcrumb } from "./bread-crumb";
 import { Input } from "../ui/input";
+import { ThemeToggle } from "./theme";
 
 interface Props {
   onToggleSidebar?: () => void;
@@ -78,6 +79,7 @@ export const Header = ({
             />
           </form>
         )}
+        <ThemeToggle />
         {actions}
       </div>
     </header>

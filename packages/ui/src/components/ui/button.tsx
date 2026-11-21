@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default: "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700",
         "default-inverse": "bg-white text-primary-600 [a]:hover:bg-white/90",
-        ink: "bg-ink text-on-ink hover:bg-ink-elevated",
+        ink: "bg-band text-on-band hover:bg-band-elevated",
         outline:
           "border-hairline-strong bg-transparent text-foreground hover:bg-surface-strong aria-expanded:bg-surface-strong",
         secondary:

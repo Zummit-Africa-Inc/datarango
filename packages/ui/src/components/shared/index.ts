@@ -27,3 +27,5 @@ export * from "./tab-panel";
 export * from "./text-editor";
 export * from "./tree";
 export * from "./widget";
+export * from "./shapes";
+export * from "./theme";

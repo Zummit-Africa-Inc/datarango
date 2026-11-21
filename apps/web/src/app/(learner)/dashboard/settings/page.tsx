@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { PageLayout, TabList, TabPanel } from "@datarango/ui";
+import { PageLayout, TabList, TabPanel, ThemeSelect } from "@datarango/ui";
 
 import { EmailStatus } from "@/components/settings/email-status";
 import { MfaSection } from "@/components/settings/mfa-section";
@@ -11,6 +11,7 @@ import { NotificationPreferences } from "@/components/settings/notification-pref
 
 const TABS = [
   { label: "Account", value: "account" },
+  { label: "Appearance", value: "appearance" },
   { label: "Security", value: "security" },
   { label: "Billing", value: "billing" },
   { label: "Notifications", value: "notifications" },
@@ -40,6 +41,15 @@ export default function SettingsPage() {
           */}
           <TabPanel selected={activeTab} value="account">
             <EmailStatus />
+          </TabPanel>
+          <TabPanel selected={activeTab} value="appearance">
+            <section className="border-hairline rounded-xs border p-5">
+              <h2 className="text-base">Theme</h2>
+              <p className="text-muted-foreground mt-1 text-sm">
+                System follows your device&apos;s light or dark setting.
+              </p>
+              <ThemeSelect className="mt-4" />
+            </section>
           </TabPanel>
           <TabPanel selected={activeTab} value="security">
             <MfaSection />

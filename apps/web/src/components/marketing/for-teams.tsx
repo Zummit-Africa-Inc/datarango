@@ -27,13 +27,13 @@ const HERO_PROGRESS = [
 ];
 
 export const TeamsHero = () => (
-  <section className="bg-ink text-white">
+  <section className="bg-band text-white">
     <div className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
       <FadeIn>
         <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
           Datarango for Teams & Schools
         </p>
-        <h1 className="font-heading text-on-ink mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
+        <h1 className="font-heading text-on-band mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
           Train a team like
           <br />
           you <span className="text-primary-400">mean it</span>
@@ -161,7 +161,7 @@ export const TeamsFeatures = () => (
       {ORG_FEATURES.map((feature) => {
         return (
           <StaggerItem
-            className="group border-border bg-on-ink-muted rounded-xs border transition-colors"
+            className="group border-border bg-on-band-muted rounded-xs border transition-colors"
             key={feature.title}
           >
             <div className="h-30 space-y-2 p-4">
@@ -274,8 +274,8 @@ export const TeamsBilling = () => (
 
 export const TeamsCta = () => (
   <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
-    <FadeIn className="bg-ink rounded-xs px-8 py-20 text-center text-white lg:py-24">
-      <h2 className="font-heading text-on-ink mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
+    <FadeIn className="bg-band rounded-xs px-8 py-20 text-center text-white lg:py-24">
+      <h2 className="font-heading text-on-band mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
         Put your whole team on the <span className="text-primary-400">same curve</span>
       </h2>
       <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">

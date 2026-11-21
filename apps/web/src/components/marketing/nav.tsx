@@ -4,7 +4,15 @@ import { BookOpen, ChevronDown, Database, Menu, NotebookPen, Trophy, X } from "l
 import { useState } from "react";
 import Link from "next/link";
 
-import { Button, Logo, Popover, PopoverContent, PopoverTrigger, cn } from "@datarango/ui";
+import {
+  Button,
+  Logo,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  ThemeToggle,
+  cn,
+} from "@datarango/ui";
 
 const EXPLORE_ITEMS = [
   {
@@ -80,7 +88,7 @@ export const MarketingNav = () => {
           </Popover>
           {LINKS.map((link) => (
             <Link
-              className="text-muted-foreground link before:bg-ink hover:text-foreground text-sm font-medium transition-colors"
+              className="text-muted-foreground link before:bg-band hover:text-foreground text-sm font-medium transition-colors"
               href={link.href}
               key={link.href}
             >
@@ -89,6 +97,7 @@ export const MarketingNav = () => {
           ))}
         </nav>
         <div className="hidden items-center gap-x-3 lg:flex">
+          <ThemeToggle />
           <Button asChild variant="ghost">
             <Link href="/signin">Sign in</Link>
           </Button>
@@ -96,13 +105,16 @@ export const MarketingNav = () => {
             <Link href="/signup">Join for free</Link>
           </Button>
         </div>
-        <button
-          aria-label="Toggle menu"
-          className="lg:hidden"
-          onClick={() => setOpen((prev) => !prev)}
-        >
-          {open ? <X className="size-5" /> : <Menu className="size-5" />}
-        </button>
+        <div className="flex items-center gap-x-1 lg:hidden">
+          <ThemeToggle />
+          <button
+            aria-label="Toggle menu"
+            className="lg:hidden"
+            onClick={() => setOpen((prev) => !prev)}
+          >
+            {open ? <X className="size-5" /> : <Menu className="size-5" />}
+          </button>
+        </div>
       </div>
       <div className={cn("border-border/60 border-t px-4 pt-2 pb-4 lg:hidden", !open && "hidden")}>
         <nav className="flex flex-col gap-y-1">

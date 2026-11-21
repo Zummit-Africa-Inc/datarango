@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 
 import iconDark from "../../assets/icon_dark.png";
 import iconLight from "../../assets/icon_light.png";
@@ -11,32 +11,39 @@ import { cn } from "../../lib";
 interface Props {
   className?: string;
   collapsed?: boolean;
-  /** Renders the cream variant for ink surfaces (sidebar, footer). */
+  /** Always the light-on-dark variant, for band surfaces whatever the theme. */
   onInk?: boolean;
   type?: "icon" | "wordmark";
 }
 
-/** Datarango logo — wordmark, or the glyph when collapsed. */
+const LogoImage = ({ src, className }: { src: StaticImageData; className?: string }) => (
+  <Image
+    alt="Datarango"
+    className={cn("object-cover", className)}
+    fill
+    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+    priority
+    src={src}
+  />
+);
+
+/** Datarango logo — wordmark, or the glyph when collapsed. Follows the theme unless `onInk`. */
 export const Logo = ({ className, collapsed = false, onInk = false, type = "wordmark" }: Props) => {
-  const src = onInk
-    ? collapsed || type === "icon"
-      ? iconDark
-      : logoDark
-    : collapsed || type === "icon"
-      ? iconLight
-      : logoLight;
-  const sizing = collapsed || type === "icon" ? "h-10 w-10" : "h-6 aspect-[5.6/1] w-auto";
+  const glyph = collapsed || type === "icon";
+  const light = glyph ? iconLight : logoLight;
+  const dark = glyph ? iconDark : logoDark;
+  const sizing = glyph ? "h-10 w-10" : "h-6 aspect-[5.6/1] w-auto";
 
   return (
     <span className={cn("relative flex items-center select-none", sizing, className)}>
-      <Image
-        alt="Datarango"
-        className="object-cover"
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        priority
-        src={src}
-      />
+      {onInk ? (
+        <LogoImage src={dark} />
+      ) : (
+        <>
+          <LogoImage src={light} className="dark:hidden" />
+          <LogoImage src={dark} className="hidden dark:block" />
+        </>
+      )}
     </span>
   );
 };
