@@ -11,3 +11,4 @@ export * from "./constants/dial-code";
 export * from "./components/motion";
 export * from "./components/ui";
 export * from "./components/shared";
+export * from "./store";

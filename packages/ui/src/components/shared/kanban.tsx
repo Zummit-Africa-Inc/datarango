@@ -112,10 +112,10 @@ function KanbanCard({ id, children }: KanbanCardProps) {
       data-dragging={isDragging || undefined}
       style={style}
       className={cn(
-        "cursor-grab rounded-xs border bg-white p-3 shadow-sm transition-shadow",
+        "bg-surface cursor-grab rounded-xs border p-3 shadow-sm transition-shadow",
         "hover:shadow-md active:cursor-grabbing",
-        "dark:border-neutral-700 dark:bg-neutral-800",
-        isDragging && "ring-primary-200 dark:ring-primary-800 z-50 opacity-50 shadow-lg ring-2",
+        "",
+        isDragging && "ring-ring/40 z-50 opacity-50 shadow-md ring-2",
       )}
       {...attributes}
       {...listeners}
@@ -166,13 +166,13 @@ function KanbanColumn<T extends KanbanItemBase>({
         data-slot="kanban-column-header"
         className={cn(
           "flex h-10 cursor-grab items-center justify-between rounded-xs px-3 active:cursor-grabbing",
-          "bg-neutral-100 dark:bg-neutral-800",
+          "bg-muted",
         )}
         {...attributes}
         {...listeners}
       >
         <div className="flex items-center gap-x-2">
-          <GripVertical className="size-3.5 text-gray-400" />
+          <GripVertical className="text-foreground-subtle size-3.5" />
           {config.color && (
             <span
               data-slot="kanban-status-indicator"
@@ -186,7 +186,7 @@ function KanbanColumn<T extends KanbanItemBase>({
           <span
             className={cn(
               "grid size-5 place-items-center rounded-full text-xs font-medium",
-              "bg-neutral-200 dark:bg-neutral-700",
+              "bg-border-strong",
             )}
           >
             {items.length}
@@ -196,7 +196,7 @@ function KanbanColumn<T extends KanbanItemBase>({
               <PopoverTrigger asChild>
                 <button
                   onPointerDown={(e) => e.stopPropagation()}
-                  className="grid size-6 place-items-center rounded-xs text-gray-400 hover:bg-neutral-200 hover:text-gray-600 dark:hover:bg-neutral-700 dark:hover:text-gray-300"
+                  className="text-foreground-subtle hover:bg-border-strong hover:text-foreground-muted grid size-6 place-items-center rounded-xs"
                 >
                   <MoreVertical className="size-3.5" />
                 </button>
@@ -206,16 +206,16 @@ function KanbanColumn<T extends KanbanItemBase>({
                   {onEdit && (
                     <button
                       onClick={onEdit}
-                      className="flex items-center gap-x-2 rounded-xs px-2.5 py-1.5 text-sm hover:bg-gray-100 dark:hover:bg-neutral-700"
+                      className="hover:bg-muted flex items-center gap-x-2 rounded-xs px-2.5 py-1.5 text-sm"
                     >
-                      <Pencil className="size-3.5 text-gray-500" />
+                      <Pencil className="text-foreground-subtle size-3.5" />
                       Edit
                     </button>
                   )}
                   {onDelete && (
                     <button
                       onClick={onDelete}
-                      className="flex items-center gap-x-2 rounded-xs px-2.5 py-1.5 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-950/30"
+                      className="text-danger flex items-center gap-x-2 rounded-xs px-2.5 py-1.5 text-sm hover:bg-red-50 dark:hover:bg-red-950/30"
                     >
                       <Trash2 className="size-3.5" />
                       Delete
@@ -232,7 +232,7 @@ function KanbanColumn<T extends KanbanItemBase>({
         data-slot="kanban-column-body"
         className={cn(
           "flex min-h-32 flex-col gap-y-2 rounded-xs p-1 transition-colors",
-          isOver && "bg-primary-50/50 dark:bg-primary-950/30",
+          isOver && "bg-primary-soft/50",
         )}
       >
         <SortableContext items={items.map((i) => i.id)} strategy={verticalListSortingStrategy}>
@@ -247,10 +247,10 @@ function KanbanColumn<T extends KanbanItemBase>({
                   data-slot="kanban-empty-state"
                   className={cn(
                     "grid min-h-24 place-items-center rounded-xs border border-dashed",
-                    "border-neutral-300 dark:border-neutral-600",
+                    "border-border-strong",
                   )}
                 >
-                  <p className="text-sm text-neutral-400 dark:text-neutral-500">No items</p>
+                  <p className="text-foreground-subtle text-sm">No items</p>
                 </div>
               ))}
         </SortableContext>
@@ -416,12 +416,9 @@ export function Kanban<T extends KanbanItemBase>({
         {activeColumn ? (
           <div data-slot="kanban-column-overlay" className="flex w-64 flex-col gap-y-2 sm:w-72">
             <div
-              className={cn(
-                "flex h-10 items-center gap-x-2 rounded-xs px-3 shadow-lg",
-                "bg-neutral-100 dark:bg-neutral-800",
-              )}
+              className={cn("flex h-10 items-center gap-x-2 rounded-xs px-3 shadow-md", "bg-muted")}
             >
-              <GripVertical className="size-3.5 text-gray-400" />
+              <GripVertical className="text-foreground-subtle size-3.5" />
               {activeColumn.color && (
                 <span
                   className="size-2.5 rounded-full"
@@ -432,7 +429,7 @@ export function Kanban<T extends KanbanItemBase>({
               <span
                 className={cn(
                   "ml-auto grid size-5 place-items-center rounded-full text-xs font-medium",
-                  "bg-neutral-200 dark:bg-neutral-700",
+                  "bg-border-strong",
                 )}
               >
                 {itemsByStatus[activeColumn.id]?.length ?? 0}
@@ -441,14 +438,14 @@ export function Kanban<T extends KanbanItemBase>({
             <div
               className={cn(
                 "min-h-24 rounded-xs border border-dashed",
-                "border-neutral-300 bg-neutral-50 dark:border-neutral-600 dark:bg-neutral-900",
+                "border-border-strong bg-background-subtle",
               )}
             />
           </div>
         ) : activeItem ? (
           <div
             data-slot="kanban-card-overlay"
-            className="rounded-xs border bg-white p-3 shadow-xl dark:border-neutral-700 dark:bg-neutral-800"
+            className="bg-surface rounded-xs border p-3 shadow-md"
           >
             {renderCard(activeItem)}
           </div>

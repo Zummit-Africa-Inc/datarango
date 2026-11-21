@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { FacebookIcon, GitHubIcon, InstagramIcon, TwitterIcon, YouTubeIcon } from "@datarango/ui";
+import { FacebookIcon, InstagramIcon, TwitterIcon, YouTubeIcon } from "@datarango/ui";
 import { Logo } from "@datarango/ui";
 
 const COLUMNS = [
@@ -42,7 +42,6 @@ const COLUMNS = [
 ];
 
 const ROWS = [
-  { href: "https://github.com/Zummit-Africa-Inc", label: "github", icon: GitHubIcon },
   { href: "https://linkedin.com/com/", label: "linkedin", icon: FacebookIcon },
   { href: "https://twitter.com/@Datarango", label: "twitter", icon: TwitterIcon },
   { href: "https://instagram.com/@Zummit-Africa", label: "instagram", icon: InstagramIcon },

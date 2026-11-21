@@ -41,18 +41,18 @@ export const DatePicker = ({
       <PopoverTrigger asChild>
         <button
           className={cn(
-            "inline-flex h-9 w-full min-w-[200px] items-center justify-between gap-2 rounded-xs border border-neutral-400 px-3 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+            "border-border-strong inline-flex h-9 w-full min-w-[200px] items-center justify-between gap-2 rounded-xs border px-3 text-sm font-medium whitespace-nowrap transition-colors disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
             className,
           )}
           disabled={disabled}
         >
           {selected ? format(selected, "PPP") : <span>{placeholder || "Pick a date"}</span>}
-          <CalendarSearchIcon className="text-primary-500" />
+          <CalendarSearchIcon className="text-primary" />
         </button>
       </PopoverTrigger>
       <PopoverContent className="w-72">
         <Calendar onSelect={handleChange} value={selected} maxDate={maxDate} minDate={minDate} />
-        {error && <p className="text-xs text-red-500">{error}</p>}
+        {error && <p className="text-danger text-xs">{error}</p>}
       </PopoverContent>
     </Popover>
   );

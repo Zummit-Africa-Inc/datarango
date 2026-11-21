@@ -69,8 +69,8 @@ export const PhoneInput = ({
       {label && <label className="text-sm font-medium">{label}</label>}
       <div
         className={cn(
-          "focus-within:border-primary-500 flex h-9 items-center rounded-xs border bg-transparent px-2 transition-colors",
-          isInvalid && "border-red-500 focus-within:border-red-500",
+          "focus-within:border-ring focus-within:ring-ring/20 flex h-9 items-center rounded-xs border bg-transparent px-2 transition-colors focus-within:ring-3",
+          isInvalid && "border-danger focus-within:border-danger",
           disabled && "cursor-not-allowed opacity-50",
           className,
         )}
@@ -102,9 +102,9 @@ export const PhoneInput = ({
         />
       </div>
       {isInvalid && (
-        <p className="text-xs text-red-500">Phone number must be between 7 and 15 digits.</p>
+        <p className="text-danger text-xs">Phone number must be between 7 and 15 digits.</p>
       )}
-      {error && !isInvalid && <p className="text-xs text-red-500">{error}</p>}
+      {error && !isInvalid && <p className="text-danger text-xs">{error}</p>}
     </div>
   );
 };

@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import { useState } from "react";
-import { Bell } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
+import { Bell } from "lucide-react";
+import { useState } from "react";
+import Link from "next/link";
 
 import { Button, Popover, PopoverContent, PopoverTrigger, ScrollArea, cn } from "@datarango/ui";
-
+import { useNotificationSocket } from "./use-notification-socket";
 import { notificationCopy } from "./notification-copy";
 import type { InboxEntry } from "./types";
 import {
@@ -15,7 +15,6 @@ import {
   useMarkNotificationsRead,
   useUnreadCount,
 } from "./use-inbox";
-import { useNotificationSocket } from "./use-notification-socket";
 
 /**
  * The notification bell and its inbox panel — shared across the app shells, so
@@ -56,15 +55,14 @@ export const NotificationBell = () => {
           {hasUnread && (
             <span
               aria-hidden
-              className="bg-primary text-primary-foreground absolute -top-0.5 -right-0.5 grid min-w-4 place-items-center rounded-full px-1 text-[10px] leading-4 font-medium"
+              className="bg-primary text-primary-foreground absolute -top-0.5 -right-0.5 grid min-w-4 place-items-center rounded-full px-1 text-[8px] leading-4 font-medium"
             >
               {count > 9 ? "9+" : count}
             </span>
           )}
         </button>
       </PopoverTrigger>
-
-      <PopoverContent align="end" className="w-90 p-0">
+      <PopoverContent align="end" className="w-125 p-0">
         <div className="flex items-center justify-between border-b px-4 py-3">
           <p className="font-heading text-sm">Notifications</p>
           {hasUnread && (
@@ -78,7 +76,6 @@ export const NotificationBell = () => {
             </Button>
           )}
         </div>
-
         <ScrollArea className="max-h-96">
           {inbox.isPending && open ? (
             <p className="text-muted-foreground px-4 py-8 text-center text-sm">Loading…</p>
@@ -100,7 +97,6 @@ export const NotificationBell = () => {
               ))}
             </ul>
           )}
-
           {inbox.hasNextPage && (
             <div className="p-2">
               <Button

@@ -33,9 +33,9 @@ export function Stepper({
           role="button"
           className={cn(
             "flex flex-1 flex-col gap-y-0.5 p-2",
-            current === index && "bg-yellow-100 text-yellow-600",
-            current < index && "bg-neutral-200 text-neutral-600",
-            current > index && "bg-green-100 text-green-600",
+            current === index && "bg-warning-soft text-warning",
+            current < index && "bg-border-strong text-foreground-muted",
+            current > index && "bg-success-soft text-success",
             onStepChange ? "cursor-pointer" : "cursor-default",
             stepperClassName,
           )}

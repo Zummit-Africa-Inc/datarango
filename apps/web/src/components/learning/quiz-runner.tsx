@@ -1,11 +1,11 @@
 "use client";
 
+import { AlertTriangle, CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
-import { AlertTriangle, CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
 
-import { CodeEditor } from "@datarango/notebook";
 import { Badge, Button, Input, Markdown, Textarea, cn } from "@datarango/ui";
+import { CodeEditor } from "@datarango/notebook";
 
 import {
   useAttempt,
@@ -523,7 +523,9 @@ const TestReportView = ({ report }: { report: TestReport }) => {
               <span className="min-w-0">
                 <code className="text-ink">{test.name}</code>
                 {!test.passed && test.message && (
-                  <span className="text-muted-foreground block break-words">{test.message}</span>
+                  <span className="text-muted-foreground block wrap-break-word">
+                    {test.message}
+                  </span>
                 )}
               </span>
             </li>

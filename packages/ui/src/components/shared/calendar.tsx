@@ -86,7 +86,7 @@ export const Calendar = ({ onSelect, value, className, maxDate, minDate }: Calen
       <div className="flex w-full items-center justify-between gap-x-4">
         <button
           className={cn(
-            "grid size-7 place-items-center rounded border border-neutral-400 transition-opacity",
+            "border-border-strong grid size-7 place-items-center rounded border transition-opacity",
             isPrevDisabled && "cursor-not-allowed opacity-50",
           )}
           onClick={handlePreviousMonth}
@@ -103,7 +103,7 @@ export const Calendar = ({ onSelect, value, className, maxDate, minDate }: Calen
 
         <button
           className={cn(
-            "grid size-7 place-items-center rounded border border-neutral-400 transition-opacity",
+            "border-border-strong grid size-7 place-items-center rounded border transition-opacity",
             isNextDisabled && "cursor-not-allowed opacity-50",
           )}
           onClick={handleNextMonth}
@@ -119,7 +119,7 @@ export const Calendar = ({ onSelect, value, className, maxDate, minDate }: Calen
         {DAYS_OF_WEEK.map((day) => (
           <div
             key={day}
-            className="flex aspect-square items-center justify-center text-sm font-medium text-neutral-500"
+            className="text-foreground-subtle flex aspect-square items-center justify-center text-sm font-medium"
           >
             {day}
           </div>
@@ -136,9 +136,9 @@ export const Calendar = ({ onSelect, value, className, maxDate, minDate }: Calen
               key={`${currentMonth.getMonth()}-${index}`}
               className={cn(
                 "aspect-square rounded text-sm transition-colors",
-                day && !disabled && !selected && "hover:bg-neutral-300",
-                selected && "bg-primary-300/50",
-                disabled && "cursor-not-allowed text-neutral-300 hover:bg-transparent",
+                day && !disabled && !selected && "hover:bg-border-strong",
+                selected && "bg-primary-soft",
+                disabled && "text-foreground-subtle cursor-not-allowed hover:bg-transparent",
               )}
               disabled={!day || disabled}
               onClick={() => handleDayClick(day)}

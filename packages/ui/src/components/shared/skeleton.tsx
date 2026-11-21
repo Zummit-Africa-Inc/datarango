@@ -10,21 +10,18 @@ const Shimmer = ({ className, style }: { className?: string; style?: CSSProperti
     className={cn(
       "bg-muted relative overflow-hidden rounded-xs",
       "before:absolute before:inset-0 before:-translate-x-full",
-      "before:bg-gradient-to-r before:from-transparent before:via-[rgba(255,255,255,0.55)] before:to-transparent",
-      "before:animate-[shimmer_1.6s_ease-in-out_infinite]",
+      "before:via-surface/70 before:bg-gradient-to-r before:from-transparent before:to-transparent",
+      "before:animate-[shimmer_1.6s_ease-in-out_infinite] motion-reduce:before:animate-none",
       className,
     )}
-    style={{
-      animation: "shimmer 1.6s ease-in-out infinite",
-      ...style,
-    }}
+    style={style}
   />
 );
 
 // ── Stat card skeleton — mirrors Statistics component ─────────────────────────
 
 const StatCardSkeleton = () => (
-  <div className="bg-card border-hairline space-y-3 rounded-xs border p-4">
+  <div className="bg-card border-border space-y-3 rounded-md border p-5">
     <div className="flex items-center justify-between">
       <Shimmer className="h-3 w-20" />
       <Shimmer className="size-4 rounded-full" />
@@ -83,7 +80,7 @@ const TableSkeleton = ({ columns = 6, rows = 8 }: { columns?: number; rows?: num
 // ── Widget card skeleton — mirrors Card + CardHeader + CardContent ─────────────
 
 const WidgetSkeleton = ({ hasChart = false }: { hasChart?: boolean }) => (
-  <div className="bg-card ring-foreground/10 flex flex-col gap-4 overflow-hidden rounded-xs p-4 ring-1">
+  <div className="bg-card ring-border flex flex-col gap-4 overflow-hidden rounded-xs p-4 ring-1">
     <div className="flex items-center justify-between">
       <Shimmer className="h-4 w-32" />
       <div className="flex gap-1">

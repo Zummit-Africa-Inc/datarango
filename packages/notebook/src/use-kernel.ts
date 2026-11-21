@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 
-import { KernelClient } from "./kernel";
 import { type KernelStatus } from "./types";
+import { KernelClient } from "./kernel";
 
 /**
  * Attaches to the session's kernel for as long as the component is mounted.
