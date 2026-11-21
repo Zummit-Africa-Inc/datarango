@@ -1,20 +1,3 @@
-import type { ComponentType } from "react";
-
-export interface RouteConfig {
-  href: string;
-  label: string;
-  icon?: ComponentType<{ className?: string }>;
-  disabled?: boolean;
-  hasOverview?: boolean;
-  children?: RouteGroup[];
-}
-
-export interface RouteGroup {
-  group: string;
-  routes: RouteConfig[];
-  disabled?: boolean;
-}
-
 export interface HttpResponse<T> {
   data: T;
   message: string;

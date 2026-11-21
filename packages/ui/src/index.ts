@@ -4,6 +4,7 @@
  */
 export * from "./lib";
 export * from "./config/accents";
+export * from "./config/nav";
 export * from "./hooks";
 export * from "./types";
 export * from "./assets/icons";

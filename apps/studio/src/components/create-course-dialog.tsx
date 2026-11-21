@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -28,7 +28,7 @@ const slugify = (value: string) =>
     .replace(/\s+/g, "-")
     .slice(0, 120);
 
-export const CreateCourseDialog = () => {
+export const CreateCourseDialog = ({ trigger }: { trigger?: ReactNode } = {}) => {
   const router = useRouter();
   const create = useCreateCourse();
 
@@ -83,9 +83,7 @@ export const CreateCourseDialog = () => {
         if (!next) reset();
       }}
     >
-      <DialogTrigger asChild>
-        <Button>New course</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger ?? <Button>New course</Button>}</DialogTrigger>
       <DialogContent>
         <form onSubmit={submit}>
           <DialogHeader>

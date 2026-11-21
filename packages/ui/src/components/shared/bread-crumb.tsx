@@ -38,7 +38,7 @@ const BreadcrumbItemComponent = ({
   activeClassName,
 }: BreadcrumbItemProps) => {
   const content = (
-    <span className="flex items-center gap-1.5 capitalize">
+    <span className="flex items-center gap-1.5">
       {item.icon && <item.icon className="size-4" />}
       <span>{fromKebabCase(item.label)}</span>
     </span>
@@ -47,11 +47,7 @@ const BreadcrumbItemComponent = ({
   if (isLast || !item.href || item.disabled) {
     return (
       <span
-        className={cn(
-          "text-foreground-muted text-sm font-medium capitalize",
-          activeClassName,
-          className,
-        )}
+        className={cn("text-foreground text-sm font-medium", activeClassName, className)}
         aria-current={isLast ? "page" : undefined}
       >
         {content}
