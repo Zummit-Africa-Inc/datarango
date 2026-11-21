@@ -1,7 +1,7 @@
 {
   "name": "datarango-frontend",
   "private": true,
-  "packageManager": "pnpm@10.18.1",
+  "packageManager": "pnpm@12.21.0",
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
@@ -17,6 +17,7 @@
     "turbo": "^2.5.0"
   },
   "dependencies": {
-    "next": "16.2.11"
+    "next": "16.2.11",
+    "zustand": "^5.1.0"
   }
 }

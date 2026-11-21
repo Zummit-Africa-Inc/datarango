@@ -1,7 +1,7 @@
 import { connectGatewayChannel, getApi, type GatewayChannel } from "@datarango/api";
 
-import { kernelBase } from "./contents";
 import { type KernelStatus, type MimeBundle, type Output } from "./types";
+import { kernelBase } from "./contents";
 
 /**
  * A client for one Jupyter kernel behind the gateway's kernel proxy, speaking

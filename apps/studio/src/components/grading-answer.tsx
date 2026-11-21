@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
 import { CheckCircle2, Clock, XCircle } from "lucide-react";
+import { useState } from "react";
 
 import { Badge, Button, Input, Textarea, cn } from "@datarango/ui";
-
 import type { GradingAnswer } from "@/hooks/grading";
 
 /**
@@ -192,7 +191,9 @@ const TestReport = ({ json }: { json: string }) => {
                 <span className="min-w-0">
                   <code className="text-ink">{test.name}</code>
                   {!test.passed && test.message && (
-                    <span className="text-muted-foreground block break-words">{test.message}</span>
+                    <span className="text-muted-foreground block wrap-break-word">
+                      {test.message}
+                    </span>
                   )}
                 </span>
               </li>
