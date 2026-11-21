@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
-import { Search } from "lucide-react";
+import { Suspense } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import {
   Badge,
   Button,
-  Input,
+  listParam,
+  ListToolbar,
+  Pagination,
   PageLayout,
   Skeleton,
   Table,
@@ -17,6 +18,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
+  useListParams,
 } from "@datarango/ui";
 
 import { useDiscoverDatasets } from "@/hooks/arena";
@@ -27,10 +29,17 @@ const updated = (iso: string) =>
   new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
 
 export default function DatasetsPage() {
+  return (
+    <Suspense fallback={<Skeleton skeleton="table" rows={6} />}>
+      <DatasetsList />
+    </Suspense>
+  );
+}
+
+const DatasetsList = () => {
   const router = useRouter();
-  const [search, setSearch] = useState("");
-  const [submitted, setSubmitted] = useState("");
-  const [page, setPage] = useState(1);
+  const { params, set } = useListParams({ q: listParam.string(), page: listParam.number(1) });
+  const { q: submitted, page } = params;
 
   const { data, isLoading } = useDiscoverDatasets({
     search: submitted,
@@ -40,28 +49,12 @@ export default function DatasetsPage() {
 
   const datasets = data?.datasets ?? [];
   const total = data?.total ?? 0;
-  const lastPage = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
-  const runSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitted(search.trim());
-    setPage(1);
-  };
 
   return (
     <PageLayout title="Datasets" subtitle="Real data to learn and compete on.">
-      <form onSubmit={runSearch} className="flex max-w-md items-center gap-2">
-        <Input
-          aria-label="Search datasets"
-          placeholder="Search datasets…"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-        <Button type="submit" variant="outline">
-          <Search className="size-4" />
-          Search
-        </Button>
-      </form>
+      <ListToolbar
+        search={{ value: submitted, onChange: (q) => set({ q }), placeholder: "Search datasets…" }}
+      />
 
       {isLoading ? (
         <Skeleton skeleton="list" rows={6} />
@@ -151,32 +144,13 @@ export default function DatasetsPage() {
           </Table>
         </div>
       )}
-      {total > 0 && (
-        <div className="flex items-center justify-between">
-          <p className="text-muted-foreground text-sm">
-            {lastPage > 1 && `Page ${page} of ${lastPage} · `}
-            {total} dataset{total === 1 ? "" : "s"}
-          </p>
-          <div className={lastPage > 1 ? "flex gap-2" : "hidden"}>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page <= 1}
-              onClick={() => setPage((p) => p - 1)}
-            >
-              Previous
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              disabled={page >= lastPage}
-              onClick={() => setPage((p) => p + 1)}
-            >
-              Next
-            </Button>
-          </div>
-        </div>
-      )}
+      <Pagination
+        page={page}
+        pageSize={PAGE_SIZE}
+        total={total}
+        noun="dataset"
+        onPageChange={(next) => set({ page: next })}
+      />
     </PageLayout>
   );
-}
+};
