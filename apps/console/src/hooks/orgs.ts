@@ -49,7 +49,8 @@ export interface InviteInfo {
 }
 
 /** The orgs the signed-in user belongs to (user-scoped — not org-scoped cache). */
-export const useMyOrgs = () => useApi.query<OrgSummary[]>(["orgs"], "/orgs", { orgScoped: false });
+export const useMyOrgs = ({ enabled = true }: { enabled?: boolean } = {}) =>
+  useApi.query<OrgSummary[]>(["orgs"], "/orgs", { orgScoped: false, enabled });
 
 export const useCreateOrg = () =>
   useApi.mutation<{ name: string }, OrgSummary>("/orgs", {

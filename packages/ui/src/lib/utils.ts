@@ -23,6 +23,8 @@ export interface BreadcrumbEntry {
 }
 
 /** Builds breadcrumb items from a pathname, e.g. "/courses/data-101" → Courses / Data 101. */
+const sentenceCase = (value: string) => value.charAt(0).toUpperCase() + value.slice(1);
+
 export const buildBreadcrumbs = (pathname: string): BreadcrumbEntry[] => {
   const segments = normalize(pathname).split("/").filter(Boolean);
   const breadcrumbs: BreadcrumbEntry[] = [];
@@ -35,11 +37,11 @@ export const buildBreadcrumbs = (pathname: string): BreadcrumbEntry[] => {
       const parentSegment = segments[i - 1];
       const singular = parentSegment ? parentSegment.replace(/s$/, "") : "item";
       breadcrumbs[breadcrumbs.length - 1] = {
-        label: `${fromKebabCase(decodeURIComponent(singular))} Details`,
+        label: `${sentenceCase(fromKebabCase(decodeURIComponent(singular)))} details`,
         href,
       };
     } else {
-      breadcrumbs.push({ label: fromKebabCase(decodeURIComponent(segment)), href });
+      breadcrumbs.push({ label: sentenceCase(fromKebabCase(decodeURIComponent(segment))), href });
     }
   }
 

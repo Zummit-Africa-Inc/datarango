@@ -1,53 +1,55 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
-import { createAuthClient, useActiveOrg, useAuthStatus, useUser } from "@datarango/auth";
 import {
-  CompanySwitcher,
-  ContextSwitcher,
-  Header,
-  Loader,
-  Sidebar,
-  type Tenant,
-} from "@datarango/ui";
+  createAuthClient,
+  hasPermission,
+  useActiveOrg,
+  useAuthStatus,
+  useUser,
+} from "@datarango/auth";
+import { AppShell, Loader, ORG_NAV, OrgSwitcher, filterNav, type Tenant } from "@datarango/ui";
 
 import { CreateFirstOrg } from "@/components/create-first-org";
 import { SuspendedOrgGate } from "@/components/suspended-org";
 import { useMyOrgs } from "@/hooks/orgs";
-import { ORG_ROUTES } from "@/config/routes";
 
 const auth = createAuthClient();
 
-export default function OrgLayout({ children }: { children: React.ReactNode }) {
-  const [collapsed, setCollapsed] = useState(false);
-  const [search, setSearch] = useState("");
+const ROLE_LABELS: Record<string, string> = {
+  owner: "Owner",
+  admin: "Org admin",
+  manager: "Manager",
+  instructor: "Instructor",
+  member: "Member",
+};
 
+/**
+ * Org-admin shell. Every hook runs before the first early return: hooks after a
+ * conditional return change the hook order when the auth status flips, which
+ * React reports as a crash ("This page couldn't load").
+ */
+export default function OrgLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const status = useAuthStatus();
   const user = useUser();
-  const { activeOrgId, setOrgContext } = useActiveOrg();
-  const { data: orgs, isLoading } = useMyOrgs();
+  const { activeOrgId, membership, setOrgContext } = useActiveOrg();
+  const { data: orgs, isLoading } = useMyOrgs({ enabled: status === "authenticated" });
 
-  // No session → hand off to the BFF sign-in, which completes via the shared SSO
-  // cookie (already set if the user signed into any Datarango app) — no re-login.
   useEffect(() => {
     if (status === "guest") {
       window.location.assign(`/api/auth/signin?returnTo=${encodeURIComponent(pathname)}`);
     }
   }, [status, pathname]);
 
-  if (status !== "authenticated") {
-    return <Loader />;
-  }
-
   const tenants: Tenant[] = useMemo(
     () => (orgs ?? []).map((o) => ({ id: o.id, name: o.name, slug: o.slug })),
     [orgs],
   );
 
-  // Default the active org to the first membership once orgs load.
+  // Land on the first org when nothing (or a stale org) is selected.
   useEffect(() => {
     if (!orgs || orgs.length === 0) return;
     if (!activeOrgId || !orgs.some((o) => o.id === activeOrgId)) {
@@ -55,7 +57,12 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
     }
   }, [orgs, activeOrgId, setOrgContext]);
 
-  if (isLoading || !orgs) {
+  const nav = useMemo(
+    () => filterNav(ORG_NAV, (permission) => hasPermission(membership, permission)),
+    [membership],
+  );
+
+  if (status !== "authenticated" || isLoading || !orgs) {
     return <Loader />;
   }
 
@@ -66,43 +73,30 @@ export default function OrgLayout({ children }: { children: React.ReactNode }) {
   const activeTenant = tenants.find((t) => t.id === activeOrgId) ?? tenants[0]!;
 
   return (
-    <div className="flex h-dvh overflow-hidden">
-      <Sidebar
-        collapsed={collapsed}
-        logoHref="/overview"
-        routes={ORG_ROUTES}
-        top={
-          <CompanySwitcher
-            collapsed={collapsed}
-            currentTenant={activeTenant}
-            onTenantChange={(t) => setOrgContext(t.id)}
-            tenants={tenants}
-          />
-        }
-        footer={
-          <ContextSwitcher
-            onSignOut={() => auth.signOut()}
-            user={user ?? { name: "…", email: "" }}
-          />
-        }
-      />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <Header
-          greeting={{ title: activeTenant.name, subtitle: "Organization dashboard" }}
-          onToggleSidebar={() => setCollapsed((prev) => !prev)}
-          overviewPaths={["/overview"]}
-          search={{ value: search, onChange: setSearch, placeholder: "Search members, courses…" }}
+    <AppShell
+      nav={nav}
+      homeHref="/overview"
+      product="Console"
+      orgSwitcher={(collapsed) => (
+        <OrgSwitcher
+          collapsed={collapsed}
+          current={activeTenant}
+          tenants={tenants}
+          onChange={(t) => setOrgContext(t.id)}
         />
-        {/* `flex flex-col` is load-bearing, not decoration: a *block* scroll
-            container drops its bottom padding once the content overflows, so the
-            last row of every page sat flush against the window edge. A flex
-            scroll container keeps its end padding in the scrollable area.
-            `overscroll-contain` stops the gesture chaining to the document at
-            the end of the scroll. */}
-        <main className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain p-6">
-          <SuspendedOrgGate>{children}</SuspendedOrgGate>
-        </main>
-      </div>
-    </div>
+      )}
+      overviewPaths={["/overview"]}
+      greeting={{ title: activeTenant.name, subtitle: "Organisation dashboard" }}
+      searchPlaceholder="Search console…"
+      user={{
+        name: user?.name ?? "…",
+        email: user?.email ?? "",
+        avatarUrl: user?.avatarUrl,
+        role: membership ? (ROLE_LABELS[membership.role] ?? membership.role) : undefined,
+      }}
+      onSignOut={() => auth.signOut()}
+    >
+      <SuspendedOrgGate>{children}</SuspendedOrgGate>
+    </AppShell>
   );
 }
