@@ -56,7 +56,7 @@ function TreeGroup<TParent, TChild>({
     <div className={cn("overflow-hidden rounded-xs border", className)}>
       {renderParent(parent, { isExpanded, toggle, childCount: items.length })}
       {isExpanded && (
-        <div className="border-l border-gray-200" style={{ marginLeft: anchorOffset }}>
+        <div className="border-border border-l" style={{ marginLeft: anchorOffset }}>
           {items.map((child, index) => (
             <React.Fragment key={index}>{renderChild(child, index, parent)}</React.Fragment>
           ))}

@@ -81,9 +81,9 @@ export const MultiSelect = ({
       {label && (
         <p
           className={cn(
-            "text-sm font-medium text-gray-700",
+            "text-foreground-muted text-sm font-medium",
             labelClassName,
-            required && "after:ml-1 after:text-red-500 after:content-['*']",
+            required && "after:text-danger after:ml-1 after:content-['*']",
           )}
         >
           {label}
@@ -93,8 +93,8 @@ export const MultiSelect = ({
         <PopoverTrigger asChild disabled={disabled}>
           <button
             className={cn(
-              "mt-1 flex h-9 w-full items-center justify-between rounded-xs border bg-transparent px-3 text-sm text-gray-900 capitalize transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>span]:truncate",
-              hasError ? "border-red-500" : "border-input",
+              "text-foreground mt-1 flex h-9 w-full items-center justify-between rounded-xs border bg-transparent px-3 text-sm capitalize transition-all focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1 [&>span]:truncate",
+              hasError ? "border-danger" : "border-input",
               className,
             )}
             data-placeholder={value.length === 0}
@@ -105,14 +105,14 @@ export const MultiSelect = ({
                 ? selectedLabels.join(", ")
                 : (placeholder ?? "Select values...")}
             </span>
-            <ChevronDownIcon className="shrink-0 text-gray-400" />
+            <ChevronDownIcon className="text-foreground-subtle shrink-0" />
           </button>
         </PopoverTrigger>
         <PopoverContent className="p-0" style={{ width: "var(--radix-popper-anchor-width)" }}>
           <Command loop className="min-w-fit">
             <CommandInput ref={inputRef} placeholder={searchPlaceholder} />
             <CommandList>
-              <CommandEmpty className="text-center text-xs text-gray-400">
+              <CommandEmpty className="text-foreground-subtle text-center text-xs">
                 No results found.
               </CommandEmpty>
               <CommandGroup>
@@ -135,7 +135,7 @@ export const MultiSelect = ({
           </Command>
         </PopoverContent>
       </Popover>
-      {error && <span className="text-xs text-red-500">{error}</span>}
+      {error && <span className="text-danger text-xs">{error}</span>}
     </div>
   );
 };

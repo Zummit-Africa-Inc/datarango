@@ -57,7 +57,7 @@ export function DataTable<TData, TValue>({
   return (
     <div className="w-full">
       <Table className="font-body">
-        <TableHeader className="h-12 bg-gray-400">
+        <TableHeader className="bg-border-strong h-12">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
           {isLoading ? (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-100 text-center">
-                <RiLoaderLine className="text-primary-400 size-8" />
+                <RiLoaderLine className="text-primary size-8" />
               </TableCell>
             </TableRow>
           ) : null}

@@ -25,15 +25,19 @@ export const TabList = ({
 }: Props) => {
   return (
     <div
-      className={cn("bg-muted inline-flex items-center gap-x-1 rounded-lg p-1", tabListClassName)}
+      role="tablist"
+      className={cn("bg-muted inline-flex items-center gap-x-1 rounded-full p-1", tabListClassName)}
     >
       {tabs.map((tab) => (
         <button
+          type="button"
+          role="tab"
+          aria-selected={activeTab === tab.value}
           className={cn(
-            "rounded-md px-4 py-1 text-sm font-medium",
+            "focus-visible:ring-ring h-9 rounded-full px-4 text-sm font-medium transition-colors duration-150 ease-out outline-none focus-visible:ring-2",
             activeTab === tab.value
-              ? "bg-primary-500 text-white"
-              : "hover:bg-muted-foreground/10 bg-transparent",
+              ? "bg-surface text-foreground shadow-sm"
+              : "text-foreground-muted hover:text-foreground bg-transparent",
             tab.disabled && "cursor-not-allowed opacity-50",
             tabButtonClassName,
           )}

@@ -3,6 +3,7 @@
 import { Avatar as AvatarPrimitive } from "radix-ui";
 import * as React from "react";
 
+import { ACCENT_CLASSES, accentFromKey } from "../../config/accents";
 import { cn } from "../../lib/utils";
 
 function Avatar({
@@ -17,7 +18,7 @@ function Avatar({
       data-slot="avatar"
       data-size={size}
       className={cn(
-        "group/avatar after:border-border relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border after:mix-blend-darken data-[size=lg]:size-10 data-[size=sm]:size-6 dark:after:mix-blend-lighten",
+        "group/avatar after:border-border relative flex size-8 shrink-0 rounded-full select-none after:absolute after:inset-0 after:rounded-full after:border data-[size=lg]:size-10 data-[size=sm]:size-6",
         className,
       )}
       {...props}
@@ -43,7 +44,7 @@ function AvatarFallback({
     <AvatarPrimitive.Fallback
       data-slot="avatar-fallback"
       className={cn(
-        "bg-muted text-muted-foreground flex size-full items-center justify-center rounded-full text-sm group-data-[size=sm]/avatar:text-xs dark:bg-neutral-600",
+        "bg-muted text-foreground-muted flex size-full items-center justify-center rounded-full text-sm group-data-[size=sm]/avatar:text-xs",
         className,
       )}
       {...props}
@@ -85,7 +86,7 @@ function AvatarGroupCount({ className, ...props }: React.ComponentProps<"div">) 
     <div
       data-slot="avatar-group-count"
       className={cn(
-        "bg-muted text-muted-foreground ring-background relative flex size-8 shrink-0 items-center justify-center rounded-full text-sm ring-2 group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-6 dark:bg-neutral-600 [&>svg]:size-4 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3",
+        "bg-muted text-muted-foreground ring-background relative flex size-8 shrink-0 items-center justify-center rounded-full text-sm ring-2 group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-6 [&>svg]:size-4 group-has-data-[size=lg]/avatar-group:[&>svg]:size-5 group-has-data-[size=sm]/avatar-group:[&>svg]:size-3",
         className,
       )}
       {...props}
@@ -93,4 +94,74 @@ function AvatarGroupCount({ className, ...props }: React.ComponentProps<"div">) 
   );
 }
 
-export { Avatar, AvatarImage, AvatarFallback, AvatarGroup, AvatarGroupCount, AvatarBadge };
+const initialsOf = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? "")
+    .join("") || "?";
+
+/** Avatar with a photo, falling back to initials on an accent picked from the name. */
+function UserAvatar({
+  name,
+  src,
+  size = "default",
+  className,
+}: {
+  name: string;
+  src?: string | null;
+  size?: "default" | "sm" | "lg";
+  className?: string;
+}) {
+  return (
+    <Avatar size={size} className={className}>
+      {src && <AvatarImage src={src} alt={name} />}
+      <AvatarFallback
+        className={cn("font-medium", ACCENT_CLASSES[accentFromKey(name)].soft)}
+        aria-label={name}
+      >
+        {initialsOf(name)}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+
+/** Overlapping avatars with a "+N" chip once `max` is reached (social proof, members). */
+function AvatarStack({
+  people,
+  max = 4,
+  size = "default",
+  className,
+}: {
+  people: { name: string; src?: string | null }[];
+  max?: number;
+  size?: "default" | "sm" | "lg";
+  className?: string;
+}) {
+  const shown = people.slice(0, max);
+  const rest = people.length - shown.length;
+  return (
+    <AvatarGroup className={className}>
+      {shown.map((person, i) => (
+        <UserAvatar key={`${person.name}-${i}`} size={size} {...person} />
+      ))}
+      {rest > 0 && (
+        <AvatarGroupCount aria-label={`${rest} more`} className="text-xs font-medium">
+          +{rest}
+        </AvatarGroupCount>
+      )}
+    </AvatarGroup>
+  );
+}
+
+export {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+  AvatarGroup,
+  AvatarGroupCount,
+  AvatarBadge,
+  UserAvatar,
+  AvatarStack,
+};

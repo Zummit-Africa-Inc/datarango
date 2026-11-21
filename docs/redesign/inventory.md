@@ -24,7 +24,7 @@ Source of truth for the redesign is `DESIGN-HANDOFF.md` (workspace root). This f
 
 Tailwind is **v4** in every app (`@theme` in `tokens.css`, `@source` per app `globals.css`). No upgrade needed.
 
-No Storybook exists; §3's "both themes side by side" preview will be a route (Phase 2).
+No Storybook exists; §3's "both themes side by side" preview is the web route `/design-system` (noindex). Any element with `.light` or `.dark` scopes a theme to its subtree; next-themes puts `theme-light` (not `light`) on `<html>` so this works.
 
 ## Routes → surfaces (§7)
 
@@ -140,10 +140,12 @@ Still to purge in Phase 7: raw `gray/zinc/slate/neutral` (~70 uses in 16 files),
 
 - `baseline/light/…`: 56 screens before any change.
 - `phase-1/{light,dark}/…`: after Phase 1.
+- `phase-2/design-system-page-{light,dark}.png`: the primitives preview.
 
 ## Phase log
 
 - **Phase 1 (Foundation)** — inventory, tokens, fonts (Space Grotesk / Geist / Space Mono via `@datarango/ui/fonts`; Geist and Space Grotesk load as variable fonts — listing weights for them breaks parallel Turbopack builds), theming (next-themes, toggle in app header + marketing nav, Settings → Appearance), accent config, shape kit, logo dark variant.
+- **Phase 2 (Primitives)**: Button (primary / secondary / ghost / soft / danger / link, sm–lg + icon, `shape="pill"`, `ButtonArrow`), Badge (`tone` × solid / soft / outline, v1.1 `variant` mapped), `Count`, Card (`interactive`), StatCard + `Delta` + `Sparkline`, ProgressRing / ProgressBar / SteppedProgress, `UserAvatar` / `AvatarStack` (initials on a hashed accent), Tabs (underline / pill), Tooltip, EmptyState, PropertyList, `BarChart` wrapper, solid status tokens; raw greys and old primary steps in `packages/ui` moved to tokens; token focus ring on inputs. Fixed on the way: Radix checked states (`data-checked:` never matched), skeleton blocks sliding with their shimmer. Still to restyle with their screens: Sidebar and switchers (Phase 3), DataTable (Phase 4), Cover / Price (Phase 5), notebook cell (Phase 6).
 
 ## Known issues found while capturing (not caused by the redesign)
 

@@ -6,9 +6,14 @@ import { useEffect, useState, type ReactNode } from "react";
 
 import { cn } from "../../lib";
 
+/**
+ * App-wide theme. Light mode puts `theme-light` (not `light`) on `<html>` so that
+ * a `.light` / `.dark` class on any element can scope a theme to a subtree.
+ */
 export const ThemeProvider = ({ children }: { children: ReactNode }) => (
   <NextThemesProvider
     attribute="class"
+    value={{ light: "theme-light", dark: "dark" }}
     defaultTheme="system"
     enableSystem
     disableTransitionOnChange

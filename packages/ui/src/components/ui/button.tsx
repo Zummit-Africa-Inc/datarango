@@ -1,56 +1,67 @@
 import { cva, type VariantProps } from "class-variance-authority";
+import { ArrowRight } from "lucide-react";
 import { Slot } from "radix-ui";
 import * as React from "react";
 
 import { cn } from "../../lib/utils";
 
+const secondary =
+  "border-border bg-surface text-foreground hover:border-border-strong hover:bg-muted aria-expanded:bg-muted";
+
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-xs border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 disabled:cursor-not-allowed",
+  "group/button focus-visible:ring-ring focus-visible:ring-offset-background aria-invalid:border-danger inline-flex shrink-0 items-center justify-center rounded-md border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-[color,background-color,border-color,transform] duration-150 ease-out outline-none select-none focus-visible:ring-2 focus-visible:ring-offset-2 active:not-aria-[haspopup]:scale-[0.98] disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 motion-reduce:transition-none motion-reduce:active:scale-100 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "bg-primary-500 text-white hover:bg-primary-600 active:bg-primary-700",
-        "default-inverse": "bg-white text-primary-600 [a]:hover:bg-white/90",
-        ink: "bg-band text-on-band hover:bg-band-elevated",
-        outline:
-          "border-hairline-strong bg-transparent text-foreground hover:bg-surface-strong aria-expanded:bg-surface-strong",
-        secondary:
-          "bg-surface-strong text-foreground hover:bg-hairline aria-expanded:bg-surface-strong",
+        primary:
+          "bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-pressed",
+        default:
+          "bg-primary text-primary-foreground hover:bg-primary-hover active:bg-primary-pressed",
+        secondary,
+        outline: secondary,
         ghost:
-          "hover:bg-surface-strong hover:text-foreground aria-expanded:bg-surface-strong aria-expanded:text-foreground",
-        destructive: "bg-destructive text-white hover:bg-destructive/90",
-        link: "text-primary-600 underline-offset-4 hover:underline",
-        success: "bg-success text-white hover:bg-success/90",
+          "text-foreground hover:bg-muted aria-expanded:bg-muted hover:text-foreground aria-expanded:text-foreground",
+        soft: "bg-primary-soft text-primary-soft-foreground hover:bg-primary-soft/70",
+        danger: "bg-danger-solid hover:bg-danger-solid/90 text-white",
+        destructive: "bg-danger-solid hover:bg-danger-solid/90 text-white",
+        success: "bg-success-solid hover:bg-success-solid/90 text-white",
+        link: "text-primary h-auto px-0 underline-offset-4 hover:underline",
+        band: "bg-band text-on-band hover:bg-band-elevated",
+        ink: "bg-band text-on-band hover:bg-band-elevated",
+        "default-inverse": "text-primary bg-white hover:bg-white/90",
       },
       size: {
         default:
-          "h-9 gap-1.5 px-4 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xs: "h-6 gap-1 rounded-[min(var(--radius-md),6px)] px-2 text-xs in-data-[slot=button-group]:rounded-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
-        sm: "h-7 gap-1 rounded-[min(var(--radius-md),8px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-xs has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
-        md: "h-10 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
-        lg: "h-12 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        xl: "h-14 gap-1.5 px-3.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
-        "2xl":
-          "h-16 gap-2 px-4 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 text-lg font-medium",
-        icon: "size-8",
-        "icon-xs":
-          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-xs [&_svg:not([class*='size-'])]:size-3",
-        "icon-sm":
-          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-xs",
-        "icon-lg": "size-9",
+          "h-10 gap-2 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        md: "h-10 gap-2 px-4 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        xs: "h-7 gap-1 rounded-sm px-2 text-xs [&_svg:not([class*='size-'])]:size-3.5",
+        sm: "h-8 gap-1.5 rounded-sm px-3 text-[0.8125rem] has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-12 gap-2 px-6 text-base has-data-[icon=inline-end]:pr-4 has-data-[icon=inline-start]:pl-4",
+        xl: "h-14 gap-2 px-7 text-base",
+        "2xl": "h-16 gap-2 px-8 text-lg",
+        icon: "size-10",
+        "icon-xs": "size-7 rounded-sm [&_svg:not([class*='size-'])]:size-3.5",
+        "icon-sm": "size-8 rounded-sm",
+        "icon-lg": "size-12",
+      },
+      shape: {
+        default: "",
+        pill: "rounded-full",
       },
     },
     defaultVariants: {
-      variant: "default",
+      variant: "primary",
       size: "default",
+      shape: "default",
     },
   },
 );
 
 function Button({
   className,
-  variant = "default",
+  variant = "primary",
   size = "default",
+  shape = "default",
   type = "button",
   asChild = false,
   ...props
@@ -65,11 +76,27 @@ function Button({
       data-slot="button"
       data-variant={variant}
       data-size={size}
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(buttonVariants({ variant, size, shape, className }))}
       type={type}
       {...props}
     />
   );
 }
 
-export { Button, buttonVariants };
+/** Trailing circular arrow chip for marketing CTAs (`<Button shape="pill">Get started <ButtonArrow /></Button>`). */
+function ButtonArrow({ className }: { className?: string }) {
+  return (
+    <span
+      data-icon="inline-end"
+      aria-hidden="true"
+      className={cn(
+        "-mr-2 inline-flex size-7 items-center justify-center rounded-full bg-current/15 transition-transform duration-150 ease-out group-hover/button:translate-x-0.5 motion-reduce:transition-none",
+        className,
+      )}
+    >
+      <ArrowRight className="size-4" />
+    </span>
+  );
+}
+
+export { Button, ButtonArrow, buttonVariants };

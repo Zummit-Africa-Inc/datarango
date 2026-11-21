@@ -63,7 +63,7 @@ const HeadingDropdown = ({ editor }: { editor: Editor }) => {
         </svg>
       </button>
       {open && (
-        <div className="border-border bg-card absolute top-full left-0 z-50 mt-1 flex flex-col overflow-hidden rounded-md border shadow-lg">
+        <div className="border-border bg-card absolute top-full left-0 z-50 mt-1 flex flex-col overflow-hidden rounded-md border shadow-md">
           {[
             { level: 1, label: "Heading 1", size: "text-base font-bold" },
             { level: 2, label: "Heading 2", size: "text-sm font-bold" },
@@ -166,7 +166,7 @@ const TableContextMenu = ({ editor }: { editor: Editor }) => {
 
   return (
     <div
-      className="border-border bg-card fixed z-100 min-w-45 overflow-hidden rounded-lg border shadow-xl"
+      className="border-border bg-card fixed z-100 min-w-45 overflow-hidden rounded-lg border shadow-md"
       ref={menuRef}
       style={{ left: pos.x, top: pos.y }}
     >

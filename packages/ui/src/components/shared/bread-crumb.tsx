@@ -47,7 +47,11 @@ const BreadcrumbItemComponent = ({
   if (isLast || !item.href || item.disabled) {
     return (
       <span
-        className={cn("text-sm font-medium text-gray-600 capitalize", activeClassName, className)}
+        className={cn(
+          "text-foreground-muted text-sm font-medium capitalize",
+          activeClassName,
+          className,
+        )}
         aria-current={isLast ? "page" : undefined}
       >
         {content}
@@ -59,7 +63,7 @@ const BreadcrumbItemComponent = ({
     <Link
       href={item.href}
       className={cn(
-        "text-sm font-medium text-gray-400 transition-colors hover:text-gray-600",
+        "text-foreground-subtle hover:text-foreground-muted text-sm font-medium transition-colors",
         className,
       )}
     >
@@ -75,7 +79,7 @@ const BreadcrumbSeparator = ({
   separator?: React.ReactNode;
   className?: string;
 }) => (
-  <span className={cn("text-gray-400", className)} aria-hidden="true">
+  <span className={cn("text-foreground-subtle", className)} aria-hidden="true">
     {separator ?? <ChevronRight className="size-4" />}
   </span>
 );
@@ -94,7 +98,7 @@ const CollapsedItems = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="text-sm font-medium text-gray-500 transition-colors hover:text-gray-900"
+        className="text-foreground-subtle hover:text-foreground text-sm font-medium transition-colors"
         aria-label="Show more breadcrumbs"
       >
         {collapsedLabel}
@@ -102,20 +106,20 @@ const CollapsedItems = ({
       {isOpen && (
         <>
           <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
-          <div className="absolute top-full left-0 z-20 mt-1 flex min-w-50 flex-col gap-1 rounded-xs border bg-white p-2 shadow-lg">
+          <div className="bg-surface absolute top-full left-0 z-20 mt-1 flex min-w-50 flex-col gap-1 rounded-xs border p-2 shadow-md">
             {items.map((item, index) => (
               <div key={`${item.label}-${index}`}>
                 {item.href ? (
                   <Link
                     href={item.href}
-                    className="flex items-center gap-1.5 rounded px-2 py-1.5 text-sm text-gray-700 transition-colors hover:bg-gray-100"
+                    className="text-foreground-muted hover:bg-muted flex items-center gap-1.5 rounded px-2 py-1.5 text-sm transition-colors"
                     onClick={() => setIsOpen(false)}
                   >
                     {item.icon && <item.icon className="size-4" />}
                     <span>{item.label}</span>
                   </Link>
                 ) : (
-                  <span className="flex items-center gap-1.5 px-2 py-1.5 text-sm text-gray-700">
+                  <span className="text-foreground-muted flex items-center gap-1.5 px-2 py-1.5 text-sm">
                     {item.icon && <item.icon className="size-4" />}
                     <span>{item.label}</span>
                   </span>

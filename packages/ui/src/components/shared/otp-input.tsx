@@ -77,7 +77,7 @@ export const OtpInput = ({
         {values.map((value, index) => (
           <MemoizedInput
             autoComplete="one-time-code"
-            className="focus:border-primary-500 text-primary-500 flex size-14 items-center justify-center rounded-xs border bg-white px-3 py-2 text-center text-lg font-medium uppercase outline-none select-none read-only:border-neutral-300 focus:border-2 disabled:border-neutral-300"
+            className="focus:border-ring focus:ring-ring/20 text-primary bg-surface read-only:border-border-strong disabled:border-border-strong flex size-14 items-center justify-center rounded-xs border px-3 py-2 text-center text-lg font-medium uppercase outline-none select-none focus:border-2 focus:ring-3"
             disabled={disabled}
             key={index}
             maxLength={length}
@@ -91,9 +91,9 @@ export const OtpInput = ({
         ))}
       </div>
       {error?.touched && error?.message ? (
-        <span className="text-xs text-red-500">{error.message}</span>
+        <span className="text-danger text-xs">{error.message}</span>
       ) : helperText ? (
-        <span className="text-xs text-neutral-500">{helperText}</span>
+        <span className="text-foreground-subtle text-xs">{helperText}</span>
       ) : null}
     </div>
   );
