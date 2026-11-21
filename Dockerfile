@@ -14,7 +14,7 @@ ENV PNPM_HOME=/pnpm
 ENV PATH=$PNPM_HOME:$PATH
 # Pinned to the repo's packageManager field. Installed directly rather than via
 # corepack so the build never depends on corepack's signature checks.
-RUN npm install -g pnpm@10.18.1
+RUN npm install -g pnpm@12.21.0
 WORKDIR /repo
 
 # ── dependencies ─────────────────────────────────────────────────────────────
