@@ -10,7 +10,7 @@ import {
   useSessionStore,
   type SessionPayload,
 } from "@datarango/auth";
-import { Toaster } from "@datarango/ui";
+import { ThemeProvider, Toaster } from "@datarango/ui";
 
 const auth = createAuthClient();
 
@@ -32,11 +32,13 @@ export const Providers = ({ children }: { children: ReactNode }) => {
   const activeOrgId = useSessionStore((s) => s.activeOrgId);
 
   return (
-    <ApiProvider orgId={activeOrgId}>
-      <SessionProvider loadSession={loadSession}>
-        {children}
-        <Toaster />
-      </SessionProvider>
-    </ApiProvider>
+    <ThemeProvider>
+      <ApiProvider orgId={activeOrgId}>
+        <SessionProvider loadSession={loadSession}>
+          {children}
+          <Toaster />
+        </SessionProvider>
+      </ApiProvider>
+    </ThemeProvider>
   );
 };

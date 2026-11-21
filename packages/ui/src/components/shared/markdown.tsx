@@ -106,7 +106,7 @@ const components: Components = {
   ),
   pre: ({ node: _node, ...props }: MdProps<"pre">) => (
     <pre
-      className="bg-ink text-on-ink overflow-x-auto rounded-sm px-3 py-2.5 text-xs leading-relaxed first:mt-0 last:mb-0 [&_code]:bg-transparent [&_code]:px-0 [&_code]:py-0"
+      className="bg-band text-on-band overflow-x-auto rounded-sm px-3 py-2.5 text-xs leading-relaxed first:mt-0 last:mb-0 [&_code]:bg-transparent [&_code]:px-0 [&_code]:py-0"
       {...props}
     />
   ),

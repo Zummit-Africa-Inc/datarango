@@ -3,6 +3,7 @@
  * Identity lives in `styles/tokens.css`; everything downstream consumes tokens.
  */
 export * from "./lib";
+export * from "./config/accents";
 export * from "./hooks";
 export * from "./types";
 export * from "./assets/icons";

@@ -8,7 +8,7 @@ import { cn } from "../../lib";
 const Shimmer = ({ className, style }: { className?: string; style?: CSSProperties }) => (
   <div
     className={cn(
-      "relative overflow-hidden rounded-xs bg-[var(--surface-strong)]",
+      "bg-muted relative overflow-hidden rounded-xs",
       "before:absolute before:inset-0 before:-translate-x-full",
       "before:bg-gradient-to-r before:from-transparent before:via-[rgba(255,255,255,0.55)] before:to-transparent",
       "before:animate-[shimmer_1.6s_ease-in-out_infinite]",
@@ -54,7 +54,7 @@ const TableSkeleton = ({ columns = 6, rows = 8 }: { columns?: number; rows?: num
 
   return (
     <div className="bg-card border-hairline w-full overflow-hidden rounded-xs border">
-      <div className="border-hairline flex h-11 items-center gap-4 border-b bg-[var(--surface-strong)] px-4">
+      <div className="border-hairline bg-muted flex h-11 items-center gap-4 border-b px-4">
         {Array.from({ length: columns }, (_, i) => (
           <Shimmer key={i} className={cn("h-3", colWidths[i % colWidths.length])} />
         ))}
@@ -64,7 +64,7 @@ const TableSkeleton = ({ columns = 6, rows = 8 }: { columns?: number; rows?: num
           key={i}
           className={cn(
             "border-hairline flex h-12 items-center gap-4 border-b px-4 last:border-0",
-            i % 2 === 0 ? "bg-card" : "bg-[var(--canvas-soft)]",
+            i % 2 === 0 ? "bg-card" : "bg-background-subtle",
           )}
           style={{ animationDelay: `${i * 60}ms` }}
         >

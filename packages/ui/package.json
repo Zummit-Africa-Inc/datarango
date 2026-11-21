@@ -4,7 +4,8 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./styles/tokens.css": "./src/styles/tokens.css"
+    "./styles/tokens.css": "./src/styles/tokens.css",
+    "./fonts": "./src/fonts.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

@@ -18,7 +18,7 @@ const TenantMark = ({ tenant, onInk }: { tenant: Tenant; onInk?: boolean }) => (
   <div
     className={cn(
       "grid size-7 shrink-0 place-items-center rounded-xs text-xs font-semibold",
-      onInk ? "bg-ink-elevated text-on-ink" : "bg-surface-strong text-foreground",
+      onInk ? "bg-band-elevated text-on-band" : "bg-surface-strong text-foreground",
     )}
   >
     {tenant.name.charAt(0).toUpperCase()}
@@ -28,7 +28,7 @@ const TenantMark = ({ tenant, onInk }: { tenant: Tenant; onInk?: boolean }) => (
 /** Org/tenant switcher for multi-org members — lives in the ink sidebar. */
 export const CompanySwitcher = ({ currentTenant, tenants, onTenantChange, collapsed }: Props) => {
   const triggerClasses = cn(
-    "border-b border-white/5 rounded-none text-on-ink hover:bg-white/10 hover:text-on-ink",
+    "border-b border-white/5 rounded-none text-on-band hover:bg-white/10 hover:text-on-band",
     collapsed ? "size-11 justify-center p-0" : "h-11 w-full justify-between",
   );
 
@@ -37,8 +37,8 @@ export const CompanySwitcher = ({ currentTenant, tenants, onTenantChange, collap
       <TenantMark onInk tenant={currentTenant} />
       {!collapsed && (
         <div className="text-left">
-          <p className="text-on-ink text-sm font-medium">{currentTenant.name}</p>
-          <p className="text-on-ink-muted text-xs">{currentTenant.slug}</p>
+          <p className="text-on-band text-sm font-medium">{currentTenant.name}</p>
+          <p className="text-on-band-muted text-xs">{currentTenant.slug}</p>
         </div>
       )}
     </div>
