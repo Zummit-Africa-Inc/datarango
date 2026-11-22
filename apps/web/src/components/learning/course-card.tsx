@@ -5,7 +5,7 @@ import { Badge, CatalogueThumbnail, Price, parsePrices, pricingFromPrices } from
 import type { Course } from "@/hooks/learning";
 
 /** Server prices are stored as a JSON string; an unreadable one shows nothing rather than "Free". */
-const CoursePrice = ({ pricesJson }: { pricesJson: string }) => {
+export const CoursePrice = ({ pricesJson }: { pricesJson: string }) => {
   const prices = parsePrices(pricesJson);
   return prices ? <Price pricing={pricingFromPrices(prices)} /> : null;
 };

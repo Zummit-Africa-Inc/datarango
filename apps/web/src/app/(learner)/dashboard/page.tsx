@@ -149,7 +149,7 @@ export default function DashboardPage() {
 
         <div className={cn("grid gap-6", current && "lg:grid-cols-2")}>
           {current && (
-            <Section title="Also in progress" href="/dashboard/courses" link="My courses">
+            <Section title="Also in progress" href="/dashboard/my-courses" link="My courses">
               {others.length === 0 ? (
                 <p className="text-foreground-muted border-border rounded-lg border border-dashed px-4 py-8 text-center text-sm">
                   Just the one course on the go.

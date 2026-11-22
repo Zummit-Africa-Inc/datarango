@@ -17,6 +17,8 @@ interface Props {
   noun?: string;
   /** Plural when it isn't `noun` + "s" (quiz → quizzes). */
   plural?: string;
+  /** Options for the size select. The current size is always included. */
+  pageSizes?: number[];
   className?: string;
 }
 
@@ -31,6 +33,7 @@ export const Pagination = ({
   onPageSizeChange,
   noun,
   plural,
+  pageSizes = PAGE_SIZES,
   className,
 }: Props) => {
   const totalPages = Math.max(1, Math.ceil(total / pageSize));
@@ -57,11 +60,13 @@ export const Pagination = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent align="end">
-              {PAGE_SIZES.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size} per page
-                </SelectItem>
-              ))}
+              {[...new Set([...pageSizes, pageSize])]
+                .sort((a, b) => a - b)
+                .map((size) => (
+                  <SelectItem key={size} value={String(size)}>
+                    {size} per page
+                  </SelectItem>
+                ))}
             </SelectContent>
           </Select>
         )}
