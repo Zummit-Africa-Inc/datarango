@@ -1,4 +1,5 @@
 import {
+  Compass,
   BarChart3,
   BookOpen,
   Building2,
@@ -54,7 +55,11 @@ export const LEARNER_NAV: NavGroup[] = [
         href: "/dashboard/learn",
         icon: GraduationCap,
         children: [
-          { label: "My courses", href: "/dashboard/courses", keywords: ["enrolled"] },
+          {
+            label: "My courses",
+            href: "/dashboard/my-courses",
+            keywords: ["enrolled", "progress"],
+          },
           { label: "Certificates", href: "/dashboard/certificates" },
         ],
       },
@@ -67,6 +72,12 @@ export const LEARNER_NAV: NavGroup[] = [
           { label: "Quizzes", href: "/dashboard/quizzes" },
           { label: "Datasets", href: "/dashboard/datasets" },
         ],
+      },
+      {
+        label: "Explore",
+        href: "/dashboard/courses",
+        icon: Compass,
+        keywords: ["catalogue", "courses", "browse"],
       },
       { label: "Competitions", href: "/dashboard/competitions", icon: Trophy },
       {

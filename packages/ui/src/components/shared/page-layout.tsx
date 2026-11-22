@@ -10,6 +10,8 @@ interface Props {
   title: string;
   /** Optional supporting line under the title. */
   subtitle?: string;
+  /** Result count shown as a badge beside the title (lists, §7.3). */
+  count?: number;
   /** Right-aligned header slots (buttons, filters, …), rendered in order. */
   actions?: React.ReactNode[];
   /** Extra classes for the page root. */
@@ -27,12 +29,21 @@ interface Props {
  * `flex-1` still fills the shell for short pages and for the ones that hand a
  * pane its own height (the lesson reader), but tall content now grows the box.
  */
-export const PageLayout = ({ children, title, subtitle, actions, className }: Props) => (
+export const PageLayout = ({ children, title, subtitle, count, actions, className }: Props) => (
   <div className={cn("flex w-full flex-1 flex-col space-y-6", className)}>
     <div className="flex w-full items-start justify-between gap-4">
       <div className="min-w-0 space-y-1">
-        <h1 className="font-heading text-ink truncate text-xl">{title}</h1>
-        {subtitle && <p className="text-muted-foreground text-sm">{subtitle}</p>}
+        <div className="flex items-center gap-2">
+          <h1 className="font-display text-foreground truncate text-2xl font-semibold tracking-tight">
+            {title}
+          </h1>
+          {count !== undefined && (
+            <span className="bg-muted text-foreground-muted rounded-full px-2 py-0.5 font-mono text-xs tabular-nums">
+              {count.toLocaleString("en-GB")}
+            </span>
+          )}
+        </div>
+        {subtitle && <p className="text-foreground-muted text-sm">{subtitle}</p>}
       </div>
       {actions && actions.length > 0 && (
         <div className="flex shrink-0 items-center gap-2">
