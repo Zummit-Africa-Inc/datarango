@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 
 import {
+  CatalogueThumbnail,
   ListToolbar,
   PageLayout,
   Pagination,
@@ -98,9 +99,17 @@ const CourseList = () => {
               href={`/courses/${course.id}`}
               className="border-hairline hover:bg-muted/50 grid grid-cols-[1fr_auto_auto] items-center gap-4 border-b px-4 py-3 text-sm transition-colors last:border-0"
             >
-              <div className="min-w-0">
-                <p className="text-ink truncate font-medium">{course.title}</p>
-                <p className="text-muted-foreground truncate font-mono text-xs">{course.slug}</p>
+              <div className="flex min-w-0 items-center gap-3">
+                <CatalogueThumbnail
+                  id={course.id}
+                  title={course.title}
+                  imageUrl={course.imageUrl}
+                  className="w-16 shrink-0 rounded-sm"
+                />
+                <div className="min-w-0">
+                  <p className="text-foreground truncate font-medium">{course.title}</p>
+                  <p className="text-foreground-muted truncate font-mono text-xs">{course.slug}</p>
+                </div>
               </div>
               <CourseStatusBadge status={course.status} />
               <span className="text-muted-foreground text-right text-xs">

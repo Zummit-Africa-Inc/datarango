@@ -101,3 +101,19 @@ export const resolveAccent = ({
   const mapped = category ? CATEGORY_ACCENTS[category.trim().toLowerCase()] : undefined;
   return mapped ?? accentFromKey(fallbackKey);
 };
+
+/**
+ * Light-theme accent colours as hex, for renderers that can't read CSS
+ * variables (next/og images, emails). Mirrors tokens.css; keep them in step.
+ */
+export const ACCENT_HEX: Record<
+  AccentToken,
+  { soft: string; tile: string; shape: string; solid: string }
+> = {
+  violet: { soft: "#ede9fe", tile: "#ddd6fe", shape: "#c4b5fd", solid: "#8b5cf6" },
+  lime: { soft: "#d9f99d", tile: "#bef264", shape: "#bef264", solid: "#84cc16" },
+  amber: { soft: "#fef3c7", tile: "#fde68a", shape: "#fcd34d", solid: "#f59e0b" },
+  sky: { soft: "#e0f2fe", tile: "#bae6fd", shape: "#7dd3fc", solid: "#0ea5e9" },
+  rose: { soft: "#ffe4e6", tile: "#fecdd3", shape: "#fda4af", solid: "#f43f5e" },
+  teal: { soft: "#ccfbf1", tile: "#99f6e4", shape: "#5eead4", solid: "#14b8a6" },
+};

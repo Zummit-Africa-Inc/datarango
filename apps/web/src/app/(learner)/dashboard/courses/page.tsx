@@ -1,16 +1,18 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import Image from "next/image";
 import Link from "next/link";
 
 import {
   Badge,
-  Button,
+  CatalogueThumbnail,
   listParam,
   ListToolbar,
   PageLayout,
   Pagination,
+  parsePrices,
+  Price,
+  pricingFromPrices,
   Skeleton,
   useListParams,
 } from "@datarango/ui";
@@ -68,54 +70,45 @@ const CoursesList = () => {
           </p>
         </div>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4">
           {courses.map((course) => {
             const isEnrolled = enrolledCourseIds.has(course.id);
             return (
-              <div
-                className="border-hairline bg-card hover:border-primary-500/40 flex flex-col rounded-xs border transition-colors"
-                key={course.id}
-              >
-                {/*
-                  Cover URLs are creator-supplied and can name any host, so
-                  optimization is off: next/image's server-side loader would
-                  otherwise need an allowlist of every host on earth (or fetch
-                  attacker-chosen URLs itself). The browser loads the bytes
-                  straight from the origin, same as a plain img — unoptimized
-                  just keeps Next's lint and pipeline happy about it.
-                */}
-                {course.imageUrl ? (
-                  <div className="bg-muted relative h-40 w-full">
-                    <Image
-                      src={course.imageUrl}
-                      alt=""
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover"
-                      unoptimized
-                    />
+              <li key={course.id}>
+                <Link
+                  href={`/dashboard/courses/${course.id}`}
+                  className="border-border bg-card hover:border-border-strong focus-visible:ring-ring group flex h-full flex-col overflow-hidden rounded-lg border transition-colors outline-none focus-visible:ring-2"
+                >
+                  <CatalogueThumbnail
+                    id={course.id}
+                    title={course.title}
+                    imageUrl={course.imageUrl}
+                  />
+                  <div className="flex flex-1 flex-col gap-2 p-4">
+                    <h2 className="font-display text-foreground line-clamp-2 text-lg leading-snug font-semibold group-hover:underline group-hover:underline-offset-2">
+                      {course.title}
+                    </h2>
+                    <p className="text-foreground-muted line-clamp-2 flex-1 text-sm">
+                      {course.summary || "No summary yet."}
+                    </p>
+                    <div className="mt-2 flex items-center justify-between gap-3">
+                      <span className="text-primary text-sm font-medium">
+                        {isEnrolled ? "Continue" : "View course"}
+                      </span>
+                      {isEnrolled ? (
+                        <Badge tone="success" appearance="soft">
+                          Enrolled
+                        </Badge>
+                      ) : (
+                        <CoursePrice pricesJson={course.pricesJson} />
+                      )}
+                    </div>
                   </div>
-                ) : (
-                  <div className="bg-primary-500 relative h-40 w-full" />
-                )}
-                <div className="flex-1 space-y-4 p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <h2 className="font-heading text-ink text-xl leading-snug">{course.title}</h2>
-                    {isEnrolled && <Badge variant="success">Enrolled</Badge>}
-                  </div>
-                  <p className="text-muted-foreground mt-2 line-clamp-3 flex-1 text-sm leading-relaxed">
-                    {course.summary || "No summary yet."}
-                  </p>
-                  <Button asChild>
-                    <Link href={`/dashboard/courses/${course.id}`}>
-                      {isEnrolled ? "Continue →" : "View course →"}
-                    </Link>
-                  </Button>
-                </div>
-              </div>
+                </Link>
+              </li>
             );
           })}
-        </div>
+        </ul>
       )}
       <Pagination
         page={page}
@@ -126,4 +119,9 @@ const CoursesList = () => {
       />
     </PageLayout>
   );
+};
+
+const CoursePrice = ({ pricesJson }: { pricesJson: string }) => {
+  const prices = parsePrices(pricesJson);
+  return prices ? <Price pricing={pricingFromPrices(prices)} /> : null;
 };
