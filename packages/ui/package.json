@@ -5,7 +5,8 @@
   "exports": {
     ".": "./src/index.ts",
     "./styles/tokens.css": "./src/styles/tokens.css",
-    "./fonts": "./src/fonts.ts"
+    "./fonts": "./src/fonts.ts",
+    "./accents": "./src/config/accents.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",

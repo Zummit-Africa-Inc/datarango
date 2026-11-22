@@ -32,3 +32,5 @@ export * from "./property-list";
 export * from "./bar-chart";
 export * from "./app-shell";
 export * from "./list-toolbar";
+export * from "./catalogue-media";
+export * from "./price";

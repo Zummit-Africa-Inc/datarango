@@ -39,6 +39,8 @@ export interface Course {
   learningOutcomes: string[];
   prerequisites: string[];
   targetAudience: string | null;
+  /** Serialised `Price[]` (minor units); parse with `parsePrices`. "[]" = free. */
+  pricesJson: string;
 }
 
 export interface CourseList {
