@@ -41,14 +41,14 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
   return (
     <div>
       <div className="mb-3 flex items-baseline justify-between">
-        <h2 className="font-heading text-ink text-lg">Syllabus</h2>
-        <span className="text-muted-foreground text-sm">
+        <h2 className="font-display text-foreground text-lg font-semibold">Syllabus</h2>
+        <span className="text-foreground-muted text-sm">
           {tree.modules.length} module{tree.modules.length === 1 ? "" : "s"} · {lessonCount} lesson
           {lessonCount === 1 ? "" : "s"}
         </span>
       </div>
       {tree.modules.length === 0 ? (
-        <p className="text-muted-foreground border-hairline bg-card rounded-xs border px-4 py-8 text-center text-sm">
+        <p className="text-foreground-muted border-border bg-card rounded-lg border px-4 py-8 text-center text-sm">
           This course has no published modules yet.
         </p>
       ) : (
@@ -58,21 +58,21 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
             const done = moduleProgress?.completed ?? false;
 
             return (
-              <div className="border-hairline bg-card rounded-xs border" key={module.id}>
-                <div className="border-hairline flex items-center gap-3 border-b px-4 py-3">
+              <div className="border-border bg-card rounded-lg border" key={module.id}>
+                <div className="border-border flex items-center gap-3 border-b px-4 py-3">
                   {done ? (
                     <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
                   ) : (
-                    <Circle className="text-muted-foreground size-4 shrink-0" />
+                    <Circle className="text-foreground-muted size-4 shrink-0" />
                   )}
-                  <span className="text-muted-foreground w-6 shrink-0 text-xs tabular-nums">
+                  <span className="text-foreground-muted w-6 shrink-0 text-xs tabular-nums">
                     {String(index + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="text-ink min-w-0 flex-1 truncate text-sm font-medium">
+                  <h3 className="text-foreground min-w-0 flex-1 truncate text-sm font-medium">
                     {module.title}
                   </h3>
                   {moduleProgress && (
-                    <span className="text-muted-foreground text-xs">
+                    <span className="text-foreground-muted text-xs">
                       {moduleProgress.lessonsCompleted}/{moduleProgress.lessonsTotal}
                     </span>
                   )}
@@ -89,7 +89,7 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
                               aria-label="Completed"
                             />
                           ) : (
-                            <Circle className="text-muted-foreground size-3.5 shrink-0" />
+                            <Circle className="text-foreground-muted size-3.5 shrink-0" />
                           )
                         ) : (
                           // Not a hollow circle for a guest: an empty tick reads
@@ -103,7 +103,7 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
                         <span
                           className={cn(
                             "min-w-0 flex-1 truncate",
-                            lessonDone && "text-muted-foreground",
+                            lessonDone && "text-foreground-muted",
                           )}
                         >
                           {lesson.title}
@@ -116,7 +116,7 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
                           </Button>
                         ) : (
                           <Lock
-                            className="text-muted-foreground size-3.5"
+                            className="text-foreground-muted size-3.5"
                             aria-label="Enrol to start"
                           />
                         )}
@@ -130,7 +130,7 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
                       rather than looking like an oversight. */}
                   <li
                     className={cn(
-                      "text-muted-foreground flex items-center gap-3 py-1.5 text-sm",
+                      "text-foreground-muted flex items-center gap-3 py-1.5 text-sm",
                       !module.exerciseId && "opacity-60",
                     )}
                   >
@@ -140,7 +140,7 @@ export const Syllabus = ({ courseId, isEnrolled, lessonCount, progress, tree }: 
                         aria-label="Passed"
                       />
                     ) : isEnrolled ? (
-                      <Circle className="text-muted-foreground size-3.5 shrink-0" />
+                      <Circle className="text-foreground-muted size-3.5 shrink-0" />
                     ) : (
                       <span className="size-3.5 shrink-0" />
                     )}

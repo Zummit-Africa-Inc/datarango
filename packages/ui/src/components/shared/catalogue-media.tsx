@@ -144,7 +144,7 @@ export const CatalogueCover = ({
         role="img"
         aria-label={title}
         className={cn(
-          "relative isolate aspect-3/1 w-full overflow-hidden rounded-lg bg-linear-to-r",
+          "relative isolate aspect-3/1 max-h-72 w-full overflow-hidden rounded-lg bg-linear-to-r",
           GRADIENTS[tone],
         )}
       >
@@ -152,19 +152,24 @@ export const CatalogueCover = ({
           <MediaImage src={imageUrl!} onError={image.onError} />
         ) : (
           <>
+            {/* Sized by height (w-auto keeps them square), so they read at any width. */}
             <First
               accent={tone}
-              size="38%"
-              className="absolute top-[-35%] right-[4%]"
+              size="100%"
+              className="absolute top-[-30%] right-[3%] h-[130%] w-auto"
               style={{ transform: `rotate(${seed % 90}deg)` }}
             />
-            <Second accent={tone} size="20%" className="absolute right-[30%] bottom-[-25%]" />
+            <Second
+              accent={tone}
+              size="100%"
+              className="absolute right-[32%] bottom-[-28%] h-[65%] w-auto"
+            />
             {third && (
               <Sparkle
                 accent={tone}
                 tone="solid"
-                size="7%"
-                className="absolute top-[18%] left-[42%]"
+                size="100%"
+                className="absolute top-[16%] left-[44%] h-[16%] w-auto"
               />
             )}
           </>
