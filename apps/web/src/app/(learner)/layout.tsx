@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Building2 } from "lucide-react";
 
@@ -24,6 +25,14 @@ export default function LearnerLayout({ children }: { children: React.ReactNode 
 
   useNotificationToasts();
 
+  // Time of day is only known in the browser; computing it after mount keeps
+  // the server render and the first client render identical.
+  const [greeting, setGreeting] = useState("Welcome back");
+  useEffect(() => {
+    const hour = new Date().getHours();
+    setGreeting(hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening");
+  }, []);
+
   const primaryOrg = memberships[0];
 
   return (
@@ -32,8 +41,8 @@ export default function LearnerLayout({ children }: { children: React.ReactNode 
       homeHref="/dashboard"
       overviewPaths={["/dashboard"]}
       greeting={{
-        title: `Welcome back, ${session?.name?.split(" ")[0] ?? "learner"}`,
-        subtitle: "Keep the streak alive",
+        title: `${greeting}, ${session?.name?.split(" ")[0] ?? "learner"}`,
+        subtitle: "Here's where you left off",
       }}
       searchPlaceholder="Search courses and quizzes…"
       onSearch={(q) => router.push(`/dashboard/search?q=${encodeURIComponent(q)}`)}

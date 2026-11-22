@@ -1,21 +1,17 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import Link from "next/link";
 
 import {
-  Badge,
-  CatalogueThumbnail,
   listParam,
   ListToolbar,
   PageLayout,
   Pagination,
-  parsePrices,
-  Price,
-  pricingFromPrices,
   Skeleton,
   useListParams,
 } from "@datarango/ui";
+
+import { CourseCard } from "@/components/learning/course-card";
 
 import { useDiscoverCourses, useMyEnrollments } from "@/hooks/learning";
 
@@ -75,36 +71,7 @@ const CoursesList = () => {
             const isEnrolled = enrolledCourseIds.has(course.id);
             return (
               <li key={course.id}>
-                <Link
-                  href={`/dashboard/courses/${course.id}`}
-                  className="border-border bg-card hover:border-border-strong focus-visible:ring-ring group flex h-full flex-col overflow-hidden rounded-lg border transition-colors outline-none focus-visible:ring-2"
-                >
-                  <CatalogueThumbnail
-                    id={course.id}
-                    title={course.title}
-                    imageUrl={course.imageUrl}
-                  />
-                  <div className="flex flex-1 flex-col gap-2 p-4">
-                    <h2 className="font-display text-foreground line-clamp-2 text-lg leading-snug font-semibold group-hover:underline group-hover:underline-offset-2">
-                      {course.title}
-                    </h2>
-                    <p className="text-foreground-muted line-clamp-2 flex-1 text-sm">
-                      {course.summary || "No summary yet."}
-                    </p>
-                    <div className="mt-2 flex items-center justify-between gap-3">
-                      <span className="text-primary text-sm font-medium">
-                        {isEnrolled ? "Continue" : "View course"}
-                      </span>
-                      {isEnrolled ? (
-                        <Badge tone="success" appearance="soft">
-                          Enrolled
-                        </Badge>
-                      ) : (
-                        <CoursePrice pricesJson={course.pricesJson} />
-                      )}
-                    </div>
-                  </div>
-                </Link>
+                <CourseCard course={course} enrolled={isEnrolled} />
               </li>
             );
           })}
@@ -119,9 +86,4 @@ const CoursesList = () => {
       />
     </PageLayout>
   );
-};
-
-const CoursePrice = ({ pricesJson }: { pricesJson: string }) => {
-  const prices = parsePrices(pricesJson);
-  return prices ? <Price pricing={pricingFromPrices(prices)} /> : null;
 };
