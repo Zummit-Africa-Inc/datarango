@@ -1,13 +1,13 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import MuxPlayer from "@mux/mux-player-react";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
   ArrowRight,
+  BookOpen,
   Check,
   CheckCircle2,
   ChevronDown,
@@ -16,23 +16,25 @@ import {
   FileText,
   HelpCircle,
   Lock,
+  Pause,
   Volume2,
 } from "lucide-react";
 
-import { Badge, Button, cn, Markdown, PageLayout, Skeleton } from "@datarango/ui";
+import { Badge, Button, EmptyState, Markdown, Skeleton, SteppedProgress, cn } from "@datarango/ui";
 import { QuizRunner } from "@/components/learning/quiz-runner";
 import {
   useCompleteLesson,
   useCourseProgress,
   useCourseTree,
   useMyEnrollments,
+  type CourseTree,
   type Lesson,
+  type ProgressSnapshot,
 } from "@/hooks/learning";
 
+/** Course view (§7.4): the lesson in the main column, progress and curriculum in the rail. */
 export default function LessonPlayerPage() {
-  const [expandedModuleId, setExpandedModuleId] = useState<string | null>(null);
   const params = useParams<{ id: string; lessonId: string }>();
-  const router = useRouter();
   const courseId = params.id;
   const lessonId = params.lessonId;
 
@@ -47,17 +49,14 @@ export default function LessonPlayerPage() {
   const { data: progress } = useCourseProgress(courseId, !!enrollment);
   const completeLesson = useCompleteLesson(courseId);
 
-  // Every lesson this learner has finished, flattened across modules. The
-  // per-module `completedLessonIds` is what makes this possible at all — the
-  // snapshot used to carry counts only, which is why nothing here could show a
-  // tick and why the mark-complete call sat commented out.
+  // Every lesson this learner has finished, flattened across modules.
   const completedLessonIds = useMemo(
     () => new Set((progress?.modules ?? []).flatMap((m) => m.completedLessonIds)),
     [progress],
   );
 
-  // A flat ordered list is what "next lesson" needs; the tree is grouped by
-  // module, and lessons run continuously across module boundaries.
+  // A flat ordered list is what "next lesson" needs; lessons run continuously
+  // across module boundaries.
   const ordered = useMemo(
     () =>
       (tree?.modules ?? []).flatMap((module) =>
@@ -74,233 +73,287 @@ export default function LessonPlayerPage() {
   const current = index >= 0 ? ordered[index] : undefined;
   const next = index >= 0 ? ordered[index + 1] : undefined;
 
-  if (isLoading) {
-    return (
-      <PageLayout title="Lesson" subtitle="Loading…">
-        <Skeleton skeleton="page" />
-      </PageLayout>
-    );
-  }
+  if (isLoading) return <Skeleton skeleton="page" />;
 
   if (!tree || !current) {
     return (
-      <PageLayout title="Lesson not found" subtitle="It may have moved to a new course version.">
-        <Button asChild variant="outline">
-          <Link href={`/dashboard/courses/${courseId}`}>Back to the course</Link>
-        </Button>
-      </PageLayout>
+      <EmptyState
+        icon={BookOpen}
+        title="Lesson not found"
+        hint="It may have moved to a new course version."
+        action={
+          <Button asChild variant="outline">
+            <Link href={`/dashboard/courses/${courseId}`}>Back to the course</Link>
+          </Button>
+        }
+      />
     );
   }
 
   if (!enrollment) {
     return (
-      <PageLayout title={current.lesson.title} subtitle="Enrol to start this course.">
-        <Button asChild>
-          <Link href={`/dashboard/courses/${courseId}`}>Go to the course</Link>
-        </Button>
-      </PageLayout>
+      <EmptyState
+        icon={Lock}
+        title={current.lesson.title}
+        hint="Enrol to start this course."
+        action={
+          <Button asChild>
+            <Link href={`/dashboard/courses/${courseId}`}>Go to the course</Link>
+          </Button>
+        }
+      />
     );
   }
 
-  const handleExpandModule = (moduleId: string) => {
-    setExpandedModuleId((prev) => (prev === moduleId ? null : moduleId));
-  };
+  const moduleProgress = progress?.modules.find((m) => m.moduleId === current.moduleId);
 
   return (
-    <PageLayout
-      // From lg up the page stops scrolling and becomes two panes that scroll
-      // themselves. A flex column is what makes that work without arithmetic:
-      // the title block and the back-link take their natural heights and the
-      // grid below claims whatever is left, so neither pane can outgrow the
-      // viewport no matter how the heading wraps.
-      className="lg:flex lg:flex-col"
-      title={current.lesson.title}
-      subtitle={`${current.moduleTitle} · Lesson ${index + 1} of ${ordered.length}`}
-      actions={[
-        progress ? (
-          <Badge key="progress" variant="outline">
-            {progress.percentComplete}% complete
-          </Badge>
-        ) : null,
-      ].filter(Boolean)}
-    >
-      <Link
-        href={`/dashboard/courses/${courseId}`}
-        // self-start keeps the hit area the width of the text: as a flex item
-        // under the lg layout it would otherwise stretch the full row.
-        className="text-muted-foreground hover:text-ink inline-flex items-center gap-1 text-sm transition-colors lg:self-start"
-      >
-        <ArrowLeft className="size-3.5" />
-        Course overview
-      </Link>
-      {/* `min-h-0` is what actually stops the overflow: a flex item's default
-          `min-height: auto` refuses to shrink below its content, so without it
-          a long module list pushes this row past the bottom of the screen
-          instead of scrolling inside it. */}
-      <div className="grid grid-cols-1 gap-4 lg:min-h-0 lg:flex-1 lg:grid-cols-5">
-        {/* Grid placement lives here rather than on the bodies themselves, so
-            every lesson kind lands in the same four columns — the quiz branch
-            carried no span at all and was rendering a fifth of the width. Both
-            panes stretch to the row height by default and scroll their own
-            overflow, which is what keeps the video in place while the module
-            list moves, without pinning anything. */}
-        <div className="col-span-1 space-y-4 lg:col-span-4 lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain">
-          <LessonBody
-            lesson={current.lesson}
-            courseId={courseId}
-            courseVersionId={enrollment.courseVersionId}
-          />
-          {/* A quiz lesson is completed by passing it, not by asserting you are
-              done with it — the runner's own submission advances progress. */}
-          {current.lesson.kind !== "quiz" && (
-            <LessonFooter
-              courseId={courseId}
-              completed={completedLessonIds.has(current.lesson.id)}
-              pending={completeLesson.isPending}
-              onComplete={() => completeLesson.mutate({ lessonId: current.lesson.id })}
-              next={next}
-              moduleId={current.moduleId}
-              moduleLessonsDone={(() => {
-                const mp = progress?.modules.find((m) => m.moduleId === current.moduleId);
-                return !!mp && mp.lessonsCompleted === mp.lessonsTotal;
-              })()}
-              exercisePassed={
-                progress?.modules.find((m) => m.moduleId === current.moduleId)?.exercisePassed ??
-                false
-              }
-              hasExercise={!!tree.modules.find((m) => m.id === current.moduleId)?.exerciseId}
-            />
-          )}
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_22rem]">
+      <div className="min-w-0 space-y-5">
+        <div>
+          <Link
+            href={`/dashboard/courses/${courseId}`}
+            className="text-foreground-muted hover:text-foreground inline-flex items-center gap-1 text-sm transition-colors"
+          >
+            <ArrowLeft className="size-3.5" />
+            {tree.course.title}
+          </Link>
+          <p className="text-primary-soft-foreground mt-3 text-xs font-semibold tracking-[0.06em] uppercase">
+            {current.moduleTitle} · Lesson {index + 1} of {ordered.length}
+          </p>
+          <h1 className="font-display text-foreground mt-1 text-2xl leading-tight font-semibold tracking-tight sm:text-3xl">
+            {current.lesson.title}
+          </h1>
         </div>
-        {/* Lesson sidebar: stretched to the full height of the row, so the card
-            always runs floor to ceiling, and scrolling its own overflow rather
-            than the page's. */}
-        <div className="border-hairline bg-card space-y-1 border p-3 lg:min-h-0 lg:overflow-y-auto lg:overscroll-contain">
-          <h4 className="px-1 pb-2 text-sm font-medium">Modules</h4>
-          {tree.modules.map((mod, modIndex) => {
-            const modProgress = progress?.modules.find((m) => m.moduleId === mod.id);
-            const prevModProgress =
-              modIndex > 0
-                ? progress?.modules.find((m) => m.moduleId === tree.modules[modIndex - 1]!.id)
-                : null;
-            const isLocked = modIndex > 0 && !!progress && !prevModProgress?.completed;
-            const isExpanded = expandedModuleId === mod.id;
-            return (
-              <div key={mod.id}>
-                <button
-                  className="hover:bg-muted/50 flex w-full items-center justify-between rounded-xs px-2 py-1.5 text-left transition-colors"
-                  onClick={() => !isLocked && handleExpandModule(mod.id)}
-                  disabled={isLocked}
-                >
-                  <span className="flex-1 truncate pr-2 text-xs font-medium">{mod.title}</span>
-                  <span className="flex shrink-0 items-center gap-1.5">
-                    {modProgress && (
-                      <span className="text-muted-foreground text-[10px]">
-                        {modProgress.lessonsCompleted}/{modProgress.lessonsTotal}
-                      </span>
-                    )}
-                    {isLocked ? (
-                      <Lock className="text-muted-foreground size-3.5" />
-                    ) : (
-                      <ChevronDown
-                        className={cn("size-3.5 transition-transform", isExpanded && "rotate-180")}
-                      />
-                    )}
+
+        <LessonBody
+          lesson={current.lesson}
+          courseId={courseId}
+          courseVersionId={enrollment.courseVersionId}
+        />
+        {/* A quiz lesson is completed by passing it, not by asserting you are
+            done with it: the runner's own submission advances progress. */}
+        {current.lesson.kind !== "quiz" && (
+          <LessonFooter
+            courseId={courseId}
+            completed={completedLessonIds.has(current.lesson.id)}
+            pending={completeLesson.isPending}
+            onComplete={() => completeLesson.mutate({ lessonId: current.lesson.id })}
+            next={next}
+            moduleId={current.moduleId}
+            moduleLessonsDone={
+              !!moduleProgress && moduleProgress.lessonsCompleted === moduleProgress.lessonsTotal
+            }
+            exercisePassed={moduleProgress?.exercisePassed ?? false}
+            hasExercise={!!tree.modules.find((m) => m.id === current.moduleId)?.exerciseId}
+          />
+        )}
+      </div>
+
+      <aside className="space-y-4 lg:sticky lg:top-0 lg:max-h-[calc(100dvh-8rem)] lg:self-start lg:overflow-y-auto lg:overscroll-contain">
+        <section className="border-border bg-card space-y-3 rounded-lg border p-4">
+          <h2 className="font-display text-foreground text-sm font-semibold">Study progress</h2>
+          <SteppedProgress
+            value={progress?.completed ? 100 : (progress?.percentComplete ?? 0)}
+            label={`${progress?.percentComplete ?? 0}% complete`}
+          />
+        </section>
+        <Curriculum
+          courseId={courseId}
+          tree={tree}
+          lessonId={lessonId}
+          currentModuleId={current.moduleId}
+          progress={progress}
+          completedLessonIds={completedLessonIds}
+        />
+      </aside>
+    </div>
+  );
+}
+
+/* -------------------------------- curriculum -------------------------------- */
+
+const KIND_ICON = {
+  video: Clapperboard,
+  audio: Volume2,
+  quiz: HelpCircle,
+  text: FileText,
+} as const;
+
+/**
+ * Curriculum rail (§7.4). The current lesson's module starts open (the old
+ * rail started with every module shut, hiding where you were). Rows show the
+ * lesson type, or a tick once done; the current row is filled primary with a
+ * pause glyph. A module stays locked until the one before it is complete, and
+ * its exercise is marked Required because it gates the module.
+ */
+const Curriculum = ({
+  courseId,
+  tree,
+  lessonId,
+  currentModuleId,
+  progress,
+  completedLessonIds,
+}: {
+  courseId: string;
+  tree: CourseTree;
+  lessonId: string;
+  currentModuleId: string;
+  progress: ProgressSnapshot | undefined;
+  completedLessonIds: Set<string>;
+}) => {
+  const [open, setOpen] = useState<Set<string>>(() => new Set([currentModuleId]));
+
+  // Moving to a lesson in another module opens that module too.
+  useEffect(() => {
+    setOpen((prev) => (prev.has(currentModuleId) ? prev : new Set(prev).add(currentModuleId)));
+  }, [currentModuleId]);
+
+  const toggle = (moduleId: string) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(moduleId)) next.delete(moduleId);
+      else next.add(moduleId);
+      return next;
+    });
+
+  return (
+    <nav aria-label="Curriculum" className="border-border bg-card rounded-lg border p-2">
+      <h2 className="font-display text-foreground px-2 pt-2 pb-1 text-sm font-semibold">
+        Curriculum
+      </h2>
+      <ol className="space-y-1">
+        {tree.modules.map((mod, modIndex) => {
+          const modProgress = progress?.modules.find((m) => m.moduleId === mod.id);
+          const prevModule = modIndex > 0 ? tree.modules[modIndex - 1] : undefined;
+          const prevProgress = prevModule
+            ? progress?.modules.find((m) => m.moduleId === prevModule.id)
+            : undefined;
+          const isLocked = !!prevModule && !!progress && !prevProgress?.completed;
+          const isOpen = open.has(mod.id) && !isLocked;
+          const panelId = `module-${mod.id}`;
+
+          return (
+            <li key={mod.id}>
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={panelId}
+                disabled={isLocked}
+                onClick={() => toggle(mod.id)}
+                className="hover:bg-muted focus-visible:ring-ring flex w-full items-center gap-2 rounded-md px-2 py-2 text-left outline-none focus-visible:ring-2 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <span className="min-w-0 flex-1">
+                  <span className="text-foreground-subtle block text-[0.6875rem] font-medium tracking-[0.06em] uppercase">
+                    Module {modIndex + 1}
                   </span>
-                </button>
-                <motion.div
-                  animate={{ height: isExpanded ? "auto" : 0 }}
-                  initial={{ height: 0 }}
-                  style={{ overflow: "hidden" }}
-                >
-                  <div className="pb-1">
-                    {mod.lessons.map((lesson) => {
-                      const isActive = lesson.id === lessonId;
-                      const isDone = completedLessonIds.has(lesson.id);
-                      const LessonIcon =
-                        lesson.kind === "video"
-                          ? Clapperboard
-                          : lesson.kind === "audio"
-                            ? Volume2
-                            : lesson.kind === "quiz"
-                              ? HelpCircle
-                              : FileText;
-                      return (
-                        <button
-                          key={lesson.id}
+                  <span className="text-foreground block truncate text-sm font-medium">
+                    {mod.title}
+                  </span>
+                </span>
+                {modProgress && (
+                  <span className="text-foreground-muted font-mono text-xs tabular-nums">
+                    {modProgress.lessonsCompleted}/{modProgress.lessonsTotal}
+                  </span>
+                )}
+                {isLocked ? (
+                  <Lock aria-label="Locked" className="text-foreground-subtle size-4 shrink-0" />
+                ) : (
+                  <ChevronDown
+                    aria-hidden="true"
+                    className={cn(
+                      "text-foreground-subtle size-4 shrink-0 transition-transform",
+                      isOpen && "rotate-180",
+                    )}
+                  />
+                )}
+              </button>
+              {isOpen && (
+                <ul id={panelId} className="space-y-0.5 pt-0.5 pb-1">
+                  {mod.lessons.map((lesson) => {
+                    const isActive = lesson.id === lessonId;
+                    const isDone = completedLessonIds.has(lesson.id);
+                    const Icon = isActive ? Pause : isDone ? CheckCircle2 : KIND_ICON[lesson.kind];
+                    return (
+                      <li key={lesson.id}>
+                        <Link
+                          href={`/dashboard/courses/${courseId}/lessons/${lesson.id}`}
+                          aria-current={isActive ? "page" : undefined}
                           className={cn(
-                            "hover:bg-muted/50 flex w-full items-center gap-2 rounded-xs px-2 py-1.5 text-left text-xs transition-colors",
-                            isActive && "bg-muted font-medium",
+                            "focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-2 py-2 text-sm outline-none focus-visible:ring-2",
+                            isActive
+                              ? "bg-primary text-primary-foreground font-medium"
+                              : "hover:bg-muted text-foreground",
                           )}
-                          onClick={() =>
-                            router.push(`/dashboard/courses/${courseId}/lessons/${lesson.id}`)
-                          }
                         >
-                          {/* The tick replaces the kind icon rather than sitting
-                              beside it: in a narrow rail two glyphs per row read
-                              as noise, and "done" is the more useful of the two
-                              once you have opened the lesson. */}
-                          {isDone ? (
-                            <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600" />
-                          ) : (
-                            <LessonIcon
-                              className={cn(
-                                "size-3.5 shrink-0",
-                                isActive ? "text-ink" : "text-muted-foreground",
-                              )}
-                            />
-                          )}
+                          <Icon
+                            aria-hidden="true"
+                            className={cn(
+                              "size-4 shrink-0",
+                              !isActive && (isDone ? "text-success" : "text-foreground-subtle"),
+                            )}
+                          />
                           <span
                             className={cn(
                               "truncate",
-                              isDone && !isActive && "text-muted-foreground",
+                              isDone && !isActive && "text-foreground-muted",
                             )}
                           >
                             {lesson.title}
                           </span>
-                        </button>
-                      );
-                    })}
-                    {mod.exerciseId && (
-                      <button
-                        className="hover:bg-muted/50 flex w-full items-center gap-2 rounded-xs px-2 py-1.5 text-left text-xs transition-colors"
-                        onClick={() =>
-                          router.push(`/dashboard/courses/${courseId}/modules/${mod.id}/exercise`)
-                        }
+                          {isDone && !isActive && <span className="sr-only">(completed)</span>}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                  {mod.exerciseId && (
+                    <li>
+                      <Link
+                        href={`/dashboard/courses/${courseId}/modules/${mod.id}/exercise`}
+                        className="hover:bg-muted focus-visible:ring-ring flex items-center gap-2.5 rounded-md px-2 py-2 text-sm outline-none focus-visible:ring-2"
                       >
                         {modProgress?.exercisePassed ? (
-                          <CheckCircle2 className="size-3.5 shrink-0 text-emerald-600" />
+                          <CheckCircle2
+                            aria-hidden="true"
+                            className="text-success size-4 shrink-0"
+                          />
                         ) : (
-                          <FileQuestion className="text-muted-foreground size-3.5 shrink-0" />
+                          <FileQuestion
+                            aria-hidden="true"
+                            className="text-foreground-subtle size-4 shrink-0"
+                          />
                         )}
-                        <span className="truncate">Exercise</span>
-                      </button>
-                    )}
-                  </div>
-                </motion.div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    </PageLayout>
+                        <span className="text-foreground min-w-0 flex-1 truncate">
+                          Module exercise
+                        </span>
+                        {modProgress?.exercisePassed ? (
+                          <span className="sr-only">(passed)</span>
+                        ) : (
+                          <Badge tone="warning" appearance="soft" size="sm">
+                            Required
+                          </Badge>
+                        )}
+                      </Link>
+                    </li>
+                  )}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ol>
+    </nav>
   );
-}
+};
 
 /* ------------------------------ lesson footer ------------------------------- */
 
 /**
  * Marking a lesson done, and what to do next.
  *
- * The mutation behind this existed and was **imported commented-out** — so a
- * learner could read every lesson in a course and never advance a single
- * percent, and module completion, certificates and org progress reporting all
- * hung off a button nobody had built. Same "exists but nothing drives it" shape
- * as the undrained outbox and the unreachable SSO config.
- *
  * Completion is explicit and stays explicit. Reaching the end of a video is not
  * the same act as saying you are done with the lesson, and this feeds a
- * credential — so nothing here marks progress on the learner's behalf.
+ * credential, so nothing here marks progress on the learner's behalf.
  */
 const LessonFooter = ({
   courseId,
@@ -323,25 +376,23 @@ const LessonFooter = ({
   exercisePassed: boolean;
   hasExercise: boolean;
 }) => {
-  // The exercise is offered the moment the module's lessons are done — that is
-  // the point at which it becomes takeable, and it is the only remaining step
-  // between the learner and a completed module. Offering it earlier would spend
-  // one of their attempts on something that could not count.
+  // The exercise is offered once the module's lessons are done: that is when it
+  // becomes takeable. Offering it earlier would spend an attempt that couldn't count.
   const offerExercise = hasExercise && moduleLessonsDone && !exercisePassed;
 
   return (
-    <div className="border-hairline bg-card flex flex-wrap items-center justify-between gap-3 rounded-xs border p-4">
+    <div className="border-border bg-card flex flex-wrap items-center justify-between gap-3 rounded-lg border p-4">
       <div className="min-w-0">
         {completed ? (
-          <p className="text-ink flex items-center gap-2 text-sm font-medium">
-            <CheckCircle2 className="size-4 shrink-0 text-emerald-600" />
+          <p className="text-foreground flex items-center gap-2 text-sm font-medium">
+            <CheckCircle2 className="text-success size-4 shrink-0" />
             Lesson complete
           </p>
         ) : (
           <>
-            <p className="text-ink text-sm font-medium">Finished this lesson?</p>
-            <p className="text-muted-foreground mt-1 text-sm">
-              Marking it done is what moves your progress — nothing is recorded for you.
+            <p className="text-foreground text-sm font-medium">Finished this lesson?</p>
+            <p className="text-foreground-muted mt-1 text-sm">
+              Marking it done is what moves your progress. Nothing is recorded for you.
             </p>
           </>
         )}
@@ -408,51 +459,45 @@ const LessonBody = ({
   if (lesson.kind === "video" || lesson.kind === "audio") {
     const Icon = lesson.kind === "video" ? Clapperboard : Volume2;
 
-    // A playback id is written onto the lesson by learning's consumer of
-    // `dr.media.asset.ready`, which only fires once the transcode finishes. So
-    // null means either "never uploaded" or "still processing", and a learner
-    // has no way to tell the two apart — media assets are owner-scoped to the
-    // creator. The copy therefore says what is true of both rather than
-    // guessing at which, and does not render a player with nothing to play.
+    // A playback id appears once the transcode finishes, so null means either
+    // "never uploaded" or "still processing", and a learner can't tell which.
+    // The copy says what's true of both, and no empty player is rendered.
     if (!lesson.muxPlaybackId) {
       return (
-        <div className="border-hairline bg-card rounded-xs border px-6 py-12 text-center">
-          <Icon className="text-muted-foreground mx-auto size-8" strokeWidth={1.5} />
-          <p className="text-ink font-heading mt-3 text-lg">
-            {lesson.kind === "video" ? "Video" : "Audio"} isn&apos;t available yet
-          </p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            The creator hasn&apos;t finished adding it. The rest of the course is unaffected.
-          </p>
-          {lesson.body && (
-            <Markdown className="text-muted-foreground mx-auto mt-4 max-w-prose text-left text-xs leading-relaxed">
-              {lesson.body}
-            </Markdown>
-          )}
-        </div>
+        <EmptyState
+          icon={Icon}
+          title={`${lesson.kind === "video" ? "Video" : "Audio"} isn't available yet`}
+          hint="The creator hasn't finished adding it. The rest of the course is unaffected."
+          action={
+            lesson.body ? (
+              <Markdown className="text-foreground-muted mx-auto max-w-prose text-left text-sm leading-relaxed">
+                {lesson.body}
+              </Markdown>
+            ) : undefined
+          }
+        />
       );
     }
 
     return (
       <div className="space-y-4">
-        <MuxPlayer
-          playbackId={lesson.muxPlaybackId}
-          streamType="on-demand"
-          // Renders the audio-only chrome — no black letterbox where a picture
-          // would be — for a lesson the creator authored as audio.
-          audio={lesson.kind === "audio"}
-          // Mux Data keys its analytics off these. `video_id` is the lesson so
-          // that watch data lines up with course structure rather than with an
-          // asset id nothing else in the product refers to.
-          metadata={{ video_id: lesson.id, video_title: lesson.title }}
-          // Playback is never marked complete on our behalf: reaching the end of
-          // a video is not the same act as saying you are done with the lesson,
-          // and progress here feeds module completion, certificates and org
-          // reporting. The explicit button below stays the only way.
-          className="aspect-video w-full overflow-hidden rounded-xs"
-        />
+        <div className="border-border overflow-hidden rounded-lg border bg-black">
+          <MuxPlayer
+            playbackId={lesson.muxPlaybackId}
+            streamType="on-demand"
+            // Audio-only chrome, with no black letterbox, for an audio lesson.
+            audio={lesson.kind === "audio"}
+            // Mux Data keys analytics off these; the lesson id lines watch data
+            // up with course structure.
+            metadata={{ video_id: lesson.id, video_title: lesson.title }}
+            // Themed to the primary token. Playback never marks a lesson done;
+            // the explicit button below is the only way.
+            accentColor="var(--primary)"
+            className="aspect-video w-full"
+          />
+        </div>
         {lesson.body && (
-          <Markdown className="text-muted-foreground max-w-prose text-xs leading-relaxed">
+          <Markdown className="text-foreground-muted max-w-prose text-sm leading-relaxed">
             {lesson.body}
           </Markdown>
         )}
@@ -461,14 +506,12 @@ const LessonBody = ({
   }
 
   return (
-    <article className="border-hairline bg-card rounded-xs border p-6">
+    <article className="border-border bg-card rounded-lg border p-6 sm:p-8">
       {lesson.body ? (
-        // Creator bodies are untrusted input. The Markdown component renders
-        // them through a pipeline with no raw-HTML pass — see the safety note
-        // on the component for why that is structural rather than remembered.
+        // Creator bodies are untrusted input; Markdown has no raw-HTML pass.
         <Markdown>{lesson.body}</Markdown>
       ) : (
-        <p className="text-muted-foreground text-sm">This lesson has no content yet.</p>
+        <p className="text-foreground-muted text-sm">This lesson has no content yet.</p>
       )}
     </article>
   );
