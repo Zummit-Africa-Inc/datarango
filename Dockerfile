@@ -77,8 +77,11 @@ ARG APP
 # on localhost even though the server-side ones point into the compose network.
 ARG NEXT_PUBLIC_API_URL
 ARG NEXT_PUBLIC_APP_URL
+# Web origin, for links from studio/console/admin to sign-up and password reset.
+ARG NEXT_PUBLIC_WEB_URL
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 ENV NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
+ENV NEXT_PUBLIC_WEB_URL=${NEXT_PUBLIC_WEB_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 
 # Switches on `output: "standalone"`, which the app configs leave off by

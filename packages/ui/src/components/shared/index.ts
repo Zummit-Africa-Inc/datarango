@@ -34,3 +34,5 @@ export * from "./app-shell";
 export * from "./list-toolbar";
 export * from "./catalogue-media";
 export * from "./price";
+export * from "./auth-layout";
+export * from "./sign-in-form";

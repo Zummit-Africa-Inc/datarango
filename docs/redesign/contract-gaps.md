@@ -46,3 +46,17 @@ message CoursePricing {
 Adding `category`, `level`, `duration_minutes`, `lesson_count`, `rating` and
 `rating_count` to `Course` (or to a discover-only projection) would unlock the
 §7.3 card meta row and the §8 filters, which also need query support.
+
+## Auth pages (§7.7)
+
+§7.7 asks for a real photograph and a testimonial beside each sign-in form.
+There are no licensed photos or attributable quotes yet, so `AuthSplitLayout`
+shows the audience's points on an accent tile instead. Pass `aside.photo` and
+`aside.testimonial` once real ones exist; don't use stock "learners" or
+invented quotes.
+
+Admin's sign-in page asks staff to use two-factor authentication, but the
+server does not require it: `/connect/authorize` for `datarango-admin`
+accepts any session, including social and org-SSO ones. Enforcing it needs the
+session to record how it was authenticated (an `amr` claim on the accounts
+SSO cookie) and a check for the admin client.
