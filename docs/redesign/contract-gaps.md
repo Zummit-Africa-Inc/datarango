@@ -75,3 +75,14 @@ participant count per card. Still missing from §7.7 and §8:
 - **Sort by participants**: counts are computed for the page being shown, so
   ordering by them needs a stored count (or a count over every visible
   competition) on the server.
+
+## Marketing home (§7.1)
+
+- **Social-proof pill (avatars, star rating, learner count)**: there are no
+  ratings, and no public learner count. The pill shows the live published
+  course count instead.
+- **Learner photos, instructor portraits, testimonials**: content, not API.
+  Slots live in `apps/web/src/content/marketing.ts` and stay empty until real,
+  consented material exists.
+- **Category explorer chips**: no category field on courses (see above); the
+  section shows the latest published courses without chips.
