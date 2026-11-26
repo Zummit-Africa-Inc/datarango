@@ -60,3 +60,18 @@ server does not require it: `/connect/authorize` for `datarango-admin`
 accepts any session, including social and org-SSO ones. Enforcing it needs the
 session to record how it was authenticated (an `amr` claim on the accounts
 SSO cookie) and a check for the admin client.
+
+## Competitions (§7.7, §8)
+
+Arena's discover now filters by status (upcoming / live / ended) and
+eligibility (open / org), sorts by ending soon, newest or prize, and returns a
+participant count per card. Still missing from §7.7 and §8:
+
+- **Participants avatar stack**: needs a few participant names or avatars per
+  card. Counting goes through a declared RLS widening; returning names would
+  need its own decision on what discover may reveal about who entered.
+- **Category, prize type (cash / tokens / kudos), team size**: competitions
+  have no category or team fields, and the only prize is a token reward.
+- **Sort by participants**: counts are computed for the page being shown, so
+  ordering by them needs a stored count (or a count over every visible
+  competition) on the server.

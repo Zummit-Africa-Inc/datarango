@@ -96,10 +96,20 @@ export interface Competition {
   updatedAt: string;
 }
 
+/** Discover cards also carry how many people joined. */
+export interface DiscoveredCompetition extends Competition {
+  participantCount: number;
+}
+
 export interface CompetitionList {
-  competitions: Competition[];
+  competitions: DiscoveredCompetition[];
   total: number;
 }
+
+/** Where a competition is for a learner: what the discover `status` filter means. */
+export type CompetitionPhase = "upcoming" | "live" | "ended";
+export type CompetitionEligibility = "open" | "org";
+export type CompetitionSort = "newest" | "endingSoon" | "prize";
 
 export interface CompetitionDetail {
   competition: Competition;
@@ -233,16 +243,30 @@ export const useDownloadDatasetFile = () =>
 /** Open/closed competitions across the platform, plus the caller's org's private ones. */
 export const useDiscoverCompetitions = (options: {
   search?: string;
+  status?: CompetitionPhase;
+  eligibility?: CompetitionEligibility;
+  sort?: CompetitionSort;
   page?: number;
   pageSize?: number;
 }) =>
   useApi.query<CompetitionList>(
-    ["arena-competitions-discover", options.search ?? "", String(options.page ?? 1)],
+    [
+      "arena-competitions-discover",
+      options.search ?? "",
+      options.status ?? "",
+      options.eligibility ?? "",
+      options.sort ?? "",
+      String(options.page ?? 1),
+      String(options.pageSize ?? ""),
+    ],
     "/arena/competitions/discover",
     {
       // Org-private visibility varies by org context — cache per org (§3).
       params: {
         search: options.search || undefined,
+        status: options.status,
+        eligibility: options.eligibility,
+        sort: options.sort,
         page: options.page,
         pageSize: options.pageSize,
       },
