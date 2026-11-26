@@ -14,11 +14,7 @@ export default function PricingPage() {
     <main>
       <PageIntro
         eyebrow="Pricing"
-        title={
-          <>
-            Start free. <span className="text-primary-500">Upgrade</span> however suits you
-          </>
-        }
+        title={<>Start free. Upgrade however suits you</>}
         lede="Individuals get a free tier that never expires, then a choice: subscribe for everything, buy a single course, or redeem tokens you earned. Organizations pay a flat monthly rate per seat — every seated member gets the whole catalogue."
       />
       <PricingPlans />

@@ -46,11 +46,7 @@ export default function DatasetsPage() {
   return (
     <FeaturePreview
       eyebrow="Datasets"
-      title={
-        <>
-          Data that's <span className="text-primary-500">ready to use</span>
-        </>
-      }
+      title={<>Data that's ready to use</>}
       lede="Versioned, hosted datasets that mount straight into your notebooks — the boring part of data work, deleted."
       points={POINTS}
     />

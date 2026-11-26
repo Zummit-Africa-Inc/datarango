@@ -41,9 +41,7 @@ export const FeaturePreview = ({ eyebrow, title, lede, points, note }: Props) =>
         ))}
       </Stagger>
       <FadeIn className="border-border bg-card mx-auto mt-16 max-w-2xl rounded-xs border p-10 text-center">
-        <h2 className="font-heading text-2xl">
-          Launching with the <span className="text-primary-500">platform</span>
-        </h2>
+        <h2 className="font-heading text-2xl">Launching with the platform</h2>
         <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">
           {note ??
             "This surface goes live with the Datarango platform. Join now and you'll be first in when it opens."}

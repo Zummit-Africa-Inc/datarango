@@ -36,7 +36,7 @@ export const CreatorsHero = () => (
         <h1 className="font-heading text-on-band mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
           Teach data.
           <br />
-          <span className="text-primary-400">Earn doing it.</span>
+          Earn doing it.
         </h1>
         <p className="mt-8 max-w-md text-lg leading-relaxed text-white/70">
           Publish courses, quizzes and notebook exercises on Datarango Studio. Set your own prices,
@@ -86,7 +86,7 @@ export const CreatorsHero = () => (
                 <p className="text-sm">{course.title}</p>
                 <div className="flex gap-x-4 text-xs text-white/60">
                   <span>{course.enrollments} enrolled</span>
-                  <span className="text-primary-300">{course.revenue}</span>
+                  <span className="font-medium">{course.revenue}</span>
                 </div>
               </div>
             ))}
@@ -142,7 +142,7 @@ export const CreatorsFeatures = () => (
   <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
     <FadeIn className="mx-auto max-w-2xl text-center">
       <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Everything you need to <span className="text-primary-500">teach well</span>
+        Everything you need to teach well
       </h2>
       <p className="text-muted-foreground mt-6 text-lg">
         Datarango Studio gives you the tools to build courses that actually work — and the audience
@@ -237,9 +237,7 @@ const EARNINGS_POINTS = [
 export const CreatorsEarnings = () => (
   <section className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
     <FadeIn>
-      <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Earn on your own <span className="text-primary-500">terms</span>
-      </h2>
+      <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">Earn on your own terms</h2>
       <div className="mt-10 space-y-8">
         {EARNINGS_POINTS.map((point) => (
           <div className="flex items-start gap-x-4" key={point.title}>
@@ -268,7 +266,7 @@ export const CreatorsCta = () => (
   <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
     <FadeIn className="bg-band rounded-xs px-8 py-20 text-center text-white lg:py-24">
       <h2 className="font-heading text-on-band mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
-        Your knowledge is worth <span className="text-primary-400">more than a blog post</span>
+        Your knowledge is worth more than a blog post
       </h2>
       <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
         Turn what you know into a course that earns while you sleep. Apply to join the Datarango

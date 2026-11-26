@@ -22,7 +22,6 @@ const CHART_BARS = [38, 62, 45, 80, 58, 92, 70];
 /** Landing hero: oversized title + a 3D-posed product mosaic built in CSS. */
 export const Hero = () => (
   <section className="relative overflow-hidden">
-    <div className="from-primary-50/60 pointer-events-none absolute inset-0 -z-10 bg-linear-to-b to-transparent" />
     <div className="container mx-auto grid items-center gap-16 px-4 pt-20 pb-24 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:pt-28 lg:pb-32">
       <FadeIn>
         <h1 className="font-heading mt-6 text-6xl leading-[0.95] tracking-tight lg:text-9xl">
@@ -30,7 +29,7 @@ export const Hero = () => (
           <br />
           Learn.
           <br />
-          <span className="text-primary-500">Build.</span>
+          Build.
         </h1>
         <p className="text-muted-foreground mt-8 max-w-md text-lg leading-relaxed">
           Master data analytics, AI and ML by doing — interactive courses, real Jupyter notebooks,
@@ -50,7 +49,6 @@ export const Hero = () => (
         </p>
       </FadeIn>
       <div className="relative hidden h-135 perspective-[1400px] lg:block" aria-hidden>
-        <div className="ember-bloom absolute top-1/3 left-1/3 -z-10 size-96 rounded-full" />
         <TiltCard
           className="bg-band absolute top-6 left-0 w-95 rounded-xs p-5 text-white shadow-2xl"
           rotateX={6}

@@ -46,11 +46,7 @@ export default function QuizzesPage() {
   return (
     <FeaturePreview
       eyebrow="Quizzes"
-      title={
-        <>
-          Prove it in <span className="text-primary-500">ten questions</span>
-        </>
-      }
+      title={<>Prove it in ten questions</>}
       lede="Standalone-first quizzes across data, AI and ML — take them for tokens, meet them in courses, or face them as module gates."
       points={POINTS}
     />

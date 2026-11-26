@@ -46,11 +46,7 @@ export default function CoursesPage() {
   return (
     <FeaturePreview
       eyebrow="Courses"
-      title={
-        <>
-          Courses that make you <span className="text-primary-500">do the work</span>
-        </>
-      }
+      title={<>Courses that make you do the work</>}
       lede="Structured learning for data analytics, AI and ML — authored by our team and external creators, gated by real graded exercises."
       points={POINTS}
       note="The course catalog opens with the platform launch. Join now and start with notebooks and standalone quizzes on day one."

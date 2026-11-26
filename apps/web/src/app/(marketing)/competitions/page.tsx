@@ -46,11 +46,7 @@ export default function CompetitionsPage() {
   return (
     <FeaturePreview
       eyebrow="Competitions"
-      title={
-        <>
-          Practice, but make it <span className="text-primary-500">a sport</span>
-        </>
-      }
+      title={<>Practice, but make it a sport</>}
       lede="Real datasets, automated scoring, live leaderboards. Competition is how practice stops being optional."
       points={POINTS}
     />
