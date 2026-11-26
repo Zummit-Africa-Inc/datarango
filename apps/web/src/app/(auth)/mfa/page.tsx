@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import React, { useState } from "react";
 
-import { Button, OtpInput } from "@datarango/ui";
+import { Button, OtpInput, resolveSignInReturn } from "@datarango/ui";
 
 import { AuthCard } from "@/components/auth/auth-card";
 
@@ -41,9 +41,7 @@ const Page = () => {
     }
 
     window.location.assign(
-      returnTo.startsWith("http")
-        ? returnTo
-        : `/api/auth/signin?returnTo=${encodeURIComponent(returnTo)}`,
+      resolveSignInReturn(returnTo, { apiUrl: API_URL, fallback: "/dashboard" }),
     );
   };
 

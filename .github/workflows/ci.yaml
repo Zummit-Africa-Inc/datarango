@@ -126,6 +126,7 @@ jobs:
             PORT=${{ matrix.port }}
             NEXT_PUBLIC_API_URL=${{ vars.PUBLIC_API_URL }}
             NEXT_PUBLIC_APP_URL=${{ vars[matrix.url_var] }}
+            NEXT_PUBLIC_WEB_URL=${{ vars.WEB_URL }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # Per-app scope: the four builds share the install layers but would

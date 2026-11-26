@@ -150,7 +150,13 @@ export const createAuthHandlers = ({
     });
     if (!tokens?.refresh_token) return fail("token_exchange_failed");
 
-    const returnTo = expected.returnTo.startsWith("/") ? expected.returnTo : "/";
+    // Same-site paths only. "//host" and "/\host" start with "/" but resolve
+    // to another origin, which would make this an open redirect after login.
+    const candidate = expected.returnTo;
+    const returnTo =
+      candidate.startsWith("/") && !candidate.startsWith("//") && !candidate.startsWith("/\\")
+        ? candidate
+        : "/";
     const response = NextResponse.redirect(new URL(returnTo, appUrl));
     response.cookies.set("dr_refresh", tokens.refresh_token, refreshCookie);
     response.cookies.set(sessionCookie, "1", markerCookie);

@@ -1,60 +1,30 @@
-import React, { Suspense } from "react";
 import Link from "next/link";
+import React, { Suspense } from "react";
 
-import { cn, Loader, Logo } from "@datarango/ui";
+import { AuthSplitLayout, Loader } from "@datarango/ui";
 
 interface Props {
   children: React.ReactNode;
 }
 
-const AuthLayout = ({ children }: Props) => {
-  return (
-    <Suspense fallback={<Loader />}>
-      <div className="grid h-auto w-screen place-items-center overflow-hidden py-5 lg:h-screen lg:py-10">
-        <div className="flex max-w-4xl flex-col items-center gap-y-10">
-          <Link href="/">
-            <Logo className="h-8" />
-          </Link>
-          <div className="grid grid-cols-1 lg:grid-cols-2">
-            <div className="grid place-items-center lg:pr-4">
-              <div className="flex flex-col justify-center gap-y-10 p-8">
-                <div className="space-y-1">
-                  <h4 className="text-ink text-xl lg:text-4xl">
-                    Learn how to use Datarango to analyze and visualize your data.
-                  </h4>
-                  <p className="text-muted-foreground text-sm">
-                    Get started with our comprehensive guide to mastering Datarango.
-                  </p>
-                </div>
-                <div className="relative grid h-50 w-full place-items-center">
-                  {[...Array(4)].map((_, i) => (
-                    <div
-                      className={cn(
-                        "border-primary-300 bg-primary-50 absolute aspect-square rounded-md border shadow",
-                      )}
-                      key={i}
-                      style={{
-                        width: `${40 + i * 10}px`,
-                        top: i < 2 ? "0" : "auto",
-                        bottom: i >= 2 ? "0" : "auto",
-                        left: i % 2 === 0 ? "0" : "auto",
-                        right: i % 2 === 1 ? "0" : "auto",
-                        transform: `rotate(${(i + 1) * 5}deg)`,
-                      }}
-                    ></div>
-                  ))}
-                  <div className="">
-                    <Logo type="icon" />
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className="lg:border-l lg:pl-4">{children}</div>
-          </div>
-        </div>
-      </div>
-    </Suspense>
-  );
-};
+/** §7.7 split screen for every learner auth page (sign-in, sign-up, reset, verify, MFA). */
+const AuthLayout = ({ children }: Props) => (
+  <AuthSplitLayout
+    audience="learner"
+    footer={
+      <>
+        <Link className="hover:text-foreground" href="/terms-of-use">
+          Terms
+        </Link>
+        <span aria-hidden> · </span>
+        <Link className="hover:text-foreground" href="/privacy-policy">
+          Privacy
+        </Link>
+      </>
+    }
+  >
+    <Suspense fallback={<Loader />}>{children}</Suspense>
+  </AuthSplitLayout>
+);
 
 export default AuthLayout;
