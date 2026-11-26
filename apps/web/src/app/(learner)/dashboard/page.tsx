@@ -338,13 +338,11 @@ const dayFormat = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "sho
 
 /** Open competitions by closing date, soonest first. Deadlines and live sessions arrive when those exist. */
 const Upcoming = () => {
-  const { data } = useDiscoverCompetitions({ pageSize: 20 });
+  // Live and soonest-ending first, from the API (one page of 20 sorted
+  // client-side missed deadlines on later pages).
+  const { data } = useDiscoverCompetitions({ status: "live", sort: "endingSoon", pageSize: 8 });
   const closing = useMemo(
-    () =>
-      (data?.competitions ?? [])
-        .filter((c) => c.status === "open" && c.endsAt && new Date(c.endsAt) > new Date())
-        .sort((a, b) => a.endsAt!.localeCompare(b.endsAt!))
-        .slice(0, 4),
+    () => (data?.competitions ?? []).filter((c) => c.endsAt).slice(0, 4),
     [data],
   );
 

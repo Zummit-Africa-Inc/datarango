@@ -2,12 +2,45 @@
 
 import { useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import { ArrowLeft, CalendarClock, Clock, Database, Trophy, Upload } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarClock,
+  Clock,
+  Database,
+  FileUp,
+  Gauge,
+  Medal,
+  Trophy,
+  Users,
+} from "lucide-react";
 import Link from "next/link";
 
 import { ApiError } from "@datarango/api";
-import { Badge, Button, PageLayout, Skeleton } from "@datarango/ui";
+import { useUser } from "@datarango/auth";
+import {
+  Badge,
+  Button,
+  CatalogueCover,
+  cn,
+  EmptyState,
+  ProgressBar,
+  PropertyList,
+  Skeleton,
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+  UserAvatar,
+} from "@datarango/ui";
 
+import {
+  competitionPhase,
+  deadlineLabel,
+  formatDuration,
+  PhaseBadge,
+  PrizeLabel,
+  useNow,
+} from "@/components/competitions/competition-meta";
 import {
   METRIC_HIGHER_IS_BETTER,
   METRIC_LABELS,
@@ -19,35 +52,73 @@ import {
   useLeaderboard,
   useMySubmissions,
   putSubmissionToTicket,
+  type Competition,
+  type Leaderboard,
   type LeaderboardEntry,
+  type MySubmissions,
   type SubmissionStatus,
 } from "@/hooks/arena";
+
+const dateTime = new Intl.DateTimeFormat(undefined, {
+  day: "numeric",
+  month: "short",
+  hour: "2-digit",
+  minute: "2-digit",
+});
+
+const MEDALS = ["text-amber-solid", "text-foreground-muted", "text-rose-solid"];
 
 /** One board's standings. Rank comes from the API, so ties share a place. */
 function StandingsTable({
   entries,
   scoreLabel,
+  meId,
 }: {
   entries: LeaderboardEntry[];
   scoreLabel: string;
+  meId?: string;
 }) {
   return (
     <table className="w-full text-sm">
       <thead>
-        <tr className="bg-muted/50 text-muted-foreground border-hairline border-b text-left">
-          <th className="px-4 py-2.5 font-medium">#</th>
+        <tr className="text-foreground-muted border-border border-b text-left text-xs">
+          <th className="w-16 px-4 py-2.5 font-medium">Rank</th>
           <th className="px-4 py-2.5 font-medium">Participant</th>
           <th className="px-4 py-2.5 text-right font-medium">{scoreLabel}</th>
         </tr>
       </thead>
       <tbody>
-        {entries.map((entry) => (
-          <tr key={entry.submissionId} className="border-hairline border-b last:border-b-0">
-            <td className="px-4 py-3 font-medium">{entry.rank}</td>
-            <td className="text-ink px-4 py-3">{entry.displayName}</td>
-            <td className="px-4 py-3 text-right font-mono">{entry.score}</td>
-          </tr>
-        ))}
+        {entries.map((entry) => {
+          const me = entry.userId === meId;
+          return (
+            <tr
+              key={entry.submissionId}
+              aria-current={me ? "true" : undefined}
+              className={cn("border-border border-b last:border-b-0", me && "bg-primary-soft/60")}
+            >
+              <td className="px-4 py-3">
+                <span className="inline-flex items-center gap-1.5 font-mono font-medium">
+                  {entry.rank <= 3 && (
+                    <Medal aria-hidden className={cn("size-4", MEDALS[entry.rank - 1])} />
+                  )}
+                  {entry.rank}
+                </span>
+              </td>
+              <td className="px-4 py-3">
+                <span className="flex items-center gap-2.5">
+                  <UserAvatar className="size-7" name={entry.displayName} />
+                  <span className="text-foreground truncate">{entry.displayName}</span>
+                  {me && (
+                    <Badge appearance="soft" tone="primary">
+                      You
+                    </Badge>
+                  )}
+                </span>
+              </td>
+              <td className="px-4 py-3 text-right font-mono">{entry.score}</td>
+            </tr>
+          );
+        })}
       </tbody>
     </table>
   );
@@ -56,18 +127,20 @@ function StandingsTable({
 const submissionBadge = (status: SubmissionStatus) => {
   switch (status) {
     case "pendingScoring":
-      return <Badge variant="outline">Waiting on scoring</Badge>;
+      return <Badge appearance="outline">Waiting on scoring</Badge>;
     case "scored":
-      return <Badge variant="success">Scored</Badge>;
+      return <Badge tone="success">Scored</Badge>;
     case "failed":
-      return <Badge variant="destructive">Refused</Badge>;
+      return <Badge tone="danger">Refused</Badge>;
     default:
-      return <Badge variant="outline">Uploading</Badge>;
+      return <Badge appearance="outline">Uploading</Badge>;
   }
 };
 
 export default function CompetitionDetailPage() {
   const competitionId = useParams().id as string;
+  const now = useNow();
+  const user = useUser();
 
   const { data: detail, isLoading } = useCompetition(competitionId);
   const competition = detail?.competition;
@@ -76,12 +149,323 @@ export default function CompetitionDetailPage() {
 
   const { data: leaderboard } = useLeaderboard(competitionId, isOpen);
   const { data: mine } = useMySubmissions(competitionId, joined);
+
+  if (isLoading) return <Skeleton skeleton="page" />;
+
+  if (!competition) {
+    return (
+      <EmptyState
+        action={
+          <Button asChild variant="secondary">
+            <Link href="/dashboard/competitions">Back to competitions</Link>
+          </Button>
+        }
+        hint="It may have been removed, or it's private to an organisation you're not viewing as."
+        icon={Trophy}
+        title="Competition not found"
+      />
+    );
+  }
+
+  const phase = competitionPhase(competition, now);
+  const participants = leaderboard?.participantCount ?? 0;
+  const direction = METRIC_HIGHER_IS_BETTER[competition.metric]
+    ? "higher is better"
+    : "lower is better";
+
+  const meta = [
+    { icon: CalendarClock, label: deadlineLabel(competition, now) },
+    {
+      icon: Users,
+      label: `${participants.toLocaleString()} ${participants === 1 ? "participant" : "participants"}`,
+    },
+    { icon: Gauge, label: `${METRIC_LABELS[competition.metric]} · ${direction}` },
+  ];
+
+  return (
+    <div className="space-y-8">
+      <Link
+        className="text-foreground-muted hover:text-foreground inline-flex items-center gap-1.5 text-sm transition-colors"
+        href="/dashboard/competitions"
+      >
+        <ArrowLeft className="size-4" />
+        All competitions
+      </Link>
+
+      <header>
+        <CatalogueCover icon={Trophy} iconTile id={competition.id} title={competition.title} />
+        <div className="max-w-3xl">
+          <div className="mt-2 mb-2 flex flex-wrap items-center gap-2">
+            <PhaseBadge phase={phase} />
+            {competition.orgId && (
+              <Badge appearance="outline" tone="neutral">
+                Your organisation only
+              </Badge>
+            )}
+          </div>
+          <h1 className="font-display text-foreground text-3xl leading-tight font-semibold tracking-tight">
+            {competition.title}
+          </h1>
+          {competition.summary && (
+            <p className="text-foreground-muted mt-2 text-base">{competition.summary}</p>
+          )}
+          <ul className="text-foreground-muted mt-4 flex flex-wrap gap-x-5 gap-y-2 text-sm">
+            {meta.map(({ icon: Icon, label }) => (
+              <li className="flex items-center gap-1.5" key={label}>
+                <Icon aria-hidden className="size-4" />
+                {label}
+              </li>
+            ))}
+            <li>
+              <PrizeLabel competition={competition} />
+            </li>
+          </ul>
+        </div>
+      </header>
+
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+        <Tabs className="min-w-0" defaultValue="leaderboard">
+          <TabsList>
+            <TabsTrigger value="leaderboard">Leaderboard</TabsTrigger>
+            <TabsTrigger value="submissions">
+              Your submissions
+              {mine && mine.submissions.length > 0 && (
+                <span className="text-foreground-muted ml-1.5 font-mono text-xs">
+                  {mine.submissions.length}
+                </span>
+              )}
+            </TabsTrigger>
+            <TabsTrigger value="rules">Rules</TabsTrigger>
+          </TabsList>
+          <TabsContent className="pt-5" value="leaderboard">
+            <LeaderboardPanel competition={competition} leaderboard={leaderboard} meId={user?.id} />
+          </TabsContent>
+          <TabsContent className="pt-5" value="submissions">
+            <SubmissionsPanel joined={joined} mine={mine} open={isOpen} />
+          </TabsContent>
+          <TabsContent className="pt-5" value="rules">
+            <RulesPanel competition={competition} />
+          </TabsContent>
+        </Tabs>
+
+        <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
+          <ActionCard competition={competition} joined={joined} mine={mine} now={now} />
+          <Button asChild className="w-full" variant="secondary">
+            <Link href={`/dashboard/datasets/${competition.datasetId}`}>
+              <Database className="size-4" />
+              View the dataset
+            </Link>
+          </Button>
+        </aside>
+      </div>
+    </div>
+  );
+}
+
+const LeaderboardPanel = ({
+  competition,
+  leaderboard,
+  meId,
+}: {
+  competition: Competition;
+  leaderboard?: Leaderboard;
+  meId?: string;
+}) => {
   // A closed competition with a hidden split ranks on the private rows.
   const finalBoard = leaderboard?.board === "private";
+  const metric = METRIC_LABELS[competition.metric];
 
-  const join = useJoinCompetition(competitionId);
-  const ticket = useCreateSubmissionUpload(competitionId);
-  const complete = useCompleteSubmission(competitionId);
+  return (
+    <section className="space-y-3">
+      <h2 className="font-display text-foreground text-lg font-semibold">
+        {finalBoard ? "Final standings (private)" : "Leaderboard"}
+      </h2>
+      {finalBoard ? (
+        <p className="text-foreground-muted text-sm">
+          Ranked on the hidden {100 - competition.publicSharePercent}% of the test rows, using each
+          participant&apos;s best submission on the public board.
+        </p>
+      ) : (
+        competition.publicSharePercent < 100 && (
+          <p className="text-foreground-muted text-sm">
+            Scored on {competition.publicSharePercent}% of the test rows. The final ranking uses the
+            other {100 - competition.publicSharePercent}%, revealed when the competition closes.
+          </p>
+        )
+      )}
+      {!leaderboard || leaderboard.entries.length === 0 ? (
+        <EmptyState
+          hint="Standings appear once submissions have been scored."
+          icon={Trophy}
+          title="No scores yet"
+        />
+      ) : (
+        <div className="border-border bg-card overflow-hidden rounded-lg border">
+          <StandingsTable
+            entries={leaderboard.entries}
+            meId={meId}
+            scoreLabel={`${finalBoard ? "Private" : "Best"} ${metric}`}
+          />
+        </div>
+      )}
+      {finalBoard && leaderboard?.publicEntries && leaderboard.publicEntries.length > 0 && (
+        <details className="border-border bg-card rounded-lg border">
+          <summary className="text-foreground-muted cursor-pointer px-4 py-2.5 text-sm">
+            Public leaderboard at close
+          </summary>
+          <StandingsTable
+            entries={leaderboard.publicEntries}
+            meId={meId}
+            scoreLabel={`Public ${metric}`}
+          />
+        </details>
+      )}
+    </section>
+  );
+};
+
+const SubmissionsPanel = ({
+  joined,
+  mine,
+  open,
+}: {
+  joined: boolean;
+  mine?: MySubmissions;
+  open: boolean;
+}) => {
+  if (!joined) {
+    return (
+      <EmptyState
+        hint={
+          open
+            ? "Join the competition to submit predictions and appear on the leaderboard."
+            : "You didn't take part in this one."
+        }
+        icon={FileUp}
+        title="No submissions"
+      />
+    );
+  }
+  if (!mine || mine.submissions.length === 0) {
+    return (
+      <EmptyState
+        hint="Upload a predictions CSV from the panel on the right."
+        icon={FileUp}
+        title="No submissions yet"
+      />
+    );
+  }
+  return (
+    <ul className="border-border bg-card divide-border divide-y overflow-hidden rounded-lg border">
+      {mine.submissions.map((submission) => (
+        <li
+          className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-sm"
+          key={submission.id}
+        >
+          <span className="min-w-0">
+            <span className="text-foreground block truncate">{submission.fileName}</span>
+            {submission.submittedAt && (
+              <span className="text-foreground-muted text-xs">
+                {dateTime.format(new Date(submission.submittedAt))}
+              </span>
+            )}
+          </span>
+          <span className="flex items-center gap-3">
+            {submission.status === "scored" && submission.score !== null && (
+              <span className="font-mono">
+                {submission.privateScore !== null &&
+                submission.privateScore !== submission.score ? (
+                  <>
+                    <span className="text-foreground-muted text-xs">public </span>
+                    {submission.score}
+                    <span className="text-foreground-muted text-xs"> · private </span>
+                    {submission.privateScore}
+                  </>
+                ) : (
+                  submission.score
+                )}
+              </span>
+            )}
+            {submissionBadge(submission.status)}
+          </span>
+        </li>
+      ))}
+    </ul>
+  );
+};
+
+const RulesPanel = ({ competition }: { competition: Competition }) => {
+  const higher = METRIC_HIGHER_IS_BETTER[competition.metric];
+  const perDay = competition.maxSubmissionsPerDay;
+  return (
+    <div className="space-y-6">
+      <PropertyList
+        items={[
+          {
+            label: "Metric",
+            value: `${METRIC_LABELS[competition.metric]} (${higher ? "higher" : "lower"} is better)`,
+          },
+          {
+            label: "Submissions",
+            value: `${perDay} per day, reset at midnight UTC. CSV files up to 20 MB.`,
+          },
+          {
+            label: "Leaderboard",
+            value:
+              competition.publicSharePercent < 100
+                ? `Live board scores ${competition.publicSharePercent}% of the test rows; the final ranking uses the other ${100 - competition.publicSharePercent}%.`
+                : "Scored on all test rows.",
+          },
+          {
+            label: "Opens",
+            value: competition.startsAt
+              ? dateTime.format(new Date(competition.startsAt))
+              : "Open now",
+          },
+          {
+            label: "Closes",
+            value: competition.endsAt
+              ? dateTime.format(new Date(competition.endsAt))
+              : "No end date",
+          },
+          {
+            label: "Rewards",
+            value:
+              competition.tokenRewardTotal > 0
+                ? `${competition.tokenRewardTotal.toLocaleString()} tokens shared by the top ${competition.tokenRewardPlacements}`
+                : "Kudos only",
+          },
+          {
+            label: "Who can enter",
+            value: competition.orgId ? "Members of the hosting organisation" : "Everyone",
+          },
+        ]}
+      />
+      <p className="text-foreground-muted text-sm">
+        Ties go to whoever submitted first. Your best public score picks the submission that counts
+        for the final ranking.
+      </p>
+    </div>
+  );
+};
+
+/** Rail: what you can do now, the clock, and the prize. */
+const ActionCard = ({
+  competition,
+  joined,
+  mine,
+  now,
+}: {
+  competition: Competition;
+  joined: boolean;
+  mine?: MySubmissions;
+  now: number;
+}) => {
+  const phase = competitionPhase(competition, now);
+  const isOpen = competition.status === "open";
+  const join = useJoinCompetition(competition.id);
+  const ticket = useCreateSubmissionUpload(competition.id);
+  const complete = useCompleteSubmission(competition.id);
 
   const fileInput = useRef<HTMLInputElement>(null);
   const [file, setFile] = useState<File | null>(null);
@@ -90,26 +474,9 @@ export default function CompetitionDetailPage() {
   // explains, and gateway failures keep their own hook-level toasts.
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  if (isLoading) {
-    return (
-      <PageLayout title="Competition" subtitle="Loading…">
-        <Skeleton skeleton="page" />
-      </PageLayout>
-    );
-  }
-
-  if (!competition) {
-    return (
-      <PageLayout title="Competition not found" subtitle="It may have closed or be org-private.">
-        <Button asChild variant="outline">
-          <Link href="/dashboard/competitions">Back to competitions</Link>
-        </Button>
-      </PageLayout>
-    );
-  }
-
   const todayCount = mine?.todayCount ?? 0;
-  const atDayCap = todayCount >= competition.maxSubmissionsPerDay;
+  const perDay = competition.maxSubmissionsPerDay;
+  const atDayCap = todayCount >= perDay;
 
   const submitFile = async () => {
     if (!file) return;
@@ -142,255 +509,113 @@ export default function CompetitionDetailPage() {
     }
   };
 
-  const direction = METRIC_HIGHER_IS_BETTER[competition.metric]
-    ? "higher is better"
-    : "lower is better";
+  const clockTarget =
+    phase === "upcoming" ? competition.startsAt : phase === "live" ? competition.endsAt : null;
 
   return (
-    <PageLayout
-      title={competition.title}
-      subtitle={competition.summary || "No summary yet."}
-      actions={[
-        isOpen && !joined && (
-          <Button key="join" disabled={join.isPending} onClick={() => join.mutate()}>
-            {join.isPending ? "Joining…" : "Join competition"}
-          </Button>
-        ),
-        joined && (
-          <Badge key="joined" variant="success">
-            Joined
-          </Badge>
-        ),
-        !isOpen && (
-          <Badge key="closed" variant="outline">
-            Closed
-          </Badge>
-        ),
-      ]}
-    >
-      <Link
-        href="/dashboard/competitions"
-        className="text-muted-foreground hover:text-ink inline-flex items-center gap-1 text-sm transition-colors"
-      >
-        <ArrowLeft className="size-3.5" />
-        All competitions
-      </Link>
-
-      <div className="border-hairline bg-card grid gap-4 rounded-xs border p-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div>
-          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Metric
-          </p>
-          <p className="font-heading text-ink mt-1">
-            {METRIC_LABELS[competition.metric]}
-            <span className="text-muted-foreground ml-2 text-xs normal-case">{direction}</span>
-          </p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Timeline
-          </p>
-          <p className="text-ink mt-1 inline-flex items-center gap-1.5 text-sm">
-            <CalendarClock className="size-3.5" />
-            {competition.endsAt
-              ? `ends ${new Date(competition.endsAt).toLocaleString()}`
-              : "no end set"}
-          </p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Daily limit
-          </p>
-          <p className="text-ink mt-1 text-sm">
-            {competition.maxSubmissionsPerDay} submission
-            {competition.maxSubmissionsPerDay === 1 ? "" : "s"} per day
-          </p>
-        </div>
-        <div>
-          <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-            Rewards
-          </p>
-          <p className="text-ink mt-1 text-sm">
-            {competition.tokenRewardTotal > 0 ? (
-              <>
-                {competition.tokenRewardTotal} tokens · top {competition.tokenRewardPlacements}
-              </>
-            ) : (
-              "Bragging rights"
-            )}
-          </p>
-        </div>
+    <div className="border-border bg-card space-y-5 rounded-lg border p-5">
+      <div>
+        <p className="text-foreground-muted text-xs">
+          {phase === "upcoming" ? "Opens in" : phase === "live" ? "Time left" : "Status"}
+        </p>
+        <p className="text-foreground mt-1 font-mono text-2xl font-bold">
+          {clockTarget
+            ? formatDuration(new Date(clockTarget).getTime() - now)
+            : phase === "live"
+              ? "No end date"
+              : "Closed"}
+        </p>
       </div>
 
-      <Button asChild variant="outline" size="sm" className="self-start">
-        <Link href={`/dashboard/datasets/${competition.datasetId}`}>
-          <Database className="size-3.5" />
-          View the dataset
-        </Link>
-      </Button>
-
-      {/* ── Leaderboard ─────────────────────────────────────────────────── */}
-
-      <section className="space-y-3">
-        <div className="flex items-baseline justify-between">
-          <h2 className="font-heading text-ink inline-flex items-center gap-2 text-lg">
-            <Trophy className="size-4" />
-            {finalBoard ? "Final standings (private)" : "Leaderboard"}
-          </h2>
-          <span className="text-muted-foreground text-sm">
-            {leaderboard?.participantCount ?? 0} participant
-            {(leaderboard?.participantCount ?? 0) === 1 ? "" : "s"}
-          </span>
-        </div>
-        {finalBoard ? (
-          <p className="text-muted-foreground text-sm">
-            Ranked on the hidden {100 - competition.publicSharePercent}% of the test rows, using
-            each participant&apos;s best submission on the public board.
-          </p>
-        ) : (
-          competition.publicSharePercent < 100 && (
-            <p className="text-muted-foreground text-sm">
-              Scored on {competition.publicSharePercent}% of the test rows. The final ranking uses
-              the other {100 - competition.publicSharePercent}%, revealed when the competition
-              closes.
-            </p>
-          )
-        )}
-        {!leaderboard || leaderboard.entries.length === 0 ? (
-          <div className="border-hairline bg-card rounded-xs border px-6 py-10 text-center">
-            <p className="text-ink font-medium">No scores yet</p>
-            <p className="text-muted-foreground mt-1 text-sm">
-              Standings appear once submissions have been scored.
-            </p>
-          </div>
-        ) : (
-          <div className="border-hairline bg-card overflow-hidden rounded-xs border">
-            <StandingsTable
-              entries={leaderboard.entries}
-              scoreLabel={`${finalBoard ? "Private" : "Best"} ${METRIC_LABELS[competition.metric]}`}
-            />
-          </div>
-        )}
-        {finalBoard && leaderboard?.publicEntries && leaderboard.publicEntries.length > 0 && (
-          <details className="border-hairline bg-card rounded-xs border">
-            <summary className="text-muted-foreground cursor-pointer px-4 py-2.5 text-sm">
-              Public leaderboard at close
-            </summary>
-            <StandingsTable
-              entries={leaderboard.publicEntries}
-              scoreLabel={`Public ${METRIC_LABELS[competition.metric]}`}
-            />
-          </details>
-        )}
-      </section>
-
-      {/* ── Your submissions ────────────────────────────────────────────── */}
-
-      {joined && (
-        <section className="space-y-3">
-          <h2 className="font-heading text-ink text-lg">Your submissions</h2>
-
-          <div className="border-hairline bg-card rounded-xs border p-4">
-            {isOpen ? (
-              atDayCap ? (
-                <p className="text-muted-foreground text-sm">
-                  You&apos;ve used all {competition.maxSubmissionsPerDay} submissions for today
-                  (UTC). The count resets at midnight UTC.
-                </p>
-              ) : (
-                <div className="flex flex-wrap items-center gap-3">
-                  <input
-                    ref={fileInput}
-                    type="file"
-                    accept=".csv,text/csv"
-                    aria-label="Choose a predictions CSV"
-                    className="text-sm"
-                    disabled={sending}
-                    onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  />
-                  <Button size="sm" disabled={sending || !file} onClick={() => void submitFile()}>
-                    <Upload className="size-3.5" />
-                    {sending ? "Uploading…" : "Submit predictions"}
-                  </Button>
-                  <span className="text-muted-foreground text-xs">
-                    CSV only · max 20 MB · {todayCount}/{competition.maxSubmissionsPerDay} used
-                    today
-                  </span>
-                </div>
-              )
-            ) : (
-              <p className="text-muted-foreground text-sm">
-                This competition is not accepting submissions.
-              </p>
-            )}
-            {uploadError && (
-              <p role="alert" className="mt-2 text-sm text-red-500">
-                {uploadError}
-              </p>
-            )}
-            <p className="text-muted-foreground mt-2 flex items-center gap-1 text-xs">
-              <Clock className="size-3" />
-              Scores appear when the host&apos;s scoring run finishes — submitted work keeps its
-              place in the queue.
-            </p>
-          </div>
-
-          {!mine || mine.submissions.length === 0 ? (
-            <div className="border-hairline bg-card rounded-xs border px-6 py-8 text-center">
-              <p className="text-muted-foreground text-sm">No submissions yet.</p>
-            </div>
+      <div className="border-border border-t pt-4">
+        <p className="text-foreground-muted text-xs">Prize</p>
+        <p className="text-foreground mt-1 text-sm font-medium">
+          {competition.tokenRewardTotal > 0 ? (
+            <>
+              <span className="font-mono">{competition.tokenRewardTotal.toLocaleString()}</span>{" "}
+              tokens · top {competition.tokenRewardPlacements}
+            </>
           ) : (
-            <ul className="divide-border divide-y">
-              {mine.submissions.map((submission) => (
-                <li
-                  key={submission.id}
-                  className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm"
-                >
-                  <span className="text-ink">{submission.fileName}</span>
-                  <span className="flex items-center gap-3">
-                    {submission.status === "scored" && submission.score !== null && (
-                      <span className="font-mono">
-                        {submission.privateScore !== null &&
-                        submission.privateScore !== submission.score ? (
-                          <>
-                            <span className="text-muted-foreground text-xs">public </span>
-                            {submission.score}
-                            <span className="text-muted-foreground text-xs"> · private </span>
-                            {submission.privateScore}
-                          </>
-                        ) : (
-                          submission.score
-                        )}
-                      </span>
-                    )}
-                    {submission.submittedAt && (
-                      <span className="text-muted-foreground text-xs">
-                        {new Date(submission.submittedAt).toLocaleString()}
-                      </span>
-                    )}
-                    {submissionBadge(submission.status)}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            "Kudos"
           )}
-        </section>
-      )}
+        </p>
+      </div>
 
-      {!joined && (
-        <section className="border-hairline bg-card rounded-xs border p-6 text-center">
-          <p className="text-ink font-medium">
-            {isOpen
-              ? "Join to submit and appear on the leaderboard"
-              : "You didn't take part in this one"}
+      <div className="border-border space-y-3 border-t pt-4">
+        {!isOpen ? (
+          <p className="text-foreground-muted text-sm">
+            {joined
+              ? "This competition has closed. Your final place is on the leaderboard."
+              : "This competition has closed. The final standings stay on display."}
           </p>
-          <p className="text-muted-foreground mt-1 text-sm">
-            {isOpen
-              ? "Joining is free — you can browse the dataset before deciding."
-              : "Closed competitions keep their final standings on display."}
+        ) : !joined ? (
+          <>
+            <Button className="w-full" disabled={join.isPending} onClick={() => join.mutate()}>
+              {join.isPending ? "Joining…" : "Join competition"}
+            </Button>
+            <p className="text-foreground-muted text-xs">
+              Free to join. You can look at the dataset first.
+            </p>
+          </>
+        ) : atDayCap ? (
+          <p className="text-foreground-muted text-sm">
+            You&apos;ve used all {perDay} submissions for today. The count resets at midnight UTC.
           </p>
-        </section>
-      )}
-    </PageLayout>
+        ) : (
+          <>
+            <label
+              className={cn(
+                "border-border-strong hover:bg-muted/60 flex cursor-pointer flex-col items-center gap-1.5 rounded-lg border border-dashed px-3 py-5 text-center text-sm transition-colors",
+                sending && "pointer-events-none opacity-60",
+              )}
+            >
+              <FileUp aria-hidden className="text-foreground-muted size-5" />
+              <span className="text-foreground font-medium">
+                {file ? file.name : "Choose a predictions CSV"}
+              </span>
+              <span className="text-foreground-muted text-xs">CSV · up to 20 MB</span>
+              <input
+                accept=".csv,text/csv"
+                className="sr-only"
+                disabled={sending}
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)}
+                ref={fileInput}
+                type="file"
+              />
+            </label>
+            <Button
+              className="w-full"
+              disabled={sending || !file}
+              onClick={() => void submitFile()}
+            >
+              {sending ? "Uploading…" : "Submit predictions"}
+            </Button>
+          </>
+        )}
+        {isOpen && joined && (
+          <div className="space-y-1.5">
+            <div className="text-foreground-muted flex justify-between text-xs">
+              <span>Used today</span>
+              <span className="font-mono">
+                {todayCount}/{perDay}
+              </span>
+            </div>
+            <ProgressBar value={Math.min(100, (todayCount / perDay) * 100)} />
+          </div>
+        )}
+        {uploadError && (
+          <p className="text-danger text-sm" role="alert">
+            {uploadError}
+          </p>
+        )}
+        {isOpen && joined && (
+          <p className="text-foreground-muted flex items-start gap-1.5 text-xs">
+            <Clock aria-hidden className="mt-0.5 size-3 shrink-0" />
+            Scores appear when the scoring run finishes. Submitted work keeps its place in the
+            queue.
+          </p>
+        )}
+      </div>
+    </div>
   );
-}
+};
