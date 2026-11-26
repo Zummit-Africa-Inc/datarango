@@ -559,16 +559,6 @@
   font-family: var(--font-mono);
 }
 
-.ember-bloom {
-  background: radial-gradient(
-    closest-side,
-    color-mix(in srgb, var(--primary) 30%, transparent),
-    color-mix(in srgb, var(--primary-soft) 40%, transparent) 60%,
-    transparent
-  );
-  filter: blur(40px);
-}
-
 .custom-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: var(--border-strong) transparent;

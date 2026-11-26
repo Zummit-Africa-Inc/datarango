@@ -36,7 +36,7 @@ export const TeamsHero = () => (
         <h1 className="font-heading text-on-band mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
           Train a team like
           <br />
-          you <span className="text-primary-400">mean it</span>
+          you mean it
         </h1>
         <p className="mt-8 max-w-md text-lg leading-relaxed text-white/70">
           One console to onboard your organization, assign real coursework, and watch measurable
@@ -151,7 +151,7 @@ export const TeamsFeatures = () => (
   <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
     <FadeIn className="mx-auto max-w-2xl text-center">
       <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Built for how <span className="text-primary-500">organizations</span> learn
+        Built for how organizations learn
       </h2>
       <p className="text-muted-foreground mt-6 text-lg">
         Everything in the learner platform, plus the control surface your L&D or faculty team needs.
@@ -246,7 +246,7 @@ export const TeamsBilling = () => (
   <section className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
     <FadeIn>
       <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Billing that <span className="text-primary-500">respects</span> your budget
+        Billing that respects your budget
       </h2>
       <div className="mt-10 space-y-8">
         {BILLING_POINTS.map((point) => (
@@ -276,7 +276,7 @@ export const TeamsCta = () => (
   <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
     <FadeIn className="bg-band rounded-xs px-8 py-20 text-center text-white lg:py-24">
       <h2 className="font-heading text-on-band mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
-        Put your whole team on the <span className="text-primary-400">same curve</span>
+        Put your whole team on the same curve
       </h2>
       <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
         Create your organization now, or talk to us about rolling Datarango out across your school

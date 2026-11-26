@@ -15,11 +15,7 @@ export default function CareersPage() {
     <main>
       <PageIntro
         eyebrow="Careers"
-        title={
-          <>
-            Build the place where people <span className="text-primary-500">learn by doing</span>
-          </>
-        }
+        title={<>Build the place where people learn by doing</>}
         lede="We're a small team shipping a big surface — learning, notebooks, competitions, payments. If that sounds like your kind of problem, we want to hear from you even before a role is posted."
       />
 

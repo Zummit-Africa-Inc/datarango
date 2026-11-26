@@ -15,11 +15,7 @@ export default function BlogPage() {
     <main>
       <PageIntro
         eyebrow="Blog"
-        title={
-          <>
-            Notes from the <span className="text-primary-500">workbench</span>
-          </>
-        }
+        title={<>Notes from the workbench</>}
         lede="Deep dives on data and AI skills, competition write-ups, and how we build Datarango itself."
       />
 

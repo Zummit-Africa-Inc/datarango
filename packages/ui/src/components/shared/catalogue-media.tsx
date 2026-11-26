@@ -22,13 +22,14 @@ export interface CatalogueMediaProps {
   children?: ReactNode;
 }
 
-const GRADIENTS: Record<AccentToken, string> = {
-  violet: "from-violet-soft to-violet-tile",
-  lime: "from-lime-soft to-lime-tile",
-  amber: "from-amber-soft to-amber-tile",
-  sky: "from-sky-soft to-sky-tile",
-  rose: "from-rose-soft to-rose-tile",
-  teal: "from-teal-soft to-teal-tile",
+/** Flat cover fill per accent (no gradients). */
+const COVER_FILL: Record<AccentToken, string> = {
+  violet: "bg-violet-soft",
+  lime: "bg-lime-soft",
+  amber: "bg-amber-soft",
+  sky: "bg-sky-soft",
+  rose: "bg-rose-soft",
+  teal: "bg-teal-soft",
 };
 
 const CORNER_SHAPES = [Blob, Circle, HalfMoon, Ring, Sparkle] as const;
@@ -117,7 +118,7 @@ export const CatalogueThumbnail = ({
 
 /**
  * 3:1 cover for the course header and builder (§6.2). The fallback is an accent
- * gradient with 2–3 shapes placed from the id, so it stays stable per course.
+ * flat accent fill with 2–3 shapes placed from the id, so it stays stable per course.
  * Pass `iconTile` to get the icon tile overlapping the bottom-left edge.
  */
 export const CatalogueCover = ({
@@ -144,8 +145,8 @@ export const CatalogueCover = ({
         role="img"
         aria-label={title}
         className={cn(
-          "relative isolate aspect-3/1 max-h-72 w-full overflow-hidden rounded-lg bg-linear-to-r",
-          GRADIENTS[tone],
+          "relative isolate aspect-3/1 max-h-72 w-full overflow-hidden rounded-lg",
+          COVER_FILL[tone],
         )}
       >
         {image.show ? (

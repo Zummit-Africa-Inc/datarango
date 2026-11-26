@@ -8,10 +8,8 @@ import { cn } from "../../lib";
 const Shimmer = ({ className, style }: { className?: string; style?: CSSProperties }) => (
   <div
     className={cn(
-      "bg-muted relative overflow-hidden rounded-xs",
-      "before:absolute before:inset-0 before:-translate-x-full",
-      "before:via-surface/70 before:bg-gradient-to-r before:from-transparent before:to-transparent",
-      "before:animate-[shimmer_1.6s_ease-in-out_infinite] motion-reduce:before:animate-none",
+      // A flat pulse rather than a sweeping gradient.
+      "bg-muted animate-pulse rounded-xs motion-reduce:animate-none",
       className,
     )}
     style={style}

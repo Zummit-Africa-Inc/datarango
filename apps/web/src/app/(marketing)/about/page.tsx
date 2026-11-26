@@ -35,11 +35,7 @@ export default function AboutPage() {
     <main>
       <PageIntro
         eyebrow="About Datarango"
-        title={
-          <>
-            Practical AI skills, <span className="text-primary-500">within reach</span>
-          </>
-        }
+        title={<>Practical AI skills, within reach</>}
         lede="Datarango exists because the gap between watching tutorials and doing real data work is where most learners give up. We close that gap with real notebooks, graded exercises, and competition that keeps you honest."
       />
       <section className="container mx-auto grid items-center gap-16 px-4 pb-24 lg:grid-cols-2 lg:px-8">

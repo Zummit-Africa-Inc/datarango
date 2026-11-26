@@ -43,7 +43,7 @@ export const GET = (request: Request, { params }: { params: Promise<{ id: string
           display: "flex",
           position: "relative",
           overflow: "hidden",
-          background: `linear-gradient(90deg, ${colours.soft}, ${colours.tile})`,
+          background: colours.soft,
         }}
       >
         <div

@@ -36,11 +36,7 @@ export default function ContactPage() {
     <main>
       <PageIntro
         eyebrow="Contact"
-        title={
-          <>
-            Talk to a <span className="text-primary-500">human</span>
-          </>
-        }
+        title={<>Talk to a human</>}
         lede="Sales, support, partnerships or press — pick a lane and we'll get back to you quickly."
       />
 

@@ -257,7 +257,7 @@ const ContinueHero = ({ enrollment }: { enrollment: Enrollment }) => {
   return (
     <section
       aria-label="Continue learning"
-      className="border-border from-primary-soft to-surface relative overflow-hidden rounded-lg border bg-linear-to-br p-5 sm:p-6"
+      className="border-border bg-primary-soft relative overflow-hidden rounded-lg border p-5 sm:p-6"
     >
       <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
         <CatalogueThumbnail

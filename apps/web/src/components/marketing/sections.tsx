@@ -98,8 +98,7 @@ export const Features = () => (
   <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
     <FadeIn className="mx-auto max-w-2xl text-center">
       <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Everything between <span className="text-primary-500">curious</span> and{" "}
-        <span className="text-primary-500">hired</span>
+        Everything between curious and hired
       </h2>
       <p className="text-muted-foreground mt-6 text-lg">
         One platform for the whole journey — structured learning, real practice, public proof.
@@ -342,9 +341,9 @@ export const Testimonials = () => (
 
 export const FinalCta = () => (
   <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
-    <FadeIn className="border-border from-primary-50 rounded-xs border bg-linear-to-br to-transparent px-8 py-20 text-center lg:py-28">
+    <FadeIn className="border-border bg-background-subtle rounded-xs border px-8 py-20 text-center lg:py-28">
       <h2 className="font-heading mx-auto max-w-3xl text-4xl tracking-tight lg:text-7xl">
-        Your first notebook is <span className="text-primary-500">one click</span> away
+        Your first notebook is one click away
       </h2>
       <p className="text-muted-foreground mx-auto mt-6 max-w-xl text-lg">
         Join free, open a course, and be running real code in minutes.
