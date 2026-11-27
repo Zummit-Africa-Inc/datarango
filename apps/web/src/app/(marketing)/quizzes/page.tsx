@@ -1,7 +1,8 @@
 import { Coins, FileQuestion, Gauge, ListChecks, RefreshCw, Target } from "lucide-react";
 import type { Metadata } from "next";
 
-import { FeaturePreview } from "@/components/marketing/feature-preview";
+import { ProductPage } from "@/components/marketing/feature-preview";
+import { PHOTOS } from "@/content/marketing";
 
 export const metadata: Metadata = {
   title: "Quizzes",
@@ -44,11 +45,39 @@ const POINTS = [
 
 export default function QuizzesPage() {
   return (
-    <FeaturePreview
+    <ProductPage
+      accent="amber"
+      appHref="/dashboard/quizzes"
       eyebrow="Quizzes"
-      title={<>Prove it in ten questions</>}
-      lede="Standalone-first quizzes across data, AI and ML — take them for tokens, meet them in courses, or face them as module gates."
+      lede="Short quizzes across data, AI and ML. Take them on their own for tokens, meet them inside courses, or face them as module gates."
+      overlay={
+        <>
+          <p className="text-foreground-muted text-xs">Question 7 of 10</p>
+          <p className="mt-1 text-sm font-semibold">
+            Which join keeps every row from the left table?
+          </p>
+          <ul className="mt-3 space-y-1.5 text-sm">
+            <li className="border-border rounded-lg border px-3 py-1.5">INNER JOIN</li>
+            <li className="border-primary bg-primary-soft rounded-lg border px-3 py-1.5">
+              LEFT JOIN
+            </li>
+          </ul>
+        </>
+      }
+      photo={PHOTOS.campus}
       points={POINTS}
+      story={{
+        eyebrow: "Quick wins",
+        title: "Ten minutes, real progress",
+        body: "A quiz is the fastest way to check what stuck. Pass one and tokens land in your wallet, ready to spend on a course.",
+        bullets: [
+          "Auto-graded the moment you submit",
+          "Tokens for passing",
+          "Fair limits, timed on the server",
+        ],
+        photo: PHOTOS.earning,
+      }}
+      title="Prove it in ten questions"
     />
   );
 }

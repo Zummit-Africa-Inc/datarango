@@ -1,7 +1,8 @@
 import { Award, ClipboardCheck, Layers, NotebookPen, PlayCircle, Route } from "lucide-react";
 import type { Metadata } from "next";
 
-import { FeaturePreview } from "@/components/marketing/feature-preview";
+import { ProductPage } from "@/components/marketing/feature-preview";
+import { PHOTOS } from "@/content/marketing";
 
 export const metadata: Metadata = {
   title: "Courses",
@@ -44,12 +45,35 @@ const POINTS = [
 
 export default function CoursesPage() {
   return (
-    <FeaturePreview
+    <ProductPage
+      accent="violet"
+      appHref="/dashboard/courses"
       eyebrow="Courses"
-      title={<>Courses that make you do the work</>}
-      lede="Structured learning for data analytics, AI and ML — authored by our team and external creators, gated by real graded exercises."
+      lede="Structured learning in data analytics, AI and ML, from our team and invited creators. Every module ends with an exercise you have to pass."
+      overlay={
+        <>
+          <p className="text-foreground-muted text-xs">Module 2 of 6</p>
+          <p className="mt-1 text-sm font-semibold">Cleaning messy data</p>
+          <div className="bg-muted mt-3 h-2 overflow-hidden rounded-full">
+            <div className="bg-primary h-full w-2/3 rounded-full" />
+          </div>
+          <p className="text-foreground-muted mt-2 text-xs">Exercise next: handle missing values</p>
+        </>
+      }
+      photo={PHOTOS.lecture}
       points={POINTS}
-      note="The course catalog opens with the platform launch. Join now and start with notebooks and standalone quizzes on day one."
+      story={{
+        eyebrow: "In practice",
+        title: "Learn it, then prove it",
+        body: "Lessons mix video, text and audio with notebook exercises. You move on by passing the graded exercise, so finishing a course means you can do the work.",
+        bullets: [
+          "Graded exercises gate every module",
+          "Certificates anyone can verify",
+          "A pinned course version, so nothing shifts under you",
+        ],
+        photo: PHOTOS.studying,
+      }}
+      title="Courses that make you do the work"
     />
   );
 }

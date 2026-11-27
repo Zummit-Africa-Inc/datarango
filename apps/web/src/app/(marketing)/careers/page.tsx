@@ -20,10 +20,10 @@ export default function CareersPage() {
       />
 
       <section className="container mx-auto px-4 pb-24 lg:px-8">
-        <FadeIn className="border-border bg-card mx-auto max-w-2xl rounded-xs border p-12 text-center">
-          <BriefcaseBusiness className="text-primary-500 mx-auto size-10" strokeWidth={1.5} />
-          <h2 className="font-heading mt-6 text-2xl">No open roles right now</h2>
-          <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">
+        <FadeIn className="border-border bg-card mx-auto max-w-2xl rounded-2xl border p-12 text-center">
+          <BriefcaseBusiness className="text-primary mx-auto size-10" strokeWidth={1.5} />
+          <h2 className="font-display mt-6 text-2xl font-semibold">No open roles right now</h2>
+          <p className="text-foreground-muted mx-auto mt-3 max-w-md leading-relaxed">
             We hire ahead of need for exceptional people. Send us your CV and a note about what
             you'd want to own — engineering, content, or growth.
           </p>

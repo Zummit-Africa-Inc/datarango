@@ -82,16 +82,16 @@ export default async function VerifyCertificatePage({
     <main className="container mx-auto px-4 py-24 lg:px-8">
       <div className="mx-auto max-w-xl">
         {certificate ? (
-          <div className="border-hairline bg-card rounded-xs border p-8 text-center">
+          <div className="border-border bg-card rounded-2xl border p-8 text-center">
             <BadgeCheck className="mx-auto size-12 text-emerald-600" strokeWidth={1.5} />
             <p className="mt-4 text-sm font-semibold tracking-widest text-emerald-700 uppercase">
               Verified certificate
             </p>
 
-            <h1 className="font-heading text-ink mt-3 text-3xl tracking-tight">
+            <h1 className="font-display text-foreground mt-3 text-3xl font-semibold tracking-tight">
               {certificate.courseTitle}
             </h1>
-            <p className="text-muted-foreground mt-3 text-sm">
+            <p className="text-foreground-muted mt-3 text-sm">
               Issued{" "}
               {new Date(certificate.issuedAt).toLocaleDateString(undefined, {
                 year: "numeric",
@@ -100,25 +100,25 @@ export default async function VerifyCertificatePage({
               })}
             </p>
 
-            <p className="border-hairline text-muted-foreground mono-data mt-6 border-t pt-6 text-sm">
+            <p className="border-border text-foreground-muted mt-6 border-t pt-6 font-mono text-sm">
               {certificate.serial}
             </p>
 
-            <p className="text-muted-foreground mt-6 text-sm leading-relaxed">
+            <p className="text-foreground-muted mt-6 text-sm leading-relaxed">
               This certificate was issued by Datarango on completion of every lesson and
               end-of-module exercise in the course.
             </p>
           </div>
         ) : (
-          <div className="border-hairline bg-card rounded-xs border p-8 text-center">
-            <ShieldAlert className="text-muted-foreground mx-auto size-12" strokeWidth={1.5} />
-            <h1 className="font-heading text-ink mt-4 text-2xl tracking-tight">
+          <div className="border-border bg-card rounded-2xl border p-8 text-center">
+            <ShieldAlert className="text-foreground-muted mx-auto size-12" strokeWidth={1.5} />
+            <h1 className="font-display text-foreground mt-4 text-2xl font-semibold tracking-tight">
               We couldn&apos;t verify that serial
             </h1>
-            <p className="text-muted-foreground mt-3 text-sm leading-relaxed">
-              No Datarango certificate matches <span className="mono-data break-all">{serial}</span>
+            <p className="text-foreground-muted mt-3 text-sm leading-relaxed">
+              No Datarango certificate matches <span className="font-mono break-all">{serial}</span>
               . Check for a typo — serials look like{" "}
-              <span className="mono-data">DR-XXXX-XXXX-XXXX</span> and never contain the letters I,
+              <span className="font-mono">DR-XXXX-XXXX-XXXX</span> and never contain the letters I,
               L, O or U.
             </p>
             <Button asChild className="mt-6" variant="outline">

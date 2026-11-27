@@ -89,6 +89,42 @@ export const PHOTOS = {
     src: img("team-table.jpg"),
     alt: "A team gathered round a table working through plans together",
   },
+  lecture: {
+    src: img("students-lecture.jpg"),
+    alt: "Students chatting at their desks in a lecture hall",
+  },
+  training: {
+    src: img("team-training.jpg"),
+    alt: "A team round a long meeting table, each with a laptop",
+  },
+  colleagues: {
+    src: img("colleagues-laptop.jpg"),
+    alt: "Two colleagues looking at a laptop together",
+  },
+  pair: {
+    src: img("pair-laptop.jpg"),
+    alt: "Two friends leaning in to look at a laptop screen",
+  },
+  monitor: {
+    src: img("analyst-monitor.jpg"),
+    alt: "A man with headphones round his neck working at a monitor",
+  },
+  campus: {
+    src: img("student-campus.jpg"),
+    alt: "A smiling student with a backpack and notes outside a campus building",
+  },
+  laptop: {
+    src: img("learner-laptop.jpg"),
+    alt: "A woman with long braids working on a laptop by a window",
+  },
+  professional: {
+    src: img("professional-laptop.jpg"),
+    alt: "A woman smiling behind her laptop, surrounded by plants",
+  },
+  graduate: {
+    src: img("graduate.jpg"),
+    alt: "A graduate in cap and gown smiling over her shoulder",
+  },
 } satisfies Record<string, Photo>;
 
 export const INSTRUCTORS: Instructor[] = [];

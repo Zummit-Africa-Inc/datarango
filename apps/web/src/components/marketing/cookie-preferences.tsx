@@ -66,7 +66,7 @@ export const CookiePreferences = () => {
             <div className="flex items-center justify-between" key={option.id}>
               <div className="max-w-2/3">
                 <h4>{option.label}</h4>
-                <p className="text-muted-foreground text-xs">{option.description}</p>
+                <p className="text-foreground-muted text-xs">{option.description}</p>
               </div>
               <Switch
                 checked={preferences[option.id]}

@@ -1,7 +1,8 @@
 import { Database, FolderGit2, Gauge, HardDriveDownload, Share2, ShieldCheck } from "lucide-react";
 import type { Metadata } from "next";
 
-import { FeaturePreview } from "@/components/marketing/feature-preview";
+import { ProductPage } from "@/components/marketing/feature-preview";
+import { PHOTOS } from "@/content/marketing";
 
 export const metadata: Metadata = {
   title: "Datasets",
@@ -44,11 +45,35 @@ const POINTS = [
 
 export default function DatasetsPage() {
   return (
-    <FeaturePreview
+    <ProductPage
+      accent="sky"
+      appHref="/dashboard/datasets"
       eyebrow="Datasets"
-      title={<>Data that's ready to use</>}
-      lede="Versioned, hosted datasets that mount straight into your notebooks — the boring part of data work, deleted."
+      lede="Versioned, hosted datasets that mount straight into your notebooks. The setup part of data work, gone."
+      overlay={
+        <>
+          <p className="text-sm font-semibold">lagos-house-prices</p>
+          <p className="text-foreground-muted mt-1 font-mono text-xs">v3 · 48,210 rows · CSV</p>
+          <p className="bg-muted mt-3 truncate rounded-lg px-2.5 py-1.5 font-mono text-xs">
+            /data/lagos-house-prices/v3
+          </p>
+          <p className="text-foreground-muted mt-2 text-xs">Mounted read-only in your notebook</p>
+        </>
+      }
+      photo={PHOTOS.monitor}
       points={POINTS}
+      story={{
+        eyebrow: "No downloads",
+        title: "Open a notebook, the data is there",
+        body: "Datasets mount read-only into your session at a pinned version, so your results are reproducible and nobody's laptop fills up.",
+        bullets: [
+          "Pinned versions you can cite",
+          "Mounted, not downloaded",
+          "The same data competitions score against",
+        ],
+        photo: PHOTOS.coding,
+      }}
+      title="Data that's ready to use"
     />
   );
 }

@@ -3,30 +3,31 @@ import type { Metadata } from "next";
 
 import { Button, Stagger, StaggerItem } from "@datarango/ui";
 
-import { PageIntro } from "@/components/marketing/page-intro";
+import { PageHero } from "@/components/marketing/page-hero";
+import { PHOTOS } from "@/content/marketing";
 
 export const metadata: Metadata = {
   title: "Contact",
-  description: "Talk to the Datarango team — sales, demos, support, or anything else.",
+  description: "Talk to the Datarango team: sales, demos, support, or anything else.",
 };
 
 const CHANNELS = [
   {
     icon: Building2,
-    title: "Teams & schools",
+    title: "Teams and schools",
     body: "Rolling Datarango out across an organization? Book a demo and we'll walk you through the console, billing and onboarding.",
     action: { label: "Book a demo", href: "mailto:sales@datarango.com?subject=Demo%20request" },
   },
   {
     icon: LifeBuoy,
     title: "Support",
-    body: "Stuck on anything — an account, a course, a notebook session? We aim to respond within one business day.",
+    body: "Stuck on anything: an account, a course, a notebook session? We aim to respond within one business day.",
     action: { label: "support@datarango.com", href: "mailto:support@datarango.com" },
   },
   {
     icon: Mail,
     title: "Everything else",
-    body: "Partnerships, press, teaching on Datarango, or just saying hello — we read everything.",
+    body: "Partnerships, press, teaching on Datarango, or just saying hello. We read everything.",
     action: { label: "hello@datarango.com", href: "mailto:hello@datarango.com" },
   },
 ];
@@ -34,23 +35,29 @@ const CHANNELS = [
 export default function ContactPage() {
   return (
     <main>
-      <PageIntro
+      <PageHero
+        accent="sky"
         eyebrow="Contact"
-        title={<>Talk to a human</>}
-        lede="Sales, support, partnerships or press — pick a lane and we'll get back to you quickly."
+        lede="Sales, support, partnerships or press: pick a lane below and a real person gets back to you, usually within one business day."
+        photo={PHOTOS.laptop}
+        title="Talk to a human"
       />
 
       <section className="container mx-auto px-4 pb-24 lg:px-8">
-        <Stagger className="grid gap-6 lg:grid-cols-3">
+        <Stagger className="grid gap-4 lg:grid-cols-3">
           {CHANNELS.map((channel) => (
             <StaggerItem
-              className="border-border bg-card flex flex-col rounded-xs border p-8"
+              className="border-border bg-card flex flex-col rounded-2xl border p-7"
               key={channel.title}
             >
-              <channel.icon className="text-primary-500 size-8" strokeWidth={1.5} />
-              <h2 className="font-heading mt-5 text-xl">{channel.title}</h2>
-              <p className="text-muted-foreground mt-3 flex-1 leading-relaxed">{channel.body}</p>
-              <Button asChild className="mt-6 w-full" variant="outline">
+              <span className="bg-sky-tile text-sky-tile-foreground grid size-11 place-items-center rounded-xl">
+                <channel.icon className="size-5" strokeWidth={1.75} />
+              </span>
+              <h2 className="font-display text-foreground mt-5 text-xl font-semibold">
+                {channel.title}
+              </h2>
+              <p className="text-foreground-muted mt-3 flex-1 leading-relaxed">{channel.body}</p>
+              <Button asChild className="mt-6 w-full" shape="pill" variant="secondary">
                 <a href={channel.action.href}>{channel.action.label}</a>
               </Button>
             </StaggerItem>
