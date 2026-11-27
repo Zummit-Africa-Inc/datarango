@@ -1,21 +1,22 @@
 import type { AccentToken } from "@datarango/ui";
 
 /**
- * Marketing content that has to be real: photos of actual learners and
- * instructors, and quotes people actually gave (with their consent).
+ * Marketing imagery and social proof.
  *
- * Every list starts empty. The home page shows accent tiles in place of hero
- * photos and leaves the Instructors and Testimonials sections out until there
- * is something true to put in them — nothing here is ever invented.
- *
- * Images go in `apps/web/public/assets/marketing/` and are referenced by their
- * public path (e.g. "/assets/marketing/ada.jpg").
+ * Photos are free Unsplash stock (credits in
+ * `apps/web/public/assets/marketing/CREDITS.md`) until we have photos of real
+ * Datarango learners — swap them here. Instructors and testimonials must be
+ * real people who agreed to appear; those lists stay empty (and their
+ * sections hidden) until then. Nothing here is ever invented.
  */
 
-export interface HeroPhoto {
+export interface Photo {
   src: string;
-  /** Describe the person and what they're doing, for screen readers. */
+  /** What the photo shows, for screen readers. */
   alt: string;
+}
+
+export interface HeroPhoto extends Photo {
   accent: AccentToken;
 }
 
@@ -35,8 +36,60 @@ export interface Testimonial {
   photo?: string;
 }
 
-/** Up to five; the hero fills any empty places with feature tiles. */
-export const HERO_PHOTOS: HeroPhoto[] = [];
+const img = (file: string) => `/assets/marketing/${file}`;
+
+/** The hero's five staggered cards, left to right. */
+export const HERO_PHOTOS: HeroPhoto[] = [
+  {
+    src: img("student-campus.jpg"),
+    alt: "A smiling student with a backpack and notes outside a campus building",
+    accent: "amber",
+  },
+  {
+    src: img("learner-laptop.jpg"),
+    alt: "A woman with long braids working on a laptop by a window",
+    accent: "violet",
+  },
+  {
+    src: img("analyst-tablet.jpg"),
+    alt: "A woman with a tablet in a corridor beside a server room",
+    accent: "sky",
+  },
+  {
+    src: img("professional-laptop.jpg"),
+    alt: "A woman smiling behind her laptop, surrounded by plants",
+    accent: "lime",
+  },
+  {
+    src: img("graduate.jpg"),
+    alt: "A graduate in cap and gown smiling over her shoulder",
+    accent: "rose",
+  },
+];
+
+/** Photos for the value-proposition rows and the teams section. */
+export const PHOTOS = {
+  coding: {
+    src: img("developer-coding.jpg"),
+    alt: "A developer in headphones writing code at a desk",
+  },
+  studying: {
+    src: img("learner-notes.jpg"),
+    alt: "A woman reviewing her notes at a desk with a laptop",
+  },
+  analyst: {
+    src: img("analyst-tablet.jpg"),
+    alt: "A woman with a tablet in a corridor beside a server room",
+  },
+  earning: {
+    src: img("learner-smiling.jpg"),
+    alt: "A woman smiling at her desk with a laptop and open notebook",
+  },
+  team: {
+    src: img("team-table.jpg"),
+    alt: "A team gathered round a table working through plans together",
+  },
+} satisfies Record<string, Photo>;
 
 export const INSTRUCTORS: Instructor[] = [];
 

@@ -1,13 +1,12 @@
 import { Hero } from "@/components/marketing/hero";
 import { PricingPlans } from "@/components/marketing/pricing";
 import {
-  CourseShowcase,
   FinalCta,
   Instructors,
-  PracticeBand,
+  Propositions,
+  ProofStrip,
   Teams,
   Testimonials,
-  WhyTiles,
 } from "@/components/marketing/sections";
 import { getPublicCatalog } from "@/lib/public-catalog";
 
@@ -17,19 +16,18 @@ import { getPublicCatalog } from "@/lib/public-catalog";
 export const dynamic = "force-dynamic";
 
 /**
- * Home (§7.1). Course cards and the course count come from the public
- * catalogue; instructors and testimonials from `content/marketing.ts`. A
- * section with nothing real to show is left out.
+ * Home (§7.1): people and value propositions first. The course count in the
+ * hero comes from the public catalogue; photos, instructors and testimonials
+ * from `content/marketing.ts`. A section with nothing real to show is left out.
  */
 export default async function Home() {
-  const catalog = await getPublicCatalog(8);
+  const catalog = await getPublicCatalog(1);
 
   return (
     <main>
       <Hero courseCount={catalog?.total || null} />
-      <WhyTiles />
-      {catalog && <CourseShowcase courses={catalog.courses} total={catalog.total} />}
-      <PracticeBand />
+      <ProofStrip />
+      <Propositions />
       <Instructors />
       <Testimonials />
       <Teams />

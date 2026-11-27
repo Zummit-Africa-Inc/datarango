@@ -1,6 +1,5 @@
 "use client";
 
-import { Award, BookOpen, Database, NotebookPen, Trophy, type LucideIcon } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -16,28 +15,17 @@ import {
   Stagger,
   StaggerItem,
   cn,
-  type AccentToken,
 } from "@datarango/ui";
 
 import { HERO_PHOTOS } from "@/content/marketing";
-
-/** What the hero shows in a place with no learner photo yet. */
-const FEATURE_TILES: { icon: LucideIcon; label: string; accent: AccentToken }[] = [
-  { icon: BookOpen, label: "Courses", accent: "amber" },
-  { icon: NotebookPen, label: "Notebooks", accent: "violet" },
-  { icon: Trophy, label: "Competitions", accent: "rose" },
-  { icon: Database, label: "Datasets", accent: "sky" },
-  { icon: Award, label: "Certificates", accent: "lime" },
-];
 
 // Staggered heights for the card row: middle card highest.
 const OFFSETS = ["lg:mt-12", "lg:mt-4", "lg:mt-0", "lg:mt-4", "lg:mt-12"];
 
 /**
  * Landing hero (§7.1): centred proof pill, one-colour two-line headline,
- * subhead, pill CTA, then a staggered row of five rounded cards. Cards are
- * learner photos from `HERO_PHOTOS` when there are any, feature tiles
- * otherwise.
+ * subhead, pill CTA, then a staggered row of five photo cards framed in
+ * accent colours (`HERO_PHOTOS`).
  */
 export const Hero = ({ courseCount }: { courseCount: number | null }) => (
   <section className="relative overflow-hidden">
@@ -81,51 +69,44 @@ export const Hero = ({ courseCount }: { courseCount: number | null }) => (
       </FadeIn>
 
       <Stagger className="mx-auto mt-16 grid max-w-6xl grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
-        {FEATURE_TILES.map((tile, index) => {
-          const photo = HERO_PHOTOS[index];
-          const accent = photo?.accent ?? tile.accent;
-          return (
-            <StaggerItem
+        {HERO_PHOTOS.slice(0, 5).map((photo, index) => (
+          <StaggerItem
+            className={cn(
+              "relative",
+              OFFSETS[index],
+              index === 3 && "sm:hidden lg:block",
+              index === 4 && "hidden lg:block",
+            )}
+            key={photo.src}
+          >
+            {index % 2 === 0 ? (
+              <Circle accent={photo.accent} className="absolute -top-5 -left-5 -z-10" size={90} />
+            ) : (
+              <HalfMoon
+                accent={photo.accent}
+                className="absolute -right-5 -bottom-5 -z-10"
+                size={90}
+              />
+            )}
+            <div
               className={cn(
-                "relative aspect-3/4 overflow-hidden rounded-2xl",
-                ACCENT_CLASSES[accent].soft,
-                OFFSETS[index],
-                index === 4 && "hidden lg:block",
-                index === 3 && "sm:hidden lg:block",
+                "relative aspect-3/4 overflow-hidden rounded-3xl p-2",
+                ACCENT_CLASSES[photo.accent].soft,
               )}
-              key={tile.label}
             >
-              {photo ? (
+              <div className="relative h-full overflow-hidden rounded-2xl">
                 <Image
                   alt={photo.alt}
                   className="object-cover"
                   fill
+                  priority={index < 3}
                   sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
                   src={photo.src}
                 />
-              ) : (
-                <div aria-hidden className="flex h-full flex-col items-center justify-center gap-3">
-                  {index % 2 === 0 ? (
-                    <HalfMoon accent={accent} className="absolute -right-6 -bottom-6" size={110} />
-                  ) : (
-                    <Circle accent={accent} className="absolute -top-8 -left-8" size={100} />
-                  )}
-                  <span
-                    className={cn(
-                      "relative grid size-16 place-items-center rounded-2xl",
-                      ACCENT_CLASSES[accent].tile,
-                    )}
-                  >
-                    <tile.icon className="size-8" strokeWidth={1.75} />
-                  </span>
-                  <span className="font-display relative text-base font-semibold">
-                    {tile.label}
-                  </span>
-                </div>
-              )}
-            </StaggerItem>
-          );
-        })}
+              </div>
+            </div>
+          </StaggerItem>
+        ))}
       </Stagger>
     </div>
   </section>
