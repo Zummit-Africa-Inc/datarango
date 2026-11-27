@@ -390,7 +390,12 @@ const Leaderboard = () => {
     <section className="border-border bg-card rounded-lg border p-4">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="font-display text-foreground font-semibold">Leaderboard</h2>
-        <span className="text-foreground-subtle text-xs">by XP</span>
+        <Link
+          href="/dashboard/leaderboard"
+          className="text-primary text-xs font-medium hover:underline"
+        >
+          See all
+        </Link>
       </div>
       {players.length === 0 ? (
         <p className="text-foreground-muted py-4 text-center text-sm">No rankings yet.</p>

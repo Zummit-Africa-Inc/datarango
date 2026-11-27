@@ -29,7 +29,6 @@ import { Notice, formatDate } from "@/components/people-ui";
 import {
   useInviteStaff,
   useResendInvite,
-  useResetStaffMfa,
   useSetStaffActive,
   useSetStaffRoles,
   useStaffAccounts,
@@ -47,26 +46,27 @@ const STATUS: Record<StaffStatus, { label: string; tone: "success" | "warning" |
 
 /** Staff accounts: separate from users, invited by email, each holding custom roles. */
 export default function StaffPage() {
-  const canManage = useStaffPermission("staff.manage");
+  const canView = useStaffPermission("staff:accounts:view");
+  const canManage = useStaffPermission("staff:accounts:manage");
 
   return (
     <PageLayout
       title="Staff"
       subtitle="People who can sign in to Datarango Admin. Keep this list short."
     >
-      {canManage ? (
-        <StaffList />
+      {canView || canManage ? (
+        <StaffList canManage={canManage} />
       ) : (
         <Notice
-          title="You can't manage staff"
-          body="Inviting and changing staff accounts needs the staff.manage permission."
+          title="You can't see staff"
+          body="Seeing staff accounts needs the staff:accounts:view permission."
         />
       )}
     </PageLayout>
   );
 }
 
-const StaffList = () => {
+const StaffList = ({ canManage }: { canManage: boolean }) => {
   const me = useUser();
   const { data, isLoading } = useStaffAccounts();
   const [inviting, setInviting] = useState(false);
@@ -74,16 +74,17 @@ const StaffList = () => {
   const [link, setLink] = useState<StaffInvite | null>(null);
 
   const resend = useResendInvite();
-  const resetMfa = useResetStaffMfa();
   const setActive = useSetStaffActive();
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" onClick={() => setInviting(true)}>
-          Invite staff
-        </Button>
-      </div>
+      {canManage && (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={() => setInviting(true)}>
+            Invite staff
+          </Button>
+        </div>
+      )}
 
       {isLoading ? (
         <Skeleton skeleton="table" rows={3} columns={4} />
@@ -129,14 +130,11 @@ const StaffList = () => {
                 </div>
                 <div className="flex flex-wrap gap-1">
                   <Badge tone={STATUS[account.status].tone}>{STATUS[account.status].label}</Badge>
-                  {account.status === "active" && !account.mfaEnabled && (
-                    <Badge tone="warning">2FA pending</Badge>
-                  )}
                 </div>
                 <span className="text-muted-foreground text-xs whitespace-nowrap">
                   {formatDate(account.lastSignInAt)}
                 </span>
-                {isSelf ? (
+                {isSelf || !canManage ? (
                   <span />
                 ) : (
                   <DropdownMenu>
@@ -156,13 +154,6 @@ const StaffList = () => {
                           }
                         >
                           Resend invite
-                        </DropdownMenuItem>
-                      )}
-                      {account.mfaEnabled && (
-                        <DropdownMenuItem
-                          onSelect={() => resetMfa.mutate({ accountId: account.id })}
-                        >
-                          Reset two-factor
                         </DropdownMenuItem>
                       )}
                       <DropdownMenuSeparator />
@@ -261,8 +252,9 @@ const InviteDialog = ({
         <DialogHeader>
           <DialogTitle>Invite staff</DialogTitle>
           <DialogDescription>
-            They get an email with a link to set a password, and set up two-factor at their first
-            sign-in. The link lasts 7 days.
+            They get an email with the admin sign-in link. They sign in with their Trustaige account
+            for this email; there is no password to set. Their first sign-in ties this account to
+            that Trustaige identity.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
@@ -338,8 +330,8 @@ const InviteLinkDialog = ({ invite, onClose }: { invite: StaffInvite; onClose: (
       <DialogHeader>
         <DialogTitle>Invite sent to {invite.account.email}</DialogTitle>
         <DialogDescription>
-          If the email doesn&apos;t arrive, send them this link yourself. It works once, for 7 days.
-          Anyone with it can set this account&apos;s password, so only send it to them.
+          If the email doesn&apos;t arrive, send them this link yourself. It is just the admin
+          sign-in page: only the Trustaige account for {invite.account.email} gets in.
         </DialogDescription>
       </DialogHeader>
       <p className="border-border bg-background-subtle rounded-lg border p-3 font-mono text-xs break-all select-all">

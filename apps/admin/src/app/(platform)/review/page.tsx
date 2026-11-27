@@ -16,7 +16,7 @@ export default function ReviewQueuePage() {
 
   // Checked before rendering rather than letting the call 403. Learning
   // re-checks courses.review on every decision.
-  const canReview = useStaffPermission("courses.review");
+  const canReview = useStaffPermission("creator:courses:approve");
 
   const { data, isLoading } = useReviewQueue({ page, pageSize: PAGE_SIZE });
   const items = data ?? [];

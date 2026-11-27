@@ -52,7 +52,7 @@ export const useOrgRole = (): OrgRole | null =>
  * Whether the signed-in staff account holds `permission`. Always false for a
  * user session. UX gating only — accounts and the services re-check every call.
  *
- * @example const canReview = useStaffPermission("courses.review");
+ * @example const canReview = useStaffPermission("creator:courses:approve");
  */
 export const useStaffPermission = (permission: StaffPermission): boolean =>
   useSessionStore(

@@ -23,11 +23,11 @@ import {
 
 import { Notice } from "@/components/people-ui";
 import {
-  PERMISSION_INFO,
-  permissionLabel,
+  moduleTitle,
   useCreateRole,
   useDeleteRole,
   usePermissionCatalog,
+  usePermissionLabel,
   useStaffRoles,
   useUpdateRole,
   type StaffRole,
@@ -35,36 +35,40 @@ import {
 
 /** Custom staff roles, each a set of permissions from the catalog. */
 export default function RolesPage() {
-  const canManage = useStaffPermission("roles.manage");
+  const canView = useStaffPermission("staff:roles:view");
+  const canManage = useStaffPermission("staff:roles:manage");
 
   return (
     <PageLayout
       title="Staff roles"
       subtitle="What each role lets a staff account do. A person's access is every permission across their roles."
     >
-      {canManage ? (
-        <Roles />
+      {canView || canManage ? (
+        <Roles canManage={canManage} />
       ) : (
         <Notice
-          title="You can't manage staff roles"
-          body="Creating and editing roles needs the roles.manage permission."
+          title="You can't see staff roles"
+          body="Seeing roles needs the staff:roles:view permission."
         />
       )}
     </PageLayout>
   );
 }
 
-const Roles = () => {
+const Roles = ({ canManage }: { canManage: boolean }) => {
   const { data, isLoading } = useStaffRoles();
+  const permissionLabel = usePermissionLabel();
   const [editing, setEditing] = useState<StaffRole | "new" | null>(null);
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-end">
-        <Button size="sm" onClick={() => setEditing("new")}>
-          New role
-        </Button>
-      </div>
+      {canManage && (
+        <div className="flex justify-end">
+          <Button size="sm" onClick={() => setEditing("new")}>
+            New role
+          </Button>
+        </div>
+      )}
 
       {isLoading ? (
         <Skeleton skeleton="table" rows={3} columns={3} />
@@ -88,7 +92,7 @@ const Roles = () => {
                     <p className="text-muted-foreground mt-0.5 text-sm">{role.description}</p>
                   )}
                 </div>
-                {!role.isSystem && (
+                {canManage && !role.isSystem && (
                   <Button size="sm" variant="ghost" onClick={() => setEditing(role)}>
                     Edit
                   </Button>
@@ -138,12 +142,10 @@ const RoleDialog = ({ role, onClose }: { role: StaffRole | null; onClose: () => 
   const [permissions, setPermissions] = useState<string[]>(role?.permissions ?? []);
 
   const held = useMemo(() => new Set<string>(me?.staffPermissions ?? []), [me]);
+  // Catalog order, grouped by module (the key's first segment).
   const groups = useMemo(() => {
-    const out = new Map<string, string[]>();
-    for (const p of catalog ?? []) {
-      const group = PERMISSION_INFO[p as keyof typeof PERMISSION_INFO]?.group ?? "Other";
-      out.set(group, [...(out.get(group) ?? []), p]);
-    }
+    const out = new Map<string, NonNullable<typeof catalog>>();
+    for (const p of catalog ?? []) out.set(p.module, [...(out.get(p.module) ?? []), p]);
     return [...out.entries()];
   }, [catalog]);
 
@@ -177,29 +179,29 @@ const RoleDialog = ({ role, onClose }: { role: StaffRole | null; onClose: () => 
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
-          {groups.map(([group, items]) => (
-            <fieldset key={group} className="space-y-2">
+          {groups.map(([module, items]) => (
+            <fieldset key={module} className="space-y-2">
               <legend className="text-muted-foreground text-xs font-medium uppercase">
-                {group}
+                {moduleTitle(module)}
               </legend>
-              {items.map((p) => {
-                const id = `perm-${p}`;
-                const allowed = held.has(p);
+              {items.map(({ key, label }) => {
+                const id = `perm-${key}`;
+                const allowed = held.has(key);
                 return (
-                  <div key={p} className="flex items-center gap-2">
+                  <div key={key} className="flex items-center gap-2">
                     <Checkbox
                       id={id}
                       disabled={!allowed}
-                      checked={permissions.includes(p)}
+                      checked={permissions.includes(key)}
                       onCheckedChange={(v) =>
                         setPermissions((cur) =>
-                          v === true ? [...cur, p] : cur.filter((x) => x !== p),
+                          v === true ? [...cur, key] : cur.filter((x) => x !== key),
                         )
                       }
                     />
                     <Label htmlFor={id} className="font-normal">
-                      {permissionLabel(p)}
-                      <span className="text-muted-foreground ml-1.5 font-mono text-xs">{p}</span>
+                      {label}
+                      <span className="text-muted-foreground ml-1.5 font-mono text-xs">{key}</span>
                     </Label>
                   </div>
                 );

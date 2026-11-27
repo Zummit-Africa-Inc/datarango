@@ -4,16 +4,14 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { Award, BadgeCheck, Flame, Lock, Sparkles } from "lucide-react";
 
-import { Badge, Button, PageLayout, Skeleton, Statistics } from "@datarango/ui";
+import { Button, PageLayout, Skeleton, Statistics } from "@datarango/ui";
 
 import { useMyCertificates } from "@/hooks/learning";
 import {
   badgeProgress,
   useBadges,
-  useLeaderboard,
   useStanding,
   type EarnableBadge,
-  type RankedPlayer,
   type Standing,
 } from "@/hooks/economy";
 
@@ -35,7 +33,6 @@ import {
 export default function AchievementsPage() {
   const { data: standing, isLoading: loadingStanding } = useStanding();
   const { data: badgeData, isLoading: loadingBadges } = useBadges();
-  const { data: board } = useLeaderboard(10);
   const { data: certificates } = useMyCertificates();
 
   const badges = badgeData?.badges ?? [];
@@ -106,17 +103,6 @@ export default function AchievementsPage() {
               </div>
             )}
           </section>
-
-          {board && board.players.length > 1 && (
-            <section>
-              <h2 className="font-heading text-ink mb-3 text-lg">Leaderboard</h2>
-              <ul className="border-hairline bg-card rounded-xs border">
-                {board.players.map((player) => (
-                  <LeaderboardRow key={player.userId} player={player} />
-                ))}
-              </ul>
-            </section>
-          )}
 
           <section>
             <h2 className="font-heading text-ink mb-3 text-lg">Certificates</h2>
@@ -234,27 +220,3 @@ const BadgeCard = ({
     </div>
   );
 };
-
-const LeaderboardRow = ({ player }: { player: RankedPlayer }) => (
-  <li
-    className={`border-hairline flex flex-wrap items-center gap-3 border-b px-4 py-3 text-sm last:border-b-0 ${
-      player.isYou ? "bg-muted/40" : ""
-    }`}
-  >
-    <span className="text-muted-foreground mono-data w-6 shrink-0 text-right text-xs">
-      {player.rank}
-    </span>
-    <span className="text-ink min-w-0 flex-1 truncate font-medium">{player.displayName}</span>
-    {player.isYou && <Badge variant="outline">You</Badge>}
-    {player.currentStreak > 0 && (
-      <span className="text-muted-foreground flex shrink-0 items-center gap-1 text-xs">
-        <Flame className="size-3.5" />
-        {player.currentStreak}
-      </span>
-    )}
-    <span className="text-muted-foreground shrink-0 text-xs">Lv {player.level}</span>
-    <span className="text-ink mono-data w-20 shrink-0 text-right font-medium">
-      {player.xp.toLocaleString()}
-    </span>
-  </li>
-);

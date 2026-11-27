@@ -13,7 +13,7 @@ const PAGE_SIZE = 25;
 
 /** Everybody with a Datarango user account. Staff accounts are separate and live on the Staff page. */
 export default function UsersPage() {
-  const canRead = useStaffPermission("users.view");
+  const canRead = useStaffPermission("users:accounts:view");
 
   return (
     <PageLayout title="Users" subtitle="Everyone with a Datarango account.">

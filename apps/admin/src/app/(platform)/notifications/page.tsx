@@ -28,8 +28,8 @@ const CHANNELS: { value: NotificationChannel | undefined; label: string }[] = [
  * nothing is deleted.
  */
 export default function DeadLettersPage() {
-  const canRead = useStaffPermission("notifications.view");
-  const canRequeue = useStaffPermission("notifications.manage");
+  const canRead = useStaffPermission("notifications:deliveries:view");
+  const canRequeue = useStaffPermission("notifications:deliveries:retry");
 
   const [channel, setChannel] = useState<NotificationChannel | undefined>();
   const [page, setPage] = useState(1);
