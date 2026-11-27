@@ -1,37 +1,22 @@
 "use client";
 
-import { ShieldCheck } from "lucide-react";
 import { Suspense } from "react";
 
-import { AuthSplitLayout, Badge, Loader, SignInForm } from "@datarango/ui";
+import { AuthSplitLayout, Loader } from "@datarango/ui";
+
+import { StaffSignIn } from "@/components/staff-sign-in";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 const WEB_URL = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:4000";
 
 /**
- * Platform staff sign-in: no sign-up, no social logins, no org SSO. Access
- * still depends on a platform role checked by the server; this page only
- * keeps the public routes off the staff entrance.
+ * Staff sign-in. Staff accounts are separate from user accounts and always
+ * use two-factor; accounts sends the admin client's authorize here.
  */
 const Page = () => (
   <AuthSplitLayout audience="admin" homeHref={WEB_URL}>
     <Suspense fallback={<Loader />}>
-      <SignInForm
-        apiUrl={API_URL}
-        fallbackReturnTo="/overview"
-        forgotPasswordHref={`${WEB_URL}/forgot-password`}
-        heading={{
-          badge: (
-            <Badge appearance="outline" tone="neutral">
-              <ShieldCheck className="size-3.5" /> Staff only
-            </Badge>
-          ),
-          title: "Admin sign-in",
-          subtitle:
-            "For Datarango platform staff. Turn on two-factor authentication for your account.",
-        }}
-        sso={false}
-      />
+      <StaffSignIn apiUrl={API_URL} />
     </Suspense>
   </AuthSplitLayout>
 );

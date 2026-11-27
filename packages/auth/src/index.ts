@@ -7,10 +7,10 @@
 export type {
   Membership,
   OrgRole,
-  PlatformRole,
   SessionPayload,
   SessionStatus,
   SessionUser,
+  StaffPermission,
 } from "./types";
 export {
   ORG_PERMISSIONS,
@@ -25,11 +25,11 @@ export {
   useActiveOrg,
   useAuthStatus,
   useIsAuthenticated,
-  useIsPlatformStaff,
+  useIsStaff,
   useMemberships,
   useOrgRole,
   usePermission,
-  usePlatformRole,
+  useStaffPermission,
   useUser,
 } from "./hooks";
 export { AuthGuard, OrgRoleGuard, PermissionGuard, useRequireAuth } from "./guards";

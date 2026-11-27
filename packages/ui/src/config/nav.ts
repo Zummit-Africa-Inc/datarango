@@ -8,6 +8,7 @@ import {
   CreditCard,
   FileQuestion,
   Flag,
+  KeyRound,
   GraduationCap,
   Images,
   LayoutDashboard,
@@ -21,6 +22,7 @@ import {
   ShieldCheck,
   Sparkles,
   Trophy,
+  UserCog,
   Users,
   Wallet,
   type LucideIcon,
@@ -31,7 +33,10 @@ export interface NavItem {
   /** Parents navigate nowhere themselves; their `href` only scopes active-state matching. */
   href: string;
   icon?: LucideIcon;
-  /** Org permission (see `@datarango/auth` `ORG_PERMISSIONS`) required to see the item. */
+  /**
+   * Permission required to see the item: an org permission (see `@datarango/auth`
+   * `ORG_PERMISSIONS`), or in the admin app a staff permission.
+   */
   permission?: string;
   disabled?: boolean;
   /** Extra words the command palette matches on. */
@@ -188,9 +193,15 @@ export const ADMIN_NAV: NavGroup[] = [
   {
     items: [
       { label: "Overview", href: "/overview", icon: LayoutDashboard },
-      { label: "Users", href: "/users", icon: Users },
+      { label: "Users", href: "/users", icon: Users, permission: "users.view" },
       { label: "Organisations", href: "/organizations", icon: Building2 },
-      { label: "Moderation queue", href: "/review", icon: ShieldCheck, keywords: ["review"] },
+      {
+        label: "Moderation queue",
+        href: "/review",
+        icon: ShieldCheck,
+        keywords: ["review"],
+        permission: "courses.review",
+      },
       { label: "Reward rules", href: "/rewards", icon: Coins, keywords: ["tokens", "economy"] },
       { label: "Billing operations", href: "/billing", icon: Wallet, keywords: ["payments"] },
       {
@@ -198,10 +209,29 @@ export const ADMIN_NAV: NavGroup[] = [
         href: "/system",
         icon: Shield,
         children: [
-          { label: "Notifications", href: "/notifications", icon: MailWarning },
+          {
+            label: "Notifications",
+            href: "/notifications",
+            icon: MailWarning,
+            permission: "notifications.view",
+          },
           { label: "Audit log", href: "/audit", icon: ScrollText },
           { label: "Feature flags", href: "/flags", icon: Flag },
         ],
+      },
+      {
+        label: "Staff",
+        href: "/staff",
+        icon: UserCog,
+        keywords: ["admins", "team", "invite"],
+        permission: "staff.manage",
+      },
+      {
+        label: "Staff roles",
+        href: "/roles",
+        icon: KeyRound,
+        keywords: ["permissions"],
+        permission: "roles.manage",
       },
     ],
   },

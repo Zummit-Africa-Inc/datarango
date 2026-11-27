@@ -1,17 +1,28 @@
 /**
- * Platform-level authority, held by a person rather than granted inside a org.
+ * What a staff account may do in the admin app. Staff accounts are separate
+ * from user accounts (their own table and sign-in) and hold custom roles; this
+ * is the union of those roles' permissions, from the catalog accounts serves
+ * at `/staff/permissions`. A user session's list is always empty.
  *
- * These are the values accounts actually stores and `/me` actually returns.
- * They were previously guessed from the handoff as
- * `platform_admin | platform_staff | creator | learner`, none of which exist:
- * the catalog is reviewer/admin/support, and `learner` was never a platform
- * role — every user is implicitly one, so an ordinary user's array is **empty**.
- *
- * Deliberately kept apart from org permissions so a tenant grant and a platform
+ * Deliberately kept apart from org permissions so a tenant grant and a staff
  * grant can never be confused; they arrive on separate fields all the way from
  * the RequestContext envelope.
  */
-export type PlatformRole = "platform.reviewer" | "platform.admin" | "platform.support";
+export type StaffPermission =
+  | "users.view"
+  | "users.manage"
+  | "orgs.view"
+  | "orgs.manage"
+  | "courses.review"
+  | "billing.view"
+  | "billing.manage"
+  | "rewards.manage"
+  | "notifications.view"
+  | "notifications.manage"
+  | "audit.view"
+  | "flags.manage"
+  | "staff.manage"
+  | "roles.manage";
 
 /** Built-in org roles; custom org roles arrive as arbitrary strings with server-resolved permissions. */
 export type OrgRole = "owner" | "admin" | "manager" | "instructor" | "member" | (string & {});
@@ -41,7 +52,9 @@ export interface SessionUser {
   avatarUrl?: string;
   emailVerified: boolean;
   mfaEnabled: boolean;
-  platformRoles: PlatformRole[];
+  /** A staff account signed in to the admin app, not a user. */
+  staff: boolean;
+  staffPermissions: StaffPermission[];
 }
 
 /** Session payload returned by the platform `/me` endpoint. */

@@ -6,7 +6,7 @@ import { useState } from "react";
 import { ReviewCourseDetail } from "@/components/review-course-detail";
 import { useReviewQueue, type ReviewQueueItem } from "@/hooks/review";
 import { Button, PageLayout, Skeleton } from "@datarango/ui";
-import { usePlatformRole } from "@datarango/auth";
+import { useStaffPermission } from "@datarango/auth";
 
 const PAGE_SIZE = 25;
 
@@ -14,10 +14,9 @@ export default function ReviewQueuePage() {
   const [page, setPage] = useState(1);
   const [selected, setSelected] = useState<ReviewQueueItem | null>(null);
 
-  // Checked before rendering rather than letting the call 403. Admin implies
-  // reviewer; support deliberately does not — reading operational data and
-  // deciding what the platform publishes are different powers.
-  const canReview = usePlatformRole("platform.reviewer");
+  // Checked before rendering rather than letting the call 403. Learning
+  // re-checks courses.review on every decision.
+  const canReview = useStaffPermission("courses.review");
 
   const { data, isLoading } = useReviewQueue({ page, pageSize: PAGE_SIZE });
   const items = data ?? [];
@@ -26,11 +25,10 @@ export default function ReviewQueuePage() {
     return (
       <PageLayout title="Review queue" subtitle="Courses waiting on a platform decision.">
         <div className="border-hairline bg-card rounded-xs border px-6 py-12 text-center">
-          <p className="font-heading text-ink text-lg">You don&apos;t have reviewer access</p>
+          <p className="font-heading text-ink text-lg">You can&apos;t review courses</p>
           <p className="text-muted-foreground mx-auto mt-1 max-w-md text-sm">
-            Deciding what the platform publishes needs the reviewer role specifically. Support
-            access covers reading operational data and does not include it — they&apos;re different
-            powers, not a ladder.
+            Deciding what the platform publishes needs the courses.review permission. Ask a Super
+            admin to give you a role that includes it.
           </p>
         </div>
       </PageLayout>
