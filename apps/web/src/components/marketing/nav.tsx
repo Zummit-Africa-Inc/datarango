@@ -42,8 +42,9 @@ const EXPLORE_ITEMS = [
 ];
 
 const LINKS = [
-  { href: "/for-teams", label: "For Teams" },
-  { href: "/for-creators", label: "For Creators" },
+  { href: "/competitions", label: "Competitions" },
+  { href: "/for-teams", label: "For teams" },
+  { href: "/for-creators", label: "For creators" },
   { href: "/pricing", label: "Pricing" },
 ];
 
@@ -60,25 +61,22 @@ export const MarketingNav = () => {
         </Link>
         <nav className="hidden items-center gap-x-8 lg:flex">
           <Popover open={exploreOpen} onOpenChange={setExploreOpen}>
-            <PopoverTrigger className="text-muted-foreground hover:text-foreground flex items-center gap-x-1 text-sm font-medium transition-colors outline-none">
+            <PopoverTrigger className="text-foreground-muted hover:text-foreground flex items-center gap-x-1 text-sm font-medium transition-colors outline-none">
               Explore
               <ChevronDown className="size-3.5" />
             </PopoverTrigger>
             <PopoverContent align="start" className="w-80 p-2">
               {EXPLORE_ITEMS.map((item) => (
                 <Link
-                  className="hover:bg-accent flex items-start gap-x-3 rounded-xs px-3 py-2.5 transition-colors"
+                  className="hover:bg-muted flex items-start gap-x-3 rounded-md px-3 py-2.5 transition-colors"
                   href={item.href}
                   key={item.href}
                   onClick={() => setExploreOpen(false)}
                 >
-                  <item.icon
-                    className="text-primary-500 mt-0.5 size-4 shrink-0"
-                    strokeWidth={1.5}
-                  />
+                  <item.icon className="text-primary mt-0.5 size-4 shrink-0" strokeWidth={1.5} />
                   <div>
                     <p className="text-foreground text-sm font-medium">{item.label}</p>
-                    <p className="text-muted-foreground mt-0.5 text-xs leading-relaxed">
+                    <p className="text-foreground-muted mt-0.5 text-xs leading-relaxed">
                       {item.description}
                     </p>
                   </div>
@@ -88,7 +86,7 @@ export const MarketingNav = () => {
           </Popover>
           {LINKS.map((link) => (
             <Link
-              className="text-muted-foreground link before:bg-band hover:text-foreground text-sm font-medium transition-colors"
+              className="text-foreground-muted hover:text-foreground text-sm font-medium transition-colors"
               href={link.href}
               key={link.href}
             >
@@ -98,11 +96,11 @@ export const MarketingNav = () => {
         </nav>
         <div className="hidden items-center gap-x-3 lg:flex">
           <ThemeToggle />
-          <Button asChild variant="ghost">
-            <Link href="/signin">Sign in</Link>
+          <Button asChild shape="pill" variant="ghost">
+            <Link href="/signin">Log in</Link>
           </Button>
-          <Button asChild>
-            <Link href="/signup">Join for free</Link>
+          <Button asChild shape="pill">
+            <Link href="/signup">Sign up</Link>
           </Button>
         </div>
         <div className="flex items-center gap-x-1 lg:hidden">
@@ -118,24 +116,24 @@ export const MarketingNav = () => {
       </div>
       <div className={cn("border-border/60 border-t px-4 pt-2 pb-4 lg:hidden", !open && "hidden")}>
         <nav className="flex flex-col gap-y-1">
-          <p className="text-muted-foreground px-3 pt-1 pb-0.5 text-xs font-semibold tracking-widest uppercase">
+          <p className="text-foreground-muted px-3 pt-1 pb-0.5 text-xs font-semibold tracking-widest uppercase">
             Explore
           </p>
           {EXPLORE_ITEMS.map((item) => (
             <Link
-              className="hover:bg-accent flex items-center gap-x-2.5 rounded-xs px-3 py-2 text-sm font-medium"
+              className="hover:bg-muted flex items-center gap-x-2.5 rounded-md px-3 py-2 text-sm font-medium"
               href={item.href}
               key={item.href}
               onClick={() => setOpen(false)}
             >
-              <item.icon className="text-primary-500 size-4 shrink-0" strokeWidth={1.5} />
+              <item.icon className="text-primary size-4 shrink-0" strokeWidth={1.5} />
               {item.label}
             </Link>
           ))}
           <div className="my-1 border-t" />
           {LINKS.map((link) => (
             <Link
-              className="hover:bg-accent rounded-xs px-3 py-2 text-sm font-medium"
+              className="hover:bg-muted rounded-md px-3 py-2 text-sm font-medium"
               href={link.href}
               key={link.href}
               onClick={() => setOpen(false)}
@@ -145,11 +143,11 @@ export const MarketingNav = () => {
           ))}
         </nav>
         <div className="mt-3 grid grid-cols-2 gap-2">
-          <Button asChild variant="outline">
-            <Link href="/signin">Sign in</Link>
+          <Button asChild shape="pill" variant="secondary">
+            <Link href="/signin">Log in</Link>
           </Button>
-          <Button asChild>
-            <Link href="/signup">Join for free</Link>
+          <Button asChild shape="pill">
+            <Link href="/signup">Sign up</Link>
           </Button>
         </div>
       </div>

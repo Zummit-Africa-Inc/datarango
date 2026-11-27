@@ -1,141 +1,113 @@
 "use client";
 
-import { Flame, Play, Trophy } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 
-import { Button, FadeIn, TiltCard } from "@datarango/ui";
+import {
+  ACCENT_CLASSES,
+  Button,
+  ButtonArrow,
+  Circle,
+  FadeIn,
+  HalfMoon,
+  Ring,
+  Sparkle,
+  Stagger,
+  StaggerItem,
+  cn,
+} from "@datarango/ui";
 
-const NOTEBOOK_LINES = [
-  { prompt: "In [1]:", code: "import pandas as pd" },
-  { prompt: "In [2]:", code: 'df = pd.read_csv("sales.csv")' },
-  { prompt: "In [3]:", code: 'df.groupby("region").sum()' },
-];
+import { HERO_PHOTOS } from "@/content/marketing";
 
-const LEADERBOARD = [
-  { rank: 1, name: "Adaeze O.", score: "0.9821" },
-  { rank: 2, name: "Tunde A.", score: "0.9788" },
-  { rank: 3, name: "Maryam S.", score: "0.9743" },
-];
+// Staggered heights for the card row: middle card highest.
+const OFFSETS = ["lg:mt-12", "lg:mt-4", "lg:mt-0", "lg:mt-4", "lg:mt-12"];
 
-const CHART_BARS = [38, 62, 45, 80, 58, 92, 70];
-
-/** Landing hero: oversized title + a 3D-posed product mosaic built in CSS. */
-export const Hero = () => (
+/**
+ * Landing hero (§7.1): centred proof pill, one-colour two-line headline,
+ * subhead, pill CTA, then a staggered row of five photo cards framed in
+ * accent colours (`HERO_PHOTOS`).
+ */
+export const Hero = ({ courseCount }: { courseCount: number | null }) => (
   <section className="relative overflow-hidden">
-    <div className="container mx-auto grid items-center gap-16 px-4 pt-20 pb-24 lg:grid-cols-2 lg:gap-8 lg:px-8 lg:pt-28 lg:pb-32">
+    <Circle
+      accent="amber"
+      className="absolute -top-16 -left-20 hidden opacity-70 md:block"
+      size={220}
+    />
+    <Ring accent="violet" className="absolute top-24 -right-10 hidden md:block" size={140} />
+    <div className="container mx-auto px-4 pt-14 pb-20 text-center lg:px-8 lg:pt-20 lg:pb-28">
       <FadeIn>
-        <h1 className="font-heading mt-6 text-6xl leading-[0.95] tracking-tight lg:text-9xl">
-          Play.
+        <p className="border-border bg-card text-foreground-muted mx-auto inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-sm">
+          <Sparkle accent="primary" size={14} tone="solid" />
+          {courseCount
+            ? `${courseCount.toLocaleString()} ${courseCount === 1 ? "course" : "courses"} to start today, free to join`
+            : "Free to join, no card needed"}
+        </p>
+        <h1 className="font-display text-foreground mx-auto mt-6 max-w-4xl text-5xl leading-[1.05] font-semibold tracking-tight sm:text-6xl lg:text-7xl">
+          Learn data skills
           <br />
-          Learn.
-          <br />
-          Build.
+          by doing the work.
         </h1>
-        <p className="text-muted-foreground mt-8 max-w-md text-lg leading-relaxed">
-          Master data analytics, AI and ML by doing — interactive courses, real Jupyter notebooks,
-          hosted datasets and live competitions. One account for you; one console for your whole
-          team or school.
+        <p className="text-foreground-muted mx-auto mt-6 max-w-xl text-lg leading-relaxed">
+          Courses with graded notebook exercises, hosted datasets and live competitions. One account
+          for you, one console for your team.
         </p>
-        <div className="mt-10 flex flex-wrap items-center gap-4">
-          <Button asChild className="h-12 px-8 text-base" size="lg">
-            <Link href="/signup">Start learning free</Link>
+        <div className="mt-9 flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+          <Button asChild shape="pill" size="lg">
+            <Link href="/signup">
+              Start learning free
+              <ButtonArrow />
+            </Link>
           </Button>
-          <Button asChild className="h-12 px-8 text-base" size="lg" variant="outline">
-            <Link href="/for-teams">Datarango for teams</Link>
-          </Button>
+          <Link
+            className="text-foreground text-base font-medium underline-offset-4 hover:underline"
+            href="/for-teams"
+          >
+            Datarango for teams
+          </Link>
         </div>
-        <p className="text-muted-foreground mt-6 text-sm">
-          Free tier for individuals — no credit card. Teams pay a flat rate per seat.
-        </p>
       </FadeIn>
-      <div className="relative hidden h-135 perspective-[1400px] lg:block" aria-hidden>
-        <TiltCard
-          className="bg-band absolute top-6 left-0 w-95 rounded-xs p-5 text-white shadow-2xl"
-          rotateX={6}
-          rotateY={-14}
-          float
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex gap-1.5">
-              <span className="size-2.5 rounded-full bg-red-400" />
-              <span className="size-2.5 rounded-full bg-yellow-400" />
-              <span className="size-2.5 rounded-full bg-green-400" />
-            </div>
-            <span className="text-xs text-white/50">analysis.ipynb</span>
-          </div>
-          <div className="font-code mt-4 space-y-2 text-[13px]">
-            {NOTEBOOK_LINES.map((line) => (
-              <div className="flex gap-x-3" key={line.prompt}>
-                <span className="text-primary-300 shrink-0">{line.prompt}</span>
-                <span className="text-white/90">{line.code}</span>
+
+      <Stagger className="mx-auto mt-16 grid max-w-6xl grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5 lg:gap-5">
+        {HERO_PHOTOS.slice(0, 5).map((photo, index) => (
+          <StaggerItem
+            className={cn(
+              "relative",
+              OFFSETS[index],
+              index === 3 && "sm:hidden lg:block",
+              index === 4 && "hidden lg:block",
+            )}
+            key={photo.src}
+          >
+            {index % 2 === 0 ? (
+              <Circle accent={photo.accent} className="absolute -top-5 -left-5 -z-10" size={90} />
+            ) : (
+              <HalfMoon
+                accent={photo.accent}
+                className="absolute -right-5 -bottom-5 -z-10"
+                size={90}
+              />
+            )}
+            <div
+              className={cn(
+                "relative aspect-3/4 overflow-hidden rounded-3xl p-2",
+                ACCENT_CLASSES[photo.accent].soft,
+              )}
+            >
+              <div className="relative h-full overflow-hidden rounded-2xl">
+                <Image
+                  alt={photo.alt}
+                  className="object-cover"
+                  fill
+                  priority={index < 3}
+                  sizes="(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw"
+                  src={photo.src}
+                />
               </div>
-            ))}
-          </div>
-          <div className="mt-4 flex h-24 items-end gap-1.5 rounded-xs bg-white/5 p-3">
-            {CHART_BARS.map((height, index) => (
-              <span
-                className="bg-primary-400 flex-1 rounded-xs"
-                key={index}
-                style={{ height: `${height}%` }}
-              />
-            ))}
-          </div>
-          <div className="mt-3 flex items-center gap-x-2 text-xs text-white/60">
-            <Play className="size-3.5" /> Kernel ready · Python 3
-          </div>
-        </TiltCard>
-        <TiltCard
-          className="bg-card border-border absolute top-0 right-0 w-60 rounded-xs border p-4 shadow-xl"
-          rotateX={4}
-          rotateY={10}
-        >
-          <div className="flex items-center gap-x-2">
-            <Trophy className="text-primary-500 size-4" />
-            <p className="text-sm font-semibold">House Prices — Live</p>
-          </div>
-          <ul className="mt-3 space-y-2">
-            {LEADERBOARD.map((row) => (
-              <li className="flex items-center justify-between text-sm" key={row.rank}>
-                <span className="flex items-center gap-x-2">
-                  <span className="bg-accent text-accent-foreground grid size-5 place-items-center rounded-full text-[10px] font-medium">
-                    {row.rank}
-                  </span>
-                  {row.name}
-                </span>
-                <span className="font-code text-muted-foreground text-xs">{row.score}</span>
-              </li>
-            ))}
-          </ul>
-        </TiltCard>
-        <TiltCard
-          className="bg-card border-border absolute right-10 bottom-10 w-55 rounded-xs border p-4 shadow-xl"
-          rotateX={-4}
-          rotateY={12}
-          float
-        >
-          <div className="flex items-center justify-between">
-            <span className="flex items-center gap-x-1.5 text-sm font-semibold">
-              <Flame className="text-primary-500 size-4" /> 14-day streak
-            </span>
-            <span className="bg-primary-50 rounded-full px-2 py-0.5 text-xs font-semibold dark:text-white">
-              +50 DRG
-            </span>
-          </div>
-          <div className="mt-3 grid grid-cols-7 gap-1">
-            {Array.from({ length: 14 }, (_, index) => (
-              <span
-                className={
-                  index < 12 ? "bg-primary-400 h-6 rounded-xs" : "bg-primary-100 h-6 rounded-xs"
-                }
-                key={index}
-              />
-            ))}
-          </div>
-          <p className="text-muted-foreground mt-3 text-xs">
-            Quiz passed — tokens credited to your wallet.
-          </p>
-        </TiltCard>
-      </div>
+            </div>
+          </StaggerItem>
+        ))}
+      </Stagger>
     </div>
   </section>
 );

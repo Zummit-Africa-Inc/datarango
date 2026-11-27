@@ -75,3 +75,15 @@ participant count per card. Still missing from §7.7 and §8:
 - **Sort by participants**: counts are computed for the page being shown, so
   ordering by them needs a stored count (or a count over every visible
   competition) on the server.
+
+## Marketing home (§7.1)
+
+- **Social-proof pill (avatars, star rating, learner count)**: there are no
+  ratings, and no public learner count. The pill shows the live published
+  course count instead.
+- **Learner photos**: free Unsplash stock for now (credited), swappable in
+  `apps/web/src/content/marketing.ts`.
+- **Instructor portraits, testimonials**: real, consented people only; the
+  lists stay empty and the sections hidden until then.
+- **Category explorer**: left off the home page by choice (value propositions
+  over catalogue); also blocked on a course category field.
