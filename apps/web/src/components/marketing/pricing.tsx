@@ -24,12 +24,12 @@ const PLANS = [
     price: "Free",
     period: "to start, no card",
     description:
-      "Stay on the free tier as long as you like. When you want the premium catalogue, pick whichever route suits you — subscribe, buy a single course, or spend tokens you earned.",
+      "Stay on the free tier as long as you like. When you want the premium catalogue, pick whichever route suits you: subscribe, buy a single course, or spend tokens you earned.",
     features: [
       "Free tier: free-marked courses, standard quizzes, public competitions",
       "Jupyter notebooks in the browser, with a monthly hour allowance",
       "Subscribe for unlimited access to every premium course",
-      "Or buy a single course outright — no subscription needed",
+      "Or buy a single course outright, no subscription needed",
       "Or redeem tokens earned from quizzes, streaks and competitions",
       "Verifiable certificates on completion",
     ],
@@ -38,16 +38,16 @@ const PLANS = [
   },
   {
     icon: Building2,
-    name: "Teams & Schools",
+    name: "Teams and schools",
     price: "Per seat",
     period: "per member, monthly",
     description:
-      "One subscription, one seat per active member. Seated members get the whole catalogue — assigning courses is how you steer them, not how you're charged.",
+      "One subscription, one seat per active member. Seated members get the whole catalogue. Assigning courses is how you steer them, not how you're charged.",
     features: [
       "Everything individuals get, for every seated member",
       "Org console: invites, roles, assignments, progress reporting",
       "Private competitions for your organization",
-      "Add people mid-cycle — new seats are prorated",
+      "Add people mid-cycle; new seats are prorated",
       "Remove someone and their seat frees up immediately",
       "Members keep their certificates and wallet, always",
     ],
@@ -56,7 +56,7 @@ const PLANS = [
   },
   {
     icon: GraduationCap,
-    name: "Enterprise & Institutions",
+    name: "Enterprises and institutions",
     price: "Custom",
     period: "let's talk",
     description:
@@ -79,24 +79,32 @@ export const PricingPlans = () => (
       {PLANS.map((plan) => (
         <StaggerItem
           className={cn(
-            "flex flex-col rounded-xs border p-8",
+            "flex flex-col rounded-3xl border p-8",
             plan.highlight
-              ? "bg-band border-transparent text-white shadow-(--shadow-high)"
+              ? "bg-band text-on-band border-transparent shadow-(--shadow-high)"
               : "border-border bg-card",
           )}
           key={plan.name}
         >
           <plan.icon
-            className={cn("size-8", plan.highlight ? "text-primary-300" : "text-primary-500")}
+            className={cn("size-8", plan.highlight ? "text-on-band" : "text-primary")}
             strokeWidth={1.5}
           />
-          <h2 className={cn("font-heading mt-5 text-xl", plan.highlight && "text-white")}>
+          <h2
+            className={cn(
+              "font-display mt-5 text-xl font-semibold",
+              plan.highlight && "text-on-band",
+            )}
+          >
             {plan.name}
           </h2>
           <p className="mt-4">
-            <span className="mono-data text-3xl">{plan.price}</span>{" "}
+            <span className="font-mono text-3xl">{plan.price}</span>{" "}
             <span
-              className={cn("text-sm", plan.highlight ? "text-white/60" : "text-muted-foreground")}
+              className={cn(
+                "text-sm",
+                plan.highlight ? "text-on-band-muted" : "text-foreground-muted",
+              )}
             >
               {plan.period}
             </span>
@@ -104,7 +112,7 @@ export const PricingPlans = () => (
           <p
             className={cn(
               "mt-4 text-sm leading-relaxed",
-              plan.highlight ? "text-white/70" : "text-muted-foreground",
+              plan.highlight ? "text-on-band-muted" : "text-foreground-muted",
             )}
           >
             {plan.description}
@@ -115,27 +123,24 @@ export const PricingPlans = () => (
                 <Check
                   className={cn(
                     "mt-0.5 size-4 shrink-0",
-                    plan.highlight ? "text-primary-300" : "text-primary-500",
+                    plan.highlight ? "text-on-band" : "text-primary",
                   )}
                 />
-                <span className={plan.highlight ? "text-white/85" : undefined}>{feature}</span>
+                <span className={plan.highlight ? "text-on-band" : undefined}>{feature}</span>
               </li>
             ))}
           </ul>
           <Button
             asChild
-            className={cn(
-              "mt-8 h-11 w-full",
-              plan.highlight && "bg-primary-500 hover:bg-primary-400 text-white",
-            )}
-            variant={plan.highlight ? "default" : "outline"}
+            className={cn("mt-8 h-11 w-full rounded-full", false)}
+            variant={plan.highlight ? "default-inverse" : "secondary"}
           >
             <Link href={plan.cta.href}>{plan.cta.label}</Link>
           </Button>
         </StaggerItem>
       ))}
     </Stagger>
-    <FadeIn className="text-muted-foreground mx-auto mt-10 max-w-2xl text-center text-sm">
+    <FadeIn className="text-foreground-muted mx-auto mt-10 max-w-2xl text-center text-sm">
       Individual course prices are set by their creators. Tokens earned from quizzes, streaks and
       competitions can be redeemed against any token-priced course, whether or not you subscribe.
     </FadeIn>
@@ -193,15 +198,15 @@ const FAQS = [
 ];
 
 export const PricingFaq = () => (
-  <section className="border-border/60 border-t">
+  <section className="border-border border-t">
     <div className="container mx-auto grid gap-12 px-4 py-24 lg:grid-cols-3 lg:px-8">
       <FadeIn>
-        <h2 className="font-heading text-3xl tracking-tight lg:text-4xl">
+        <h2 className="font-display text-3xl font-semibold tracking-tight lg:text-4xl">
           Frequently asked questions
         </h2>
-        <p className="text-muted-foreground mt-4">
+        <p className="text-foreground-muted mt-4">
           Something else on your mind?{" "}
-          <Link className="text-primary-500 underline-offset-4 hover:underline" href="/contact">
+          <Link className="text-primary underline-offset-4 hover:underline" href="/contact">
             Talk to us.
           </Link>
         </p>
@@ -213,7 +218,7 @@ export const PricingFaq = () => (
               <AccordionTrigger className="text-left text-base font-medium">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed">
+              <AccordionContent className="text-foreground-muted leading-relaxed">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

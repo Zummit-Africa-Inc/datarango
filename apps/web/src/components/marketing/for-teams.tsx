@@ -1,179 +1,130 @@
 "use client";
 
-import { BarChart3, BookOpen, Building2, Coins, FileSpreadsheet, Receipt } from "lucide-react";
+import {
+  BarChart3,
+  BookOpen,
+  Building2,
+  Coins,
+  KeyRound,
+  Receipt,
+  ShieldCheck,
+  Trophy,
+  UserPlus,
+  Users,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 
-import { Gif } from "./gif";
-import {
-  Button,
-  CoursesIllustration,
-  FadeIn,
-  LaptopIllustration,
-  LeaderboardIllustration,
-  PolicyIllustration,
-  ProgressIllustration,
-  Stagger,
-  StaggerItem,
-  TiltCard,
-  WorkIllustration,
-} from "@datarango/ui";
+import { Button, ButtonArrow, FadeIn, Stagger, StaggerItem } from "@datarango/ui";
+
+import { PHOTOS } from "@/content/marketing";
+
+import { JoinBand } from "./feature-preview";
+import { PageHero } from "./page-hero";
+import { Eyebrow, PhotoFrame } from "./photo";
 
 /* ---------------------------------- hero ----------------------------------- */
 
-const HERO_PROGRESS = [
-  { label: "Data Analysis Fundamentals", value: 82 },
-  { label: "Machine Learning Basics", value: 64 },
-  { label: "SQL for Analysts", value: 91 },
+const SAMPLE_PROGRESS = [
+  { label: "Data analysis basics", value: 82 },
+  { label: "Machine learning", value: 64 },
+  { label: "SQL for analysts", value: 91 },
 ];
 
 export const TeamsHero = () => (
-  <section className="bg-band text-white">
-    <div className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
-      <FadeIn>
-        <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
-          Datarango for Teams & Schools
-        </p>
-        <h1 className="font-heading text-on-band mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
-          Train a team like
-          <br />
-          you mean it
-        </h1>
-        <p className="mt-8 max-w-md text-lg leading-relaxed text-white/70">
-          One console to onboard your organization, assign real coursework, and watch measurable
-          progress — while your people keep everything they earn, even if they move on.
-        </p>
-        <div className="mt-10 flex flex-wrap gap-4">
-          <Button
-            asChild
-            className="bg-primary-500 hover:bg-primary-400 h-12 px-8 text-base text-white"
-          >
-            <Link href="/signup?intent=org">Create an organization</Link>
-          </Button>
-          <Button
-            asChild
-            className="h-12 border-white/30 bg-transparent px-8 text-base text-white hover:bg-white/10"
-            variant="outline"
-          >
-            <Link href="/contact">Book a demo</Link>
-          </Button>
-        </div>
-        <p className="mt-6 text-sm text-white/50">
-          A flat monthly rate per seat. Every seated member gets the whole catalogue.
-        </p>
-      </FadeIn>
-      <div className="relative hidden perspective-[1400px] lg:block" aria-hidden>
-        <TiltCard
-          className="rounded-xs border border-white/10 bg-white/5 p-6 backdrop-blur"
-          rotateX={5}
-          rotateY={-10}
-          float
-        >
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold">Acme Academy — This cycle</p>
-            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs">96 active learners</span>
-          </div>
-          <div className="mt-6 grid grid-cols-3 gap-4">
-            {[
-              { label: "Seats used", value: "112/120" },
-              { label: "Avg. completion", value: "64%" },
-              { label: "Renews in", value: "12d" },
-            ].map((stat) => (
-              <div className="rounded-xs bg-white/5 p-4" key={stat.label}>
-                <p className="text-xs text-white/50">{stat.label}</p>
-                <p className="mono-data mt-1 text-2xl">{stat.value}</p>
+  <PageHero
+    accent="teal"
+    actions={
+      <>
+        <Button asChild shape="pill" size="lg">
+          <Link href="/signup?intent=org">
+            Create an organisation
+            <ButtonArrow />
+          </Link>
+        </Button>
+        <Button asChild shape="pill" size="lg" variant="secondary">
+          <Link href="/contact">Book a demo</Link>
+        </Button>
+      </>
+    }
+    eyebrow="For teams and schools"
+    footnote="Flat rate per seat. Assigning more courses never changes the bill."
+    lede="One console to onboard your organisation, assign real coursework and see measurable progress, while your people keep everything they earn, even if they move on."
+    overlay={
+      <>
+        <p className="text-sm font-semibold">This cycle</p>
+        <ul className="mt-3 space-y-3">
+          {SAMPLE_PROGRESS.map((course) => (
+            <li key={course.label}>
+              <div className="text-foreground-muted flex justify-between text-xs">
+                <span>{course.label}</span>
+                <span className="font-mono">{course.value}%</span>
               </div>
-            ))}
-          </div>
-          <div className="mt-6 space-y-4">
-            {HERO_PROGRESS.map((course) => (
-              <div key={course.label}>
-                <div className="flex justify-between text-xs text-white/60">
-                  <span>{course.label}</span>
-                  <span>{course.value}%</span>
-                </div>
-                <div className="mt-1.5 h-2 rounded-full bg-white/10">
-                  <div
-                    className="bg-primary-400 h-2 rounded-full"
-                    style={{ width: `${course.value}%` }}
-                  />
-                </div>
+              <div className="bg-muted mt-1 h-1.5 overflow-hidden rounded-full">
+                <div
+                  className="bg-primary h-full rounded-full"
+                  style={{ width: `${course.value}%` }}
+                />
               </div>
-            ))}
-          </div>
-        </TiltCard>
-      </div>
-    </div>
-  </section>
+            </li>
+          ))}
+        </ul>
+      </>
+    }
+    photo={PHOTOS.training}
+    title="Train a team like you mean it"
+  />
 );
 
 /* -------------------------------- features --------------------------------- */
 
-const ORG_FEATURES = [
+const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
-    icon: WorkIllustration,
+    icon: UserPlus,
     title: "Invites at any scale",
     body: "Invite one manager or a whole cohort by CSV. Members join with the roles you chose.",
-    color: "#E26666",
   },
   {
-    icon: LaptopIllustration,
+    icon: KeyRound,
     title: "Roles built from permissions",
-    body: "Owner, admin, manager, instructor, member — or compose custom roles from the permission catalog.",
-    color: "#0A1A4D",
+    body: "Owner, admin, manager, instructor, member, or custom roles composed from the permission catalogue.",
   },
   {
-    icon: CoursesIllustration,
+    icon: BookOpen,
     title: "Course assignments",
-    body: "Assign courses to members or groups. End-of-module exercises gate completion, so progress means something.",
-    color: "#66BDE2",
+    body: "Assign courses to members or groups. Graded exercises gate completion, so progress means something.",
   },
   {
-    icon: ProgressIllustration,
+    icon: BarChart3,
     title: "Progress you can defend",
-    body: "Per-member, per-course drill-downs and CSV exports — certificates only count work done in your program.",
-    color: "#1FAD64",
+    body: "Per-member, per-course drill-downs and CSV exports for the reports leadership reads.",
   },
   {
-    icon: LeaderboardIllustration,
+    icon: Trophy,
     title: "Private competitions",
-    body: "Run org-only competitions on your own datasets, scored on the same pipeline as public ones.",
-    color: "#F28A00",
+    body: "Run organisation-only competitions on your own datasets, scored like the public ones.",
   },
   {
-    icon: PolicyIllustration,
-    title: "Org SSO & MFA policy",
-    body: "Bring your identity provider (Entra ID, Google Workspace), auto-provision members, enforce MFA.",
-    color: "#9C66E2",
+    icon: ShieldCheck,
+    title: "Org SSO and MFA policy",
+    body: "Bring your identity provider (Entra ID, Google Workspace), provision members, enforce MFA.",
   },
 ];
 
 export const TeamsFeatures = () => (
-  <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
-    <FadeIn className="mx-auto max-w-2xl text-center">
-      <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Built for how organizations learn
-      </h2>
-      <p className="text-muted-foreground mt-6 text-lg">
-        Everything in the learner platform, plus the control surface your L&D or faculty team needs.
-      </p>
-    </FadeIn>
-    <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {ORG_FEATURES.map((feature) => {
-        return (
-          <StaggerItem
-            className="group border-border bg-on-band-muted rounded-xs border transition-colors"
-            key={feature.title}
-          >
-            <div className="h-30 space-y-2 p-4">
-              <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
-              <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
-            </div>
-            <div className="flex justify-end overflow-hidden bg-white py-5">
-              <feature.icon className="size-40" />
-            </div>
-          </StaggerItem>
-        );
-      })}
+  <section className="container mx-auto px-4 pb-20 lg:px-8 lg:pb-28">
+    <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {FEATURES.map((feature) => (
+        <StaggerItem className="border-border bg-card rounded-2xl border p-6" key={feature.title}>
+          <span className="bg-teal-tile text-teal-tile-foreground grid size-11 place-items-center rounded-xl">
+            <feature.icon className="size-5" strokeWidth={1.75} />
+          </span>
+          <h3 className="font-display text-foreground mt-5 text-lg font-semibold">
+            {feature.title}
+          </h3>
+          <p className="text-foreground-muted mt-2 text-sm leading-relaxed">{feature.body}</p>
+        </StaggerItem>
+      ))}
     </Stagger>
   </section>
 );
@@ -183,38 +134,87 @@ export const TeamsFeatures = () => (
 const STEPS = [
   {
     icon: Building2,
-    title: "Create your organization",
+    title: "Create your organisation",
     body: "Set up your org, connect SSO if you have it, and configure roles and policies.",
   },
   {
-    icon: FileSpreadsheet,
+    icon: Users,
     title: "Invite your people",
-    body: "Single invites or a CSV of hundreds — members land in the right role automatically.",
+    body: "Single invites or a CSV of hundreds: members land in the right role.",
   },
   {
     icon: BookOpen,
     title: "Assign courses",
-    body: "Pick courses, assign to members or groups. Enrollment is instant, and assigning never changes your bill.",
+    body: "Assign to members or groups. Enrolment is instant, and assigning never changes your bill.",
   },
   {
     icon: BarChart3,
-    title: "Track & report",
-    body: "Watch completion climb, grade submissions, export reports your leadership will actually read.",
+    title: "Track and report",
+    body: "Watch completion climb, review submissions, export reports.",
   },
 ];
 
 export const TeamsSteps = () => (
-  <section className="border-border/60 border-y">
-    <div className="container mx-auto px-4 py-24 lg:px-8">
-      <FadeIn>
-        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">Live in an afternoon</h2>
+  <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
+    <FadeIn className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <PhotoFrame accent="teal" photo={PHOTOS.colleagues} side="left" />
+      <div>
+        <Eyebrow accent="teal">Getting started</Eyebrow>
+        <h2 className="font-display text-foreground mt-5 text-3xl font-semibold tracking-tight lg:text-5xl">
+          Live in an afternoon
+        </h2>
+        <ol className="mt-8 space-y-6">
+          {STEPS.map((step, index) => (
+            <li className="flex gap-4" key={step.title}>
+              <span className="bg-teal-tile text-teal-tile-foreground grid size-9 shrink-0 place-items-center rounded-full font-mono text-sm font-semibold">
+                {index + 1}
+              </span>
+              <div>
+                <h3 className="font-display text-foreground font-semibold">{step.title}</h3>
+                <p className="text-foreground-muted mt-1 leading-relaxed">{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </FadeIn>
+  </section>
+);
+
+/* --------------------------------- billing --------------------------------- */
+
+const BILLING = [
+  {
+    icon: Coins,
+    title: "One rate, per seat",
+    body: "A seat is one active member, with the whole catalogue. Assign as much as you like without touching the bill.",
+  },
+  {
+    icon: Users,
+    title: "Seats you can see",
+    body: "The console shows licensed against used seats, so you know where you stand before renewal.",
+  },
+  {
+    icon: Receipt,
+    title: "Predictable each cycle",
+    body: "Monthly by default. Mid-cycle joiners are prorated; leavers free their seat at once.",
+  },
+];
+
+export const TeamsBilling = () => (
+  <section className="bg-teal-soft text-teal-soft-foreground">
+    <div className="container mx-auto px-4 py-20 lg:px-8 lg:py-28">
+      <FadeIn className="mx-auto max-w-2xl text-center">
+        <h2 className="font-display text-3xl font-semibold tracking-tight lg:text-5xl">
+          Billing that respects your budget
+        </h2>
       </FadeIn>
-      <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map((step) => (
-          <StaggerItem key={step.title}>
-            <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
-            <h3 className="font-heading mt-4 text-lg">{step.title}</h3>
-            <p className="text-muted-foreground mt-2 leading-relaxed">{step.body}</p>
+      <Stagger className="mt-12 grid gap-4 lg:grid-cols-3">
+        {BILLING.map((point) => (
+          <StaggerItem className="bg-card text-foreground rounded-2xl p-6" key={point.title}>
+            <point.icon className="size-6" strokeWidth={1.75} />
+            <h3 className="font-display mt-4 text-lg font-semibold">{point.title}</h3>
+            <p className="text-foreground-muted mt-2 text-sm leading-relaxed">{point.body}</p>
           </StaggerItem>
         ))}
       </Stagger>
@@ -222,81 +222,15 @@ export const TeamsSteps = () => (
   </section>
 );
 
-/* --------------------------------- billing --------------------------------- */
-
-const BILLING_POINTS = [
-  {
-    icon: Coins,
-    title: "One rate, per seat",
-    body: "A seat is one active member. They get the whole catalogue — assign as much as you like without touching the bill.",
-  },
-  {
-    icon: BarChart3,
-    title: "Seats you can see",
-    body: "The console shows licensed against consumed seats, so you always know where you stand before renewal.",
-  },
-  {
-    icon: Receipt,
-    title: "Predictable each cycle",
-    body: "Monthly by default, configurable per org. Mid-cycle joiners prorate; leavers free their seat at once.",
-  },
-];
-
-export const TeamsBilling = () => (
-  <section className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
-    <FadeIn>
-      <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Billing that respects your budget
-      </h2>
-      <div className="mt-10 space-y-8">
-        {BILLING_POINTS.map((point) => (
-          <div className="flex items-start gap-x-4" key={point.title}>
-            <point.icon className="text-primary-500 mt-1 size-6 shrink-0" strokeWidth={1.5} />
-            <div>
-              <h3 className="font-heading text-lg">{point.title}</h3>
-              <p className="text-muted-foreground mt-1 leading-relaxed">{point.body}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <p className="text-muted-foreground border-border mt-10 rounded-xs border border-dashed p-4 text-sm">
-        If your organization ever stops paying, your members keep access to the courses they were
-        already enrolled in. Their learning is theirs.
-      </p>
-    </FadeIn>
-    <FadeIn className="relative hidden aspect-4/3 lg:block" delay={0.1}>
-      <Gif title="teams" />
-    </FadeIn>
-  </section>
-);
-
-/* ----------------------------------- CTA ------------------------------------ */
+/* ----------------------------------- cta ----------------------------------- */
 
 export const TeamsCta = () => (
-  <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
-    <FadeIn className="bg-band rounded-xs px-8 py-20 text-center text-white lg:py-24">
-      <h2 className="font-heading text-on-band mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
-        Put your whole team on the same curve
-      </h2>
-      <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
-        Create your organization now, or talk to us about rolling Datarango out across your school
-        or company.
-      </p>
-      <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <Button
-          asChild
-          className="bg-primary-500 hover:bg-primary-400 h-12 px-8 text-base text-white"
-        >
-          <Link href="/signup?intent=org">Create an organization</Link>
-        </Button>
-        <Button
-          asChild
-          className="h-12 border-white/30 bg-transparent px-8 text-base text-white hover:bg-white/10"
-          variant="outline"
-        >
-          <Link href="/contact">Book a demo</Link>
-        </Button>
-      </div>
-    </FadeIn>
-  </section>
+  <div className="pt-20 lg:pt-28">
+    <JoinBand
+      body="Create your organisation now, or talk to us about rolling Datarango out across your school or company."
+      primary={{ href: "/signup?intent=org", label: "Create an organisation" }}
+      secondary={{ href: "/contact", label: "Book a demo" }}
+      title="Put your whole team on the same curve"
+    />
+  </div>
 );

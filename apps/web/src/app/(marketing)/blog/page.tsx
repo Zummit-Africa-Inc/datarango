@@ -20,10 +20,10 @@ export default function BlogPage() {
       />
 
       <section className="container mx-auto px-4 pb-24 lg:px-8">
-        <FadeIn className="border-border bg-card mx-auto max-w-2xl rounded-xs border p-12 text-center">
-          <Rss className="text-primary-500 mx-auto size-10" strokeWidth={1.5} />
-          <h2 className="font-heading mt-6 text-2xl">First posts landing soon</h2>
-          <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">
+        <FadeIn className="border-border bg-card mx-auto max-w-2xl rounded-2xl border p-12 text-center">
+          <Rss className="text-primary mx-auto size-10" strokeWidth={1.5} />
+          <h2 className="font-display mt-6 text-2xl font-semibold">First posts landing soon</h2>
+          <p className="text-foreground-muted mx-auto mt-3 max-w-md leading-relaxed">
             We're writing the first batch now. Join the platform and you'll hear about new posts in
             your notification inbox.
           </p>

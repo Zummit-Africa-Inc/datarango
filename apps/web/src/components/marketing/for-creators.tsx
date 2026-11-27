@@ -1,171 +1,115 @@
 "use client";
 
-import { BarChart3, Coins, NotebookPen, Send, Upload, Wallet } from "lucide-react";
+import {
+  BarChart3,
+  Coins,
+  Layers,
+  NotebookPen,
+  Receipt,
+  Trophy,
+  Users,
+  Wallet,
+  type LucideIcon,
+} from "lucide-react";
 import Link from "next/link";
 
-import { Gif } from "./gif";
-import {
-  Button,
-  EarnIllustration,
-  FadeIn,
-  NotebookIllustration,
-  ProgressIllustration,
-  Stagger,
-  StaggerItem,
-  TeachingIllustration,
-  TiltCard,
-  TrophyIllustration,
-  UsersIllustration,
-} from "@datarango/ui";
+import { Button, ButtonArrow, FadeIn, Stagger, StaggerItem } from "@datarango/ui";
+
+import { PHOTOS } from "@/content/marketing";
+
+import { JoinBand } from "./feature-preview";
+import { PageHero } from "./page-hero";
+import { Eyebrow, PhotoFrame } from "./photo";
 
 /* ---------------------------------- hero ----------------------------------- */
 
-const HERO_STATS = [
-  { label: "Courses published", value: "150+" },
-  { label: "Active learners", value: "12k+" },
-  { label: "Avg. creator rating", value: "4.8★" },
-];
-
 export const CreatorsHero = () => (
-  <section className="bg-band text-white">
-    <div className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
-      <FadeIn>
-        <p className="text-primary-300 text-xs font-semibold tracking-widest uppercase">
-          Datarango for Creators
-        </p>
-        <h1 className="font-heading text-on-band mt-6 text-5xl leading-[1.02] tracking-tight lg:text-7xl">
-          Teach data.
-          <br />
-          Earn doing it.
-        </h1>
-        <p className="mt-8 max-w-md text-lg leading-relaxed text-white/70">
-          Publish courses, quizzes and notebook exercises on Datarango Studio. Set your own prices,
-          reward learners with tokens, and reach thousands of data practitioners.
-        </p>
-        <div className="mt-10 flex flex-wrap gap-4">
-          <Button
-            asChild
-            className="bg-primary-500 hover:bg-primary-400 h-12 px-8 text-base text-white"
-          >
-            <Link href="/contact">Apply to become a creator</Link>
-          </Button>
-        </div>
-        <p className="mt-6 text-sm text-white/50">
-          Creators are onboarded by invitation. Apply and we'll be in touch.
-        </p>
-      </FadeIn>
-      <div className="relative hidden perspective-[1400px] lg:block" aria-hidden>
-        <TiltCard
-          className="rounded-xs border border-white/10 bg-white/5 p-6 backdrop-blur"
-          rotateX={5}
-          rotateY={-10}
-          float
-        >
-          <div className="flex items-center justify-between">
-            <p className="text-sm font-semibold">Your creator dashboard</p>
-            <span className="rounded-full bg-white/10 px-2.5 py-1 text-xs">This month</span>
-          </div>
-          <div className="mt-6 grid grid-cols-3 gap-4">
-            {HERO_STATS.map((stat) => (
-              <div className="rounded-xs bg-white/5 p-4" key={stat.label}>
-                <p className="text-xs text-white/50">{stat.label}</p>
-                <p className="mono-data mt-1 text-2xl">{stat.value}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-6 space-y-3">
-            {[
-              { title: "Intro to pandas", enrollments: 340, revenue: "₦68k" },
-              { title: "SQL for Analysts", enrollments: 210, revenue: "₦42k" },
-              { title: "ML with scikit-learn", enrollments: 95, revenue: "₦28.5k" },
-            ].map((course) => (
-              <div
-                className="flex items-center justify-between rounded-xs bg-white/5 px-4 py-3"
-                key={course.title}
-              >
-                <p className="text-sm">{course.title}</p>
-                <div className="flex gap-x-4 text-xs text-white/60">
-                  <span>{course.enrollments} enrolled</span>
-                  <span className="font-medium">{course.revenue}</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </TiltCard>
-      </div>
-    </div>
-  </section>
+  <PageHero
+    accent="violet"
+    actions={
+      <Button asChild shape="pill" size="lg">
+        <Link href="/contact">
+          Apply to become a creator
+          <ButtonArrow />
+        </Link>
+      </Button>
+    }
+    eyebrow="For creators"
+    footnote="Creators join by invitation. Apply and we'll be in touch."
+    lede="Publish courses, quizzes and notebook exercises on Datarango Studio. Set your own prices, reward learners with tokens, and teach people who learn by doing."
+    overlay={
+      <>
+        <p className="text-sm font-semibold">Your course</p>
+        <ul className="text-foreground-muted mt-3 space-y-2 text-sm">
+          <li className="flex justify-between">
+            <span>Status</span>
+            <span className="text-foreground font-medium">Published</span>
+          </li>
+          <li className="flex justify-between">
+            <span>Exercises</span>
+            <span className="text-foreground font-medium">Auto-graded</span>
+          </li>
+          <li className="flex justify-between">
+            <span>Price</span>
+            <span className="text-foreground font-medium">You decide</span>
+          </li>
+        </ul>
+      </>
+    }
+    photo={PHOTOS.professional}
+    title="Teach data. Earn doing it."
+  />
 );
 
 /* -------------------------------- features --------------------------------- */
 
-const CREATOR_FEATURES = [
+const FEATURES: { icon: LucideIcon; title: string; body: string }[] = [
   {
-    icon: TeachingIllustration,
+    icon: Layers,
     title: "Rich lesson formats",
-    body: "Author lessons with video, text and audio. Mix formats freely within a single module.",
-    color: "#E26666",
+    body: "Author lessons with video, text and audio, and mix formats freely within a module.",
   },
   {
-    icon: NotebookIllustration,
+    icon: NotebookPen,
     title: "Live notebook exercises",
-    body: "Attach CPU-backed Jupyter notebooks to any lesson. Learners run real code; you write the auto-grader.",
-    color: "#0A1A4D",
+    body: "Attach Jupyter notebooks to any lesson. Learners run real code; you write the grader.",
   },
   {
-    icon: EarnIllustration,
+    icon: Coins,
     title: "Set token rewards",
-    body: "Decide how many tokens each exercise awards. Learners redeem tokens for your courses — a built-in growth loop.",
-    color: "#66BDE2",
+    body: "Decide how many tokens each exercise awards. Learners can spend tokens on your courses.",
   },
   {
-    icon: TrophyIllustration,
+    icon: Trophy,
     title: "Host competitions",
-    body: "Create Kaggle-style competitions with your own datasets and scoring pipeline. Public or org-private.",
-    color: "#1FAD64",
+    body: "Create competitions on your own datasets with automated scoring. Public or org-private.",
   },
   {
-    icon: ProgressIllustration,
+    icon: BarChart3,
     title: "Creator analytics",
-    body: "Per-course enrollment, completion rates, exercise pass rates and revenue — all in one dashboard.",
-    color: "#F28A00",
+    body: "Enrolments, completion, exercise pass rates and revenue per course, in one dashboard.",
   },
   {
-    icon: UsersIllustration,
-    title: "Reach a built-in audience",
-    body: "Your courses are discoverable by 12k+ active learners the moment they pass review.",
-    color: "#9C66E2",
+    icon: Users,
+    title: "A ready audience",
+    body: "Your courses are discoverable by every Datarango learner the moment they pass review.",
   },
 ];
 
 export const CreatorsFeatures = () => (
-  <section className="container mx-auto px-4 py-24 lg:px-8 lg:py-32">
-    <FadeIn className="mx-auto max-w-2xl text-center">
-      <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">
-        Everything you need to teach well
-      </h2>
-      <p className="text-muted-foreground mt-6 text-lg">
-        Datarango Studio gives you the tools to build courses that actually work — and the audience
-        to make them worth building.
-      </p>
-    </FadeIn>
-    <Stagger className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {CREATOR_FEATURES.map((feature) => {
-        return (
-          <StaggerItem
-            className="group border-border bg-on-band-muted rounded-xs border transition-colors"
-            key={feature.title}
-          >
-            <div className="h-30 space-y-2 p-4">
-              <h3 className="font-heading text-ink text-xl">{feature.title}</h3>
-              <p className="text-ink text-sm leading-relaxed">{feature.body}</p>
-            </div>
-            <div className="flex justify-end overflow-hidden bg-white py-5">
-              <feature.icon className="size-40" />
-            </div>
-          </StaggerItem>
-        );
-      })}
+  <section className="container mx-auto px-4 pb-20 lg:px-8 lg:pb-28">
+    <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {FEATURES.map((feature) => (
+        <StaggerItem className="border-border bg-card rounded-2xl border p-6" key={feature.title}>
+          <span className="bg-violet-tile text-violet-tile-foreground grid size-11 place-items-center rounded-xl">
+            <feature.icon className="size-5" strokeWidth={1.75} />
+          </span>
+          <h3 className="font-display text-foreground mt-5 text-lg font-semibold">
+            {feature.title}
+          </h3>
+          <p className="text-foreground-muted mt-2 text-sm leading-relaxed">{feature.body}</p>
+        </StaggerItem>
+      ))}
     </Stagger>
   </section>
 );
@@ -174,39 +118,88 @@ export const CreatorsFeatures = () => (
 
 const STEPS = [
   {
-    icon: Send,
     title: "Apply",
     body: "Tell us about your expertise and what you'd like to teach. We review every application personally.",
   },
   {
-    icon: NotebookPen,
     title: "Get onboarded",
     body: "Once accepted, we walk you through Datarango Studio and set up your creator account.",
   },
   {
-    icon: Upload,
-    title: "Build & publish",
-    body: "Author lessons, attach live notebooks, set prices and token rewards, then submit for final review.",
+    title: "Build and publish",
+    body: "Author lessons, attach notebooks, set prices and token rewards, then submit for review.",
   },
   {
-    icon: Wallet,
     title: "Get paid",
-    body: "Earnings accumulate as learners enroll. Withdraw to your bank account on a monthly cycle.",
+    body: "Earnings build up as learners enrol, and are paid out to your bank account monthly.",
   },
 ];
 
 export const CreatorsSteps = () => (
-  <section className="border-border/60 border-y">
-    <div className="container mx-auto px-4 py-24 lg:px-8">
-      <FadeIn>
-        <h2 className="font-heading text-3xl tracking-tight lg:text-5xl">How it works</h2>
+  <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
+    <FadeIn className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+      <PhotoFrame accent="violet" photo={PHOTOS.coding} side="left" />
+      <div>
+        <Eyebrow accent="violet">How it works</Eyebrow>
+        <h2 className="font-display text-foreground mt-5 text-3xl font-semibold tracking-tight lg:text-5xl">
+          From idea to published course
+        </h2>
+        <ol className="mt-8 space-y-6">
+          {STEPS.map((step, index) => (
+            <li className="flex gap-4" key={step.title}>
+              <span className="bg-violet-tile text-violet-tile-foreground grid size-9 shrink-0 place-items-center rounded-full font-mono text-sm font-semibold">
+                {index + 1}
+              </span>
+              <div>
+                <h3 className="font-display text-foreground font-semibold">{step.title}</h3>
+                <p className="text-foreground-muted mt-1 leading-relaxed">{step.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </FadeIn>
+  </section>
+);
+
+/* -------------------------------- earnings --------------------------------- */
+
+const EARNINGS = [
+  {
+    icon: Coins,
+    title: "You set the price",
+    body: "Price your course in naira. Learners pay with money, or with tokens they earned on the platform.",
+  },
+  {
+    icon: Receipt,
+    title: "Transparent revenue share",
+    body: "A clear percentage of every enrolment goes to you. No hidden fees.",
+  },
+  {
+    icon: Wallet,
+    title: "Monthly payouts",
+    body: "Earnings settle monthly to your bank account, with a running total in your dashboard.",
+  },
+];
+
+export const CreatorsEarnings = () => (
+  <section className="bg-violet-soft text-violet-soft-foreground">
+    <div className="container mx-auto px-4 py-20 lg:px-8 lg:py-28">
+      <FadeIn className="mx-auto max-w-2xl text-center">
+        <h2 className="font-display text-3xl font-semibold tracking-tight lg:text-5xl">
+          Earn on your own terms
+        </h2>
+        <p className="mt-4 text-lg opacity-85">
+          Token rewards you set for exercises come from the platform pool: they cost you nothing and
+          encourage learners to finish your course.
+        </p>
       </FadeIn>
-      <Stagger className="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
-        {STEPS.map((step) => (
-          <StaggerItem key={step.title}>
-            <step.icon className="text-primary-500 size-6" strokeWidth={1.5} />
-            <h3 className="font-heading mt-4 text-lg">{step.title}</h3>
-            <p className="text-muted-foreground mt-2 leading-relaxed">{step.body}</p>
+      <Stagger className="mt-12 grid gap-4 lg:grid-cols-3">
+        {EARNINGS.map((point) => (
+          <StaggerItem className="bg-card text-foreground rounded-2xl p-6" key={point.title}>
+            <point.icon className="size-6" strokeWidth={1.75} />
+            <h3 className="font-display mt-4 text-lg font-semibold">{point.title}</h3>
+            <p className="text-foreground-muted mt-2 text-sm leading-relaxed">{point.body}</p>
           </StaggerItem>
         ))}
       </Stagger>
@@ -214,72 +207,15 @@ export const CreatorsSteps = () => (
   </section>
 );
 
-/* -------------------------------- earnings --------------------------------- */
-
-const EARNINGS_POINTS = [
-  {
-    icon: Coins,
-    title: "You set the price",
-    body: "Price your course in naira. Learners can pay with money or tokens they earned on the platform.",
-  },
-  {
-    icon: BarChart3,
-    title: "Transparent revenue share",
-    body: "A clear percentage of every enrollment goes to you. No hidden fees, no surprise deductions.",
-  },
-  {
-    icon: Wallet,
-    title: "Monthly payouts",
-    body: "Earnings are settled monthly to your bank account. Your dashboard shows the running total in real time.",
-  },
-];
-
-export const CreatorsEarnings = () => (
-  <section className="container mx-auto grid items-center gap-16 px-4 py-24 lg:grid-cols-2 lg:px-8 lg:py-32">
-    <FadeIn>
-      <h2 className="font-heading text-4xl tracking-tight lg:text-6xl">Earn on your own terms</h2>
-      <div className="mt-10 space-y-8">
-        {EARNINGS_POINTS.map((point) => (
-          <div className="flex items-start gap-x-4" key={point.title}>
-            <point.icon className="text-primary-500 mt-1 size-6 shrink-0" strokeWidth={1.5} />
-            <div>
-              <h3 className="font-heading text-lg">{point.title}</h3>
-              <p className="text-muted-foreground mt-1 leading-relaxed">{point.body}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      <p className="text-muted-foreground border-border mt-10 rounded-xs border border-dashed p-4 text-sm">
-        Token rewards you set for exercises come from the platform pool — they cost you nothing and
-        incentivize learners to complete your course.
-      </p>
-    </FadeIn>
-    <FadeIn className="relative hidden aspect-4/3 lg:block" delay={0.1}>
-      <Gif title="creators" />
-    </FadeIn>
-  </section>
-);
-
-/* ----------------------------------- CTA ----------------------------------- */
+/* ----------------------------------- cta ----------------------------------- */
 
 export const CreatorsCta = () => (
-  <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
-    <FadeIn className="bg-band rounded-xs px-8 py-20 text-center text-white lg:py-24">
-      <h2 className="font-heading text-on-band mx-auto max-w-3xl text-4xl tracking-tight lg:text-6xl">
-        Your knowledge is worth more than a blog post
-      </h2>
-      <p className="mx-auto mt-6 max-w-xl text-lg text-white/70">
-        Turn what you know into a course that earns while you sleep. Apply to join the Datarango
-        creator program.
-      </p>
-      <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-        <Button
-          asChild
-          className="bg-primary-500 hover:bg-primary-400 h-12 px-8 text-base text-white"
-        >
-          <Link href="/contact">Apply to become a creator</Link>
-        </Button>
-      </div>
-    </FadeIn>
-  </section>
+  <div className="pt-20 lg:pt-28">
+    <JoinBand
+      body="Turn what you know into a course people finish. Apply to join the Datarango creator programme."
+      primary={{ href: "/contact", label: "Apply to become a creator" }}
+      secondary={{ href: "/pricing", label: "See how pricing works" }}
+      title="Your knowledge is worth more than a blog post"
+    />
+  </div>
 );

@@ -16,3 +16,8 @@ Datarango learners as those become available (`apps/web/src/content/marketing.ts
 | student-campus.jpg      | https://unsplash.com/photos/dPQBwZ6d-NU | Oluwaseyi Akinlolu            |
 | graduate.jpg            | https://unsplash.com/photos/04Rd4wrSI1M | Divaris Shirichena            |
 | developer-coding.jpg    | https://unsplash.com/photos/Bv2FCJoh8XM | Nubelson Fernandes            |
+| students-lecture.jpg    | https://unsplash.com/photos/9faEJgSvmjc | Vitaly Gariev                 |
+| team-training.jpg       | https://unsplash.com/photos/faEfWCdOKIg | Christina @ wocintechchat.com |
+| colleagues-laptop.jpg   | https://unsplash.com/photos/4-RLopzTVQ8 | Ninthgrid                     |
+| pair-laptop.jpg         | https://unsplash.com/photos/5WOySQOZ2t4 | Francis Odeyemi               |
+| analyst-monitor.jpg     | https://unsplash.com/photos/v9IIjmZACPI | Bakari Mustafa                |

@@ -1,7 +1,8 @@
 import { Building2, Flame, LockKeyhole, Medal, Timer, TrendingUp } from "lucide-react";
 import type { Metadata } from "next";
 
-import { FeaturePreview } from "@/components/marketing/feature-preview";
+import { ProductPage } from "@/components/marketing/feature-preview";
+import { PHOTOS } from "@/content/marketing";
 
 export const metadata: Metadata = {
   title: "Competitions",
@@ -44,11 +45,48 @@ const POINTS = [
 
 export default function CompetitionsPage() {
   return (
-    <FeaturePreview
+    <ProductPage
+      accent="rose"
+      appHref="/dashboard/competitions"
       eyebrow="Competitions"
-      title={<>Practice, but make it a sport</>}
-      lede="Real datasets, automated scoring, live leaderboards. Competition is how practice stops being optional."
+      lede="Real datasets, automated scoring and live leaderboards. Competition is how practice stops being optional."
+      overlay={
+        <>
+          <p className="flex items-center justify-between text-sm font-semibold">
+            Leaderboard <span className="text-foreground-muted text-xs font-normal">ROC AUC</span>
+          </p>
+          <ul className="mt-3 space-y-1.5 text-sm">
+            {[0.912, 0.897, 0.873].map((score, index) => (
+              <li
+                className={
+                  index === 2
+                    ? "bg-primary-soft flex gap-3 rounded-lg px-2 py-1"
+                    : "flex gap-3 px-2 py-1"
+                }
+                key={score}
+              >
+                <span className="font-mono">{index + 1}</span>
+                <span className="flex-1">{index === 2 ? "You" : ""}</span>
+                <span className="font-mono">{score.toFixed(3)}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      }
+      photo={PHOTOS.pair}
       points={POINTS}
+      story={{
+        eyebrow: "Better together",
+        title: "Learn from the top of the table",
+        body: "Submit predictions, watch your place move, and see what the leaders did differently. Prizes go to the top places when a competition closes.",
+        bullets: [
+          "Public and private leaderboards",
+          "Token prizes for top places",
+          "Private competitions for your organisation",
+        ],
+        photo: PHOTOS.analyst,
+      }}
+      title="Practice, but make it a sport"
     />
   );
 }

@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 
+import { PageHero } from "@/components/marketing/page-hero";
 import { PricingFaq, PricingPlans } from "@/components/marketing/pricing";
-import { PageIntro } from "@/components/marketing/page-intro";
+import { PHOTOS } from "@/content/marketing";
 
 export const metadata: Metadata = {
   title: "Pricing",
@@ -12,10 +13,12 @@ export const metadata: Metadata = {
 export default function PricingPage() {
   return (
     <main>
-      <PageIntro
+      <PageHero
+        accent="lime"
         eyebrow="Pricing"
-        title={<>Start free. Upgrade however suits you</>}
-        lede="Individuals get a free tier that never expires, then a choice: subscribe for everything, buy a single course, or redeem tokens you earned. Organizations pay a flat monthly rate per seat — every seated member gets the whole catalogue."
+        lede="A free tier that never expires, then your choice: subscribe for everything, buy a single course, or spend tokens you earned. Organisations pay a flat monthly rate per seat, and every seated member gets the whole catalogue."
+        photo={PHOTOS.graduate}
+        title="Start free. Upgrade however suits you"
       />
       <PricingPlans />
       <PricingFaq />

@@ -1,9 +1,22 @@
-import type { LucideIcon } from "lucide-react";
+import { Check, type LucideIcon } from "lucide-react";
 import Link from "next/link";
+import type { ReactNode } from "react";
 
-import { Button, FadeIn, Stagger, StaggerItem } from "@datarango/ui";
+import {
+  ACCENT_CLASSES,
+  Button,
+  ButtonArrow,
+  FadeIn,
+  Stagger,
+  StaggerItem,
+  cn,
+  type AccentToken,
+} from "@datarango/ui";
 
-import { PageIntro } from "./page-intro";
+import type { Photo } from "@/content/marketing";
+
+import { PageHero } from "./page-hero";
+import { Eyebrow, PhotoFrame } from "./photo";
 
 interface FeaturePoint {
   icon: LucideIcon;
@@ -11,50 +24,154 @@ interface FeaturePoint {
   body: string;
 }
 
-interface Props {
+interface Story {
   eyebrow: string;
-  title: React.ReactNode;
-  lede: string;
-  points: FeaturePoint[];
-  note?: string;
+  title: string;
+  body: string;
+  bullets: string[];
+  photo: Photo;
 }
 
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede: string;
+  accent: AccentToken;
+  photo: Photo;
+  /** Product card laid over the hero photo. */
+  overlay?: ReactNode;
+  points: FeaturePoint[];
+  story: Story;
+  /** Where "see it in the app" goes once signed in. */
+  appHref: string;
+}
+
+/** Closing call to action shared by the marketing subpages. */
+export const JoinBand = ({
+  title = "Start learning by doing, free",
+  body = "Join free, open a course, and be running real code in minutes.",
+  primary = { href: "/signup", label: "Join for free" },
+  secondary = { href: "/for-teams", label: "For teams and schools" },
+}: {
+  title?: string;
+  body?: string;
+  primary?: { href: string; label: string };
+  secondary?: { href: string; label: string };
+}) => (
+  <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
+    <FadeIn className="bg-primary-soft text-primary-soft-foreground rounded-3xl px-8 py-14 text-center lg:py-20">
+      <h2 className="font-display mx-auto max-w-2xl text-3xl font-semibold tracking-tight lg:text-5xl">
+        {title}
+      </h2>
+      <p className="mx-auto mt-4 max-w-xl text-lg opacity-85">{body}</p>
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
+        <Button asChild shape="pill" size="lg">
+          <Link href={primary.href}>
+            {primary.label}
+            <ButtonArrow />
+          </Link>
+        </Button>
+        <Button asChild shape="pill" size="lg" variant="secondary">
+          <Link href={secondary.href}>{secondary.label}</Link>
+        </Button>
+      </div>
+    </FadeIn>
+  </section>
+);
+
 /**
- * Static preview page for platform surfaces that ship with the gateway
- * (courses, quizzes, competitions, datasets). Replaced by the live surface
- * in its build phase — keeps nav links working until then.
+ * Marketing page for one product surface (courses, quizzes, datasets,
+ * competitions): photo hero, feature tiles, a photo-led story row, and a
+ * call to action.
  */
-export const FeaturePreview = ({ eyebrow, title, lede, points, note }: Props) => (
+export const ProductPage = ({
+  eyebrow,
+  title,
+  lede,
+  accent,
+  photo,
+  overlay,
+  points,
+  story,
+  appHref,
+}: Props) => (
   <main>
-    <PageIntro eyebrow={eyebrow} title={title} lede={lede} />
-    <section className="container mx-auto px-4 pb-24 lg:px-8">
-      <Stagger className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {points.map((point) => (
-          <StaggerItem
-            className="border-border bg-card hover:border-primary-300 rounded-xs border p-8 transition-colors"
-            key={point.title}
+    <PageHero
+      accent={accent}
+      actions={
+        <>
+          <Button asChild shape="pill" size="lg">
+            <Link href="/signup">
+              Start free
+              <ButtonArrow />
+            </Link>
+          </Button>
+          <Link
+            className="text-foreground font-medium underline-offset-4 hover:underline"
+            href={appHref}
           >
-            <point.icon className="text-primary-500 size-8" strokeWidth={1.5} />
-            <h2 className="font-heading mt-5 text-xl">{point.title}</h2>
-            <p className="text-muted-foreground mt-3 leading-relaxed">{point.body}</p>
+            Already a member? Open it
+          </Link>
+        </>
+      }
+      eyebrow={eyebrow}
+      lede={lede}
+      overlay={overlay}
+      photo={photo}
+      title={title}
+    />
+
+    <section className="container mx-auto px-4 pb-20 lg:px-8 lg:pb-28">
+      <Stagger className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {points.map((point) => (
+          <StaggerItem className="border-border bg-card rounded-2xl border p-6" key={point.title}>
+            <span
+              className={cn(
+                "grid size-11 place-items-center rounded-xl",
+                ACCENT_CLASSES[accent].tile,
+              )}
+            >
+              <point.icon className="size-5" strokeWidth={1.75} />
+            </span>
+            <h2 className="font-display text-foreground mt-5 text-lg font-semibold">
+              {point.title}
+            </h2>
+            <p className="text-foreground-muted mt-2 text-sm leading-relaxed">{point.body}</p>
           </StaggerItem>
         ))}
       </Stagger>
-      <FadeIn className="border-border bg-card mx-auto mt-16 max-w-2xl rounded-xs border p-10 text-center">
-        <h2 className="font-heading text-2xl">Launching with the platform</h2>
-        <p className="text-muted-foreground mx-auto mt-3 max-w-md leading-relaxed">
-          {note ??
-            "This surface goes live with the Datarango platform. Join now and you'll be first in when it opens."}
-        </p>
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button asChild>
-            <Link href="/signup">Join for free</Link>
-          </Button>
-          <Button asChild variant="outline">
-            <Link href="/for-teams">For teams & schools</Link>
-          </Button>
+    </section>
+
+    <section className="container mx-auto px-4 pb-24 lg:px-8 lg:pb-32">
+      <FadeIn className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <PhotoFrame accent={accent} photo={story.photo} side="left" />
+        <div>
+          <Eyebrow accent={accent}>{story.eyebrow}</Eyebrow>
+          <h2 className="font-display text-foreground mt-5 text-3xl font-semibold tracking-tight lg:text-5xl">
+            {story.title}
+          </h2>
+          <p className="text-foreground-muted mt-5 max-w-lg text-lg leading-relaxed">
+            {story.body}
+          </p>
+          <ul className="mt-6 space-y-3">
+            {story.bullets.map((bullet) => (
+              <li className="text-foreground flex items-center gap-3" key={bullet}>
+                <span
+                  className={cn(
+                    "grid size-6 shrink-0 place-items-center rounded-full",
+                    ACCENT_CLASSES[accent].tile,
+                  )}
+                >
+                  <Check className="size-3.5" strokeWidth={3} />
+                </span>
+                {bullet}
+              </li>
+            ))}
+          </ul>
         </div>
       </FadeIn>
     </section>
+
+    <JoinBand />
   </main>
 );
