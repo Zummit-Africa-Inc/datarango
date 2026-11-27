@@ -201,7 +201,8 @@ export default function DashboardPage() {
         </Section>
       </div>
 
-      <aside className="space-y-6">
+      {/* The rail stays in view while the main column scrolls (the shell scrolls <main>; its padding already sets the gap). */}
+      <aside className="space-y-6 xl:sticky xl:top-0 xl:self-start">
         <Leaderboard />
         <RecentBadges />
       </aside>
