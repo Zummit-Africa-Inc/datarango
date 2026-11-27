@@ -18,8 +18,8 @@ configureApi({
   baseUrl: process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080",
   getAccessToken: () => tokenStore.get(),
   // Admin acts as the platform, not as a tenant, so there is no org to inject.
-  // Platform authority arrives on the envelope as `platformRoles`, resolved by
-  // the gateway from the user — deliberately kept separate from org permissions
+  // Staff authority arrives on the envelope as `staffPermissions`, resolved by
+  // the gateway from the staff account — deliberately kept separate from org permissions
   // so a tenant grant and a platform grant can never be confused.
   getOrgId: () => null,
   onUnauthorized: async () => (await auth.refresh()) !== null,

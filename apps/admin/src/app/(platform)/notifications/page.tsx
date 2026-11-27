@@ -3,7 +3,7 @@
 import { MailWarning } from "lucide-react";
 import { useState } from "react";
 
-import { usePlatformRole } from "@datarango/auth";
+import { useStaffPermission } from "@datarango/auth";
 import { Button, PageLayout, Skeleton } from "@datarango/ui";
 
 import {
@@ -28,8 +28,8 @@ const CHANNELS: { value: NotificationChannel | undefined; label: string }[] = [
  * nothing is deleted.
  */
 export default function DeadLettersPage() {
-  const canRead = usePlatformRole("platform.support");
-  const canRequeue = usePlatformRole("platform.admin");
+  const canRead = useStaffPermission("notifications.view");
+  const canRequeue = useStaffPermission("notifications.manage");
 
   const [channel, setChannel] = useState<NotificationChannel | undefined>();
   const [page, setPage] = useState(1);
@@ -46,10 +46,10 @@ export default function DeadLettersPage() {
     return (
       <PageLayout title="Failed notifications" subtitle="The notification dead-letter queue.">
         <div className="border-hairline bg-card rounded-xs border px-6 py-12 text-center">
-          <p className="font-heading text-ink text-lg">You don&apos;t have support access</p>
+          <p className="font-heading text-ink text-lg">You can&apos;t see failed notifications</p>
           <p className="text-muted-foreground mx-auto mt-1 max-w-md text-sm">
-            Failed notifications show recipients&apos; addresses, so reading them needs the support
-            or admin role.
+            Failed notifications show recipients&apos; addresses, so reading them needs the
+            notifications.view permission.
           </p>
         </div>
       </PageLayout>
@@ -110,7 +110,9 @@ export default function DeadLettersPage() {
             Requeue {selected.size > 0 ? selected.size : ""} selected
           </Button>
         ) : (
-          <p className="text-muted-foreground text-xs">Requeueing needs the admin role.</p>
+          <p className="text-muted-foreground text-xs">
+            Requeueing needs the notifications.manage permission.
+          </p>
         )}
       </div>
 

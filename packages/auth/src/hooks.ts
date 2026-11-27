@@ -2,7 +2,7 @@
 
 import { useShallow } from "zustand/react/shallow";
 
-import type { Membership, OrgRole, PlatformRole, SessionStatus, SessionUser } from "./types";
+import type { Membership, OrgRole, SessionStatus, SessionUser, StaffPermission } from "./types";
 import { selectActiveMembership, useSessionStore } from "./store";
 import { hasPermission } from "./permissions";
 
@@ -49,26 +49,15 @@ export const useOrgRole = (): OrgRole | null =>
   useSessionStore((s) => selectActiveMembership(s)?.role ?? null);
 
 /**
- * Whether the signed-in user's platform grant satisfies `role`.
+ * Whether the signed-in staff account holds `permission`. Always false for a
+ * user session. UX gating only — accounts and the services re-check every call.
  *
- * Mirrors the server's `PlatformRoles.Implies`: **admin implies everything**,
- * anything else must match exactly. Without that, a platform admin opening the
- * review queue would be refused by the client while the server would happily
- * serve them — the UI locking out the one person who can do everything.
- *
- * Support is deliberately *not* treated as weaker than reviewer. They are
- * different powers, not a ladder, so there is no ordering to compare.
- *
- * UX gating only — the server re-checks on every call.
- *
- * @example const canReview = usePlatformRole("platform.reviewer");
+ * @example const canReview = useStaffPermission("courses.review");
  */
-export const usePlatformRole = (role: PlatformRole): boolean =>
+export const useStaffPermission = (permission: StaffPermission): boolean =>
   useSessionStore(
-    (s) =>
-      s.user?.platformRoles.some((held) => held === "platform.admin" || held === role) ?? false,
+    (s) => (s.user?.staff ?? false) && (s.user?.staffPermissions ?? []).includes(permission),
   );
 
-/** True for any platform grant at all — the "should this app be usable" check. */
-export const useIsPlatformStaff = (): boolean =>
-  useSessionStore((s) => (s.user?.platformRoles.length ?? 0) > 0);
+/** True for a staff account session — the "should this app be usable" check. */
+export const useIsStaff = (): boolean => useSessionStore((s) => s.user?.staff ?? false);
