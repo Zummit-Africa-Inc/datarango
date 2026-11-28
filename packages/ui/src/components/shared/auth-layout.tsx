@@ -89,7 +89,7 @@ export const AUTH_ASIDE: Record<AuthAudience, AuthAsideContent> = {
     points: [
       { icon: ShieldCheck, label: "Platform staff only" },
       { icon: Building2, label: "Users, organisations and moderation" },
-      { icon: KeyRound, label: "Use two-factor authentication" },
+      { icon: KeyRound, label: "Passwordless sign-in with Trustaige" },
     ],
   },
 };

@@ -199,9 +199,9 @@ const RoleDialog = ({ role, onClose }: { role: StaffRole | null; onClose: () => 
                         )
                       }
                     />
-                    <Label htmlFor={id} className="font-normal">
-                      {label}
-                      <span className="text-muted-foreground ml-1.5 font-mono text-xs">{key}</span>
+                    <Label htmlFor={id} className="block leading-tight font-normal">
+                      <span className="block">{label}</span>
+                      <span className="text-muted-foreground block font-mono text-xs">{key}</span>
                     </Label>
                   </div>
                 );
