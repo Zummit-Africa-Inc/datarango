@@ -1,21 +1,13 @@
 "use client";
 
 import { Check, KeyRound, Lock, ShieldAlert } from "lucide-react";
-import { useMemo, useState } from "react";
+import Link from "next/link";
+import { useState } from "react";
 
-import { useStaffPermission, useUser } from "@datarango/auth";
+import { useStaffPermission } from "@datarango/auth";
 import {
   Badge,
   Button,
-  Checkbox,
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  Input,
-  Label,
   PageLayout,
   Sheet,
   SheetContent,
@@ -30,22 +22,17 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Textarea,
 } from "@datarango/ui";
 
 import { Notice } from "@/components/people-ui";
+import { byModule } from "@/components/role-form";
 import {
-  blockedBy,
-  conflictsIn,
   moduleTitle,
-  useCreateRole,
   useDeleteRole,
   usePermissionCatalog,
   usePermissionLabel,
   useStaffRoles,
-  useUpdateRole,
   type StaffPermissionConflict,
-  type StaffPermissionInfo,
   type StaffRole,
 } from "@/hooks/people";
 
@@ -56,7 +43,7 @@ export default function RolesPage() {
 
   return (
     <PageLayout
-      title="Staff roles"
+      title="Roles & Permissions"
       subtitle="What each role lets a staff account do. A person's access is every permission across their roles."
     >
       {canView || canManage ? (
@@ -71,18 +58,10 @@ export default function RolesPage() {
   );
 }
 
-/** Catalog entries grouped by module, in catalog order. */
-const byModule = (permissions: StaffPermissionInfo[]) => {
-  const out = new Map<string, StaffPermissionInfo[]>();
-  for (const p of permissions) out.set(p.module, [...(out.get(p.module) ?? []), p]);
-  return [...out.entries()];
-};
-
 const Roles = ({ canManage }: { canManage: boolean }) => {
   const { data, isLoading } = useStaffRoles();
   const { data: catalog } = usePermissionCatalog();
   const [viewing, setViewing] = useState<string | null>(null);
-  const [editing, setEditing] = useState<StaffRole | "new" | null>(null);
 
   const modulesOf = (role: StaffRole) => {
     const modules = new Set(
@@ -100,8 +79,8 @@ const Roles = ({ canManage }: { canManage: boolean }) => {
     <div className="space-y-6">
       {canManage && (
         <div className="flex justify-end">
-          <Button size="sm" onClick={() => setEditing("new")}>
-            New role
+          <Button asChild size="sm">
+            <Link href="/roles/new">New role</Link>
           </Button>
         </div>
       )}
@@ -187,20 +166,7 @@ const Roles = ({ canManage }: { canManage: boolean }) => {
 
       {catalog && catalog.conflicts.length > 0 && <DutyRules conflicts={catalog.conflicts} />}
 
-      {viewed && (
-        <RoleSheet
-          role={viewed}
-          canManage={canManage}
-          onClose={() => setViewing(null)}
-          onEdit={() => {
-            setViewing(null);
-            setEditing(viewed);
-          }}
-        />
-      )}
-      {editing && (
-        <RoleDialog role={editing === "new" ? null : editing} onClose={() => setEditing(null)} />
-      )}
+      {viewed && <RoleSheet role={viewed} canManage={canManage} onClose={() => setViewing(null)} />}
     </div>
   );
 };
@@ -236,12 +202,10 @@ const RoleSheet = ({
   role,
   canManage,
   onClose,
-  onEdit,
 }: {
   role: StaffRole;
   canManage: boolean;
   onClose: () => void;
-  onEdit: () => void;
 }) => {
   const { data: catalog } = usePermissionCatalog();
   const remove = useDeleteRole();
@@ -322,129 +286,12 @@ const RoleSheet = ({
             >
               Delete role
             </Button>
-            <Button onClick={onEdit}>Edit role</Button>
+            <Button asChild>
+              <Link href={`/roles/${role.id}`}>Edit role</Link>
+            </Button>
           </SheetFooter>
         )}
       </SheetContent>
     </Sheet>
-  );
-};
-
-/**
- * Create or edit a role. Only permissions the editor holds can be ticked
- * (accounts refuses anything else), and ticking one side of a
- * segregation-of-duties pair greys out the other, with the reason.
- */
-const RoleDialog = ({ role, onClose }: { role: StaffRole | null; onClose: () => void }) => {
-  const me = useUser();
-  const { data: catalog } = usePermissionCatalog();
-  const label = usePermissionLabel();
-  const create = useCreateRole();
-  const update = useUpdateRole();
-
-  const [name, setName] = useState(role?.name ?? "");
-  const [description, setDescription] = useState(role?.description ?? "");
-  const [permissions, setPermissions] = useState<string[]>(role?.permissions ?? []);
-
-  const held = useMemo(() => new Set<string>(me?.staffPermissions ?? []), [me]);
-  const groups = useMemo(() => byModule(catalog?.permissions ?? []), [catalog]);
-  const rules = catalog?.conflicts ?? [];
-  const blocked = blockedBy(rules, permissions);
-  // Only possible for a role saved before the rules: both sides ticked.
-  const broken = conflictsIn(rules, permissions);
-
-  const busy = create.isPending || update.isPending;
-  const body = { name: name.trim(), description: description.trim(), permissions };
-
-  const save = () =>
-    role
-      ? update.mutate({ roleId: role.id, ...body }, { onSuccess: onClose })
-      : create.mutate(body, { onSuccess: onClose });
-
-  return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-h-[90dvh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{role ? `Edit ${role.name}` : "New role"}</DialogTitle>
-          <DialogDescription>
-            You can only include permissions you hold. Permissions that mustn&apos;t be held
-            together are greyed out once you pick the other one.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="role-name">Name</Label>
-            <Input id="role-name" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="role-description">Description</Label>
-            <Textarea
-              id="role-description"
-              rows={2}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-            />
-          </div>
-
-          {broken.length > 0 && (
-            <p className="text-danger text-sm" role="alert">
-              Untick one side of each pair to save:{" "}
-              {broken.map((c) => `${label(c.first)} / ${label(c.second)}`).join("; ")}.
-            </p>
-          )}
-
-          {groups.map(([module, items]) => (
-            <fieldset key={module} className="space-y-2">
-              <legend className="text-muted-foreground text-xs font-medium uppercase">
-                {moduleTitle(module)}
-              </legend>
-              {items.map(({ key, label: text }) => {
-                const id = `perm-${key}`;
-                const rule = blocked.get(key);
-                const checked = permissions.includes(key);
-                return (
-                  <div key={key} className="flex items-start gap-2">
-                    <Checkbox
-                      id={id}
-                      className="mt-0.5"
-                      disabled={!held.has(key) || (!!rule && !checked)}
-                      checked={checked}
-                      onCheckedChange={(v) =>
-                        setPermissions((cur) =>
-                          v === true ? [...cur, key] : cur.filter((x) => x !== key),
-                        )
-                      }
-                    />
-                    <Label htmlFor={id} className="block leading-tight font-normal">
-                      <span className="block">{text}</span>
-                      <span className="text-muted-foreground block font-mono text-xs">{key}</span>
-                      {rule && !checked && (
-                        <span className="text-warning mt-1 block text-xs">
-                          Not with {label(rule.first === key ? rule.second : rule.first)}:{" "}
-                          {rule.reason}
-                        </span>
-                      )}
-                    </Label>
-                  </div>
-                );
-              })}
-            </fieldset>
-          ))}
-        </div>
-
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            disabled={busy || !body.name || !permissions.length || broken.length > 0}
-            onClick={save}
-          >
-            Save
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 };

@@ -79,6 +79,15 @@ const MODULE_TITLES: Record<string, string> = {
 export const moduleTitle = (module: string) =>
   MODULE_TITLES[module] ?? module.charAt(0).toUpperCase() + module.slice(1);
 
+/** An organisation a user belongs to, as the user directory shows it. */
+export interface PlatformUserOrg {
+  orgId: string;
+  name: string;
+  role: string;
+  active: boolean;
+  orgSuspended: boolean;
+}
+
 export interface PlatformUser {
   userId: string;
   email: string;
@@ -86,7 +95,26 @@ export interface PlatformUser {
   emailVerified: boolean;
   createdAt: string;
   deactivatedAt: string | null;
+  lastSignInAt: string | null;
+  hasPassword: boolean;
+  /** Linked social sign-ins, e.g. "google". */
+  socialLogins: string[];
+  mfaEnabled: boolean;
+  /** "organisation" when they hold an active membership in any org. */
+  kind: "individual" | "organisation";
+  orgs: PlatformUserOrg[];
 }
+
+export type UserStatusFilter = "" | "active" | "suspended" | "unverified";
+
+/** "Password, Google". */
+export const signInMethods = (user: PlatformUser) => {
+  const methods = [
+    ...(user.hasPassword ? ["Password"] : []),
+    ...user.socialLogins.map((p) => p.charAt(0).toUpperCase() + p.slice(1)),
+  ];
+  return methods.join(", ") || "None";
+};
 
 export interface PlatformUserPage {
   items: PlatformUser[];
@@ -136,16 +164,39 @@ const ACCOUNTS = ["staff-accounts"];
 const ROLES = ["staff-roles"];
 
 export const usePlatformUsers = (
-  options: { query?: string; page?: number; pageSize?: number; enabled?: boolean } = {},
+  options: {
+    query?: string;
+    status?: UserStatusFilter;
+    page?: number;
+    pageSize?: number;
+    enabled?: boolean;
+  } = {},
 ) =>
   useApi.query<PlatformUserPage>(
-    [...USERS, options.query ?? "", String(options.page ?? 1)],
+    [...USERS, options.query ?? "", options.status ?? "", String(options.page ?? 1)],
     "/staff/users",
     {
       orgScoped: false,
       enabled: options.enabled,
-      params: { q: options.query || undefined, page: options.page, pageSize: options.pageSize },
+      params: {
+        q: options.query || undefined,
+        status: options.status || undefined,
+        page: options.page,
+        pageSize: options.pageSize,
+      },
     },
+  );
+
+export const usePlatformUser = (userId: string) =>
+  useApi.query<PlatformUser>([...USERS, "one", userId], `/staff/users/${userId}`, {
+    orgScoped: false,
+  });
+
+/** Suspend or restore. Staff can't create users or verify their email. */
+export const useSetUserActive = () =>
+  useApi.mutation<{ userId: string; active: boolean }, PlatformUser>(
+    (v) => `/staff/users/${v.userId}/active`,
+    { method: "PUT", invalidates: [USERS], toast: { success: "User updated" } },
   );
 
 export const useStaffAccounts = (enabled = true) =>

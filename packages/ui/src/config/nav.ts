@@ -27,6 +27,7 @@ import {
   Users,
   Wallet,
   type LucideIcon,
+  Library,
 } from "lucide-react";
 
 export interface NavItem {
@@ -62,7 +63,7 @@ export const LEARNER_NAV: NavGroup[] = [
         icon: GraduationCap,
         children: [
           {
-            label: "My courses",
+            label: "My Courses",
             href: "/dashboard/my-courses",
             keywords: ["enrolled", "progress"],
           },
@@ -119,8 +120,8 @@ export const CREATOR_NAV: NavGroup[] = [
         children: [
           { label: "Courses", href: "/courses", icon: BookOpen },
           { label: "Quizzes", href: "/quizzes", icon: FileQuestion },
-          { label: "Media library", href: "/media", icon: Images, keywords: ["video", "upload"] },
-          { label: "Review status", href: "/review", icon: ListChecks, keywords: ["moderation"] },
+          { label: "Media Library", href: "/media", icon: Images, keywords: ["video", "upload"] },
+          { label: "Review Status", href: "/review", icon: ListChecks, keywords: ["moderation"] },
         ],
       },
       { label: "Grading", href: "/grading", icon: ClipboardCheck, keywords: ["submissions"] },
@@ -201,16 +202,40 @@ export const ADMIN_NAV: NavGroup[] = [
     items: [
       { label: "Overview", href: "/overview", icon: LayoutDashboard },
       { label: "Users", href: "/users", icon: Users, permission: "users:accounts:view" },
-      { label: "Organisations", href: "/organizations", icon: Building2 },
       {
-        label: "Moderation queue",
+        label: "Organisations",
+        href: "/organizations",
+        icon: Building2,
+        permission: "orgs:organizations:view",
+      },
+      {
+        label: "Moderation Queue",
         href: "/review",
         icon: ShieldCheck,
         keywords: ["review"],
         permission: "creator:courses:view",
       },
-      { label: "Reward rules", href: "/rewards", icon: Coins, keywords: ["tokens", "economy"] },
-      { label: "Billing operations", href: "/billing", icon: Wallet, keywords: ["payments"] },
+      {
+        label: "Courses",
+        href: "/courses",
+        icon: Library,
+        keywords: ["catalogue", "content"],
+        permission: "creator:courses:view",
+      },
+      {
+        label: "Reward Rules",
+        href: "/rewards",
+        icon: Coins,
+        keywords: ["tokens", "economy"],
+        permission: "rewards:rules:view",
+      },
+      {
+        label: "Billing Operations",
+        href: "/billing",
+        icon: Wallet,
+        keywords: ["payments"],
+        permission: "billing:organization:view",
+      },
       {
         label: "System",
         href: "/system",
@@ -222,8 +247,18 @@ export const ADMIN_NAV: NavGroup[] = [
             icon: MailWarning,
             permission: "notifications:deliveries:view",
           },
-          { label: "Audit log", href: "/audit", icon: ScrollText },
-          { label: "Feature flags", href: "/flags", icon: Flag },
+          {
+            label: "Audit Log",
+            href: "/audit",
+            icon: ScrollText,
+            permission: "audit:events:view",
+          },
+          {
+            label: "Feature Flags",
+            href: "/flags",
+            icon: Flag,
+            permission: "flags:features:view",
+          },
         ],
       },
       {
@@ -234,7 +269,7 @@ export const ADMIN_NAV: NavGroup[] = [
         permission: "staff:accounts:view",
       },
       {
-        label: "Staff roles",
+        label: "Roles & Permissions",
         href: "/roles",
         icon: KeyRound,
         keywords: ["permissions"],
