@@ -36,6 +36,7 @@ import {
   type PlatformUser,
   type UserStatusFilter,
 } from "@/hooks/people";
+import { useLearnerCounts, type LearnerCount } from "@/hooks/metrics";
 
 const PAGE_SIZE = 25;
 
@@ -76,6 +77,13 @@ const Directory = () => {
 
   const { data, isLoading } = usePlatformUsers({ query, status, page, pageSize: PAGE_SIZE });
   const items = data?.items ?? [];
+  // Enrolment counts for this page, from learning. Needs learning to answer;
+  // the column shows a dash until it does.
+  const { data: learnerData } = useLearnerCounts(
+    items.map((u) => u.userId),
+    items.length > 0,
+  );
+  const learners = new Map(learnerData?.learners.map((l) => [l.userId, l]));
   const total = data?.total ?? 0;
   const pages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
@@ -131,6 +139,7 @@ const Directory = () => {
                 <TableHead className="min-w-56">User</TableHead>
                 <TableHead className="min-w-48">Type</TableHead>
                 <TableHead>Status</TableHead>
+                <TableHead>Student</TableHead>
                 <TableHead>Sign-in</TableHead>
                 <TableHead>Joined</TableHead>
                 <TableHead>Last sign-in</TableHead>
@@ -138,7 +147,11 @@ const Directory = () => {
             </TableHeader>
             <TableBody>
               {items.map((user) => (
-                <UserRow key={user.userId} user={user} />
+                <UserRow
+                  key={user.userId}
+                  user={user}
+                  learner={learnerData ? (learners.get(user.userId) ?? null) : undefined}
+                />
               ))}
             </TableBody>
           </Table>
@@ -152,7 +165,14 @@ const Directory = () => {
   );
 };
 
-const UserRow = ({ user }: { user: PlatformUser }) => {
+const UserRow = ({
+  user,
+  learner,
+}: {
+  user: PlatformUser;
+  /** Undefined while loading; null when they've never enrolled. */
+  learner: LearnerCount | null | undefined;
+}) => {
   const activeOrgs = user.orgs.filter((o) => o.active);
   return (
     <TableRow>
@@ -192,6 +212,18 @@ const UserRow = ({ user }: { user: PlatformUser }) => {
           )}
           {!user.emailVerified && <Badge tone="warning">Unverified</Badge>}
         </div>
+      </TableCell>
+      <TableCell className="text-xs whitespace-nowrap">
+        {learner === undefined ? (
+          <span className="text-muted-foreground">—</span>
+        ) : learner === null ? (
+          <span className="text-muted-foreground">Not enrolled</span>
+        ) : (
+          <span>
+            {learner.enrolments} course{learner.enrolments === 1 ? "" : "s"}
+            <span className="text-muted-foreground block">{learner.completed} finished</span>
+          </span>
+        )}
       </TableCell>
       <TableCell className="text-muted-foreground text-xs whitespace-nowrap">
         {signInMethods(user)}

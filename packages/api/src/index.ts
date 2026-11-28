@@ -12,3 +12,4 @@ export { ApiProvider, useOrgScope } from "./provider";
 export { useApi, useApiMutation, useApiPaginated, useApiQuery } from "./use-api";
 export type { CursorPage, QueryParams } from "./types";
 export { uuidv7 } from "./uuid";
+export { useFeatureFlags, useFlag } from "./flags";

@@ -59,7 +59,46 @@ function chartConfigFrom(series: ChartWidget["data"]["series"]): ChartConfig {
   );
 }
 
+/** Pie and donut slices take the chart palette in order; bars and lines colour by series. */
+const sliceColor = (i: number) => `var(--chart-${(i % 5) + 1})`;
+
+/** A pie has no axis to read, so its slices are named underneath. */
+function SliceLegend({ widget }: { widget: ChartWidget }) {
+  const values = widget.data.series[0]?.data ?? [];
+  return (
+    <ul className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
+      {widget.data.labels.map((label, i) => (
+        <li key={label} className="flex items-center gap-1.5">
+          <span className="size-2.5 rounded-xs" style={{ background: sliceColor(i) }} />
+          <span className="text-foreground-muted">{label}</span>
+          <span className="tabular-nums">{values[i] ?? 0}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
 function ChartBody({ widget }: { widget: ChartWidget }) {
+  const isPie = widget.chartType === "pie" || widget.chartType === "donut";
+  return (
+    <>
+      <ChartPlot widget={widget} />
+      {isPie && <SliceLegend widget={widget} />}
+      {!isPie && widget.data.series.length > 1 && (
+        <ul className="mt-3 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
+          {widget.data.series.map((s, i) => (
+            <li key={s.name} className="flex items-center gap-1.5">
+              <span className="size-2.5 rounded-xs" style={{ background: sliceColor(i) }} />
+              <span className="text-foreground-muted">{s.name}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </>
+  );
+}
+
+function ChartPlot({ widget }: { widget: ChartWidget }) {
   const { labels, series } = widget.data;
   const config = chartConfigFrom(series);
   const rows = labels.map((label, i) => {
@@ -97,10 +136,10 @@ function ChartBody({ widget }: { widget: ChartWidget }) {
         </AreaChart>
       ) : widget.chartType === "pie" || widget.chartType === "donut" ? (
         <PieChart>
-          <ChartTooltip content={<ChartTooltipContent />} />
+          <ChartTooltip content={<ChartTooltipContent nameKey="label" hideLabel />} />
           <Pie
-            data={rows}
-            dataKey={series[0]?.name}
+            data={rows.map((row, i) => ({ ...row, fill: sliceColor(i) }))}
+            dataKey={series[0]?.name ?? "value"}
             nameKey="label"
             innerRadius={widget.chartType === "donut" ? 60 : 0}
           />
