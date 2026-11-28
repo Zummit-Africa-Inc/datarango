@@ -14,25 +14,33 @@ import type { StaffPermission } from "@datarango/auth";
  * so every call is `orgScoped: false`.
  */
 
-/** What each catalog permission lets someone do, for the role editor. */
-export const PERMISSION_INFO: Record<StaffPermission, { label: string; group: string }> = {
-  "users.view": { label: "See the user directory", group: "Users" },
-  "users.manage": { label: "Change user accounts", group: "Users" },
-  "orgs.view": { label: "See organisations", group: "Organisations" },
-  "orgs.manage": { label: "Change organisations", group: "Organisations" },
-  "courses.review": { label: "Approve or reject courses", group: "Content" },
-  "billing.view": { label: "See billing", group: "Billing" },
-  "billing.manage": { label: "Change billing", group: "Billing" },
-  "rewards.manage": { label: "Change reward rules", group: "Economy" },
-  "notifications.view": { label: "See failed notifications", group: "System" },
-  "notifications.manage": { label: "Requeue failed notifications", group: "System" },
-  "audit.view": { label: "Read the audit log", group: "System" },
-  "flags.manage": { label: "Change feature flags", group: "System" },
-  "staff.manage": { label: "Invite and manage staff", group: "Staff" },
-  "roles.manage": { label: "Create and edit staff roles", group: "Staff" },
+/**
+ * One catalog entry as accounts serves it (`GET /staff/permissions`): the
+ * `module:feature:action` key, its module, and what holding it lets someone
+ * do. The catalog lives in Datarango.Shared; nothing here repeats it.
+ */
+export interface StaffPermissionInfo {
+  key: StaffPermission;
+  module: string;
+  label: string;
+}
+
+/** Headings for the role editor's module groups; unknown modules show as named. */
+const MODULE_TITLES: Record<string, string> = {
+  platform: "Platform",
+  users: "Users",
+  orgs: "Organisations",
+  creator: "Creator content",
+  billing: "Billing",
+  rewards: "Rewards",
+  notifications: "Notifications",
+  audit: "Audit",
+  flags: "Feature flags",
+  staff: "Staff",
 };
 
-export const permissionLabel = (p: string) => PERMISSION_INFO[p as StaffPermission]?.label ?? p;
+export const moduleTitle = (module: string) =>
+  MODULE_TITLES[module] ?? module.charAt(0).toUpperCase() + module.slice(1);
 
 export interface PlatformUser {
   userId: string;
@@ -62,7 +70,6 @@ export interface StaffAccount {
   email: string;
   displayName: string;
   status: StaffStatus;
-  mfaEnabled: boolean;
   createdAt: string;
   lastSignInAt: string | null;
   roles: StaffRoleRef[];
@@ -77,6 +84,7 @@ export interface StaffRole {
   memberCount: number;
 }
 
+/** The account, plus the admin sign-in link the invite email carries. */
 export interface StaffInvite {
   account: StaffAccount;
   inviteLink: string;
@@ -106,7 +114,17 @@ export const useStaffRoles = (enabled = true) =>
   useApi.query<StaffRole[]>(ROLES, "/staff/roles", { orgScoped: false, enabled });
 
 export const usePermissionCatalog = () =>
-  useApi.query<string[]>(["staff-permissions"], "/staff/permissions", { orgScoped: false });
+  useApi.query<StaffPermissionInfo[]>(["staff-permissions"], "/staff/permissions", {
+    orgScoped: false,
+    staleTime: Infinity,
+  });
+
+/** Label for a permission key from the catalog, or the key itself while it loads. */
+export const usePermissionLabel = () => {
+  const { data } = usePermissionCatalog();
+  const labels = new Map((data ?? []).map((p) => [p.key as string, p.label]));
+  return (key: string) => labels.get(key) ?? key;
+};
 
 export const useInviteStaff = () =>
   useApi.mutation<{ email: string; displayName: string; roleIds: string[] }, StaffInvite>(
@@ -130,16 +148,6 @@ export const useSetStaffActive = () =>
   useApi.mutation<{ accountId: string; active: boolean }, StaffAccount>(
     (v) => `/staff/accounts/${v.accountId}/active`,
     { method: "PUT", invalidates: [ACCOUNTS], toast: { success: "Account updated" } },
-  );
-
-export const useResetStaffMfa = () =>
-  useApi.mutation<{ accountId: string }, StaffAccount>(
-    (v) => `/staff/accounts/${v.accountId}/reset-mfa`,
-    {
-      method: "POST",
-      invalidates: [ACCOUNTS],
-      toast: { success: "Two-factor reset. They'll set it up again at their next sign-in." },
-    },
   );
 
 export const useCreateRole = () =>

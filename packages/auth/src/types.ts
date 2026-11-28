@@ -7,22 +7,32 @@
  * Deliberately kept apart from org permissions so a tenant grant and a staff
  * grant can never be confused; they arrive on separate fields all the way from
  * the RequestContext envelope.
+ *
+ * Keys are `module:feature:action` and mirror `StaffPermissions` in
+ * Datarango.Shared; labels come from the catalog, not from here.
  */
 export type StaffPermission =
-  | "users.view"
-  | "users.manage"
-  | "orgs.view"
-  | "orgs.manage"
-  | "courses.review"
-  | "billing.view"
-  | "billing.manage"
-  | "rewards.manage"
-  | "notifications.view"
-  | "notifications.manage"
-  | "audit.view"
-  | "flags.manage"
-  | "staff.manage"
-  | "roles.manage";
+  | "platform:overview:view"
+  | "users:accounts:view"
+  | "users:accounts:manage"
+  | "orgs:organizations:view"
+  | "orgs:organizations:manage"
+  | "creator:courses:view"
+  | "creator:courses:approve"
+  | "billing:organization:view"
+  | "billing:organization:manage"
+  | "billing:pricing:override"
+  | "rewards:rules:view"
+  | "rewards:rules:manage"
+  | "notifications:deliveries:view"
+  | "notifications:deliveries:retry"
+  | "audit:events:view"
+  | "flags:features:view"
+  | "flags:features:manage"
+  | "staff:accounts:view"
+  | "staff:accounts:manage"
+  | "staff:roles:view"
+  | "staff:roles:manage";
 
 /** Built-in org roles; custom org roles arrive as arbitrary strings with server-resolved permissions. */
 export type OrgRole = "owner" | "admin" | "manager" | "instructor" | "member" | (string & {});

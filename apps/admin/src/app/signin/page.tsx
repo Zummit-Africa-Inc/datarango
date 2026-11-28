@@ -10,8 +10,8 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 const WEB_URL = process.env.NEXT_PUBLIC_WEB_URL || "http://localhost:4000";
 
 /**
- * Staff sign-in. Staff accounts are separate from user accounts and always
- * use two-factor; accounts sends the admin client's authorize here.
+ * Staff sign-in. Staff accounts are separate from user accounts and sign in
+ * passwordless through Trustaige; accounts sends the admin client's authorize here.
  */
 const Page = () => (
   <AuthSplitLayout audience="admin" homeHref={WEB_URL}>

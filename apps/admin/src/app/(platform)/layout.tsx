@@ -3,21 +3,27 @@
 import { useEffect, useMemo } from "react";
 import { usePathname } from "next/navigation";
 
-import { createAuthClient, useAuthStatus, useIsStaff, useUser } from "@datarango/auth";
+import { useAuthStatus, useIsStaff, useUser } from "@datarango/auth";
 import { ADMIN_NAV, AppShell, Loader, filterNav } from "@datarango/ui";
 
-const auth = createAuthClient();
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8080";
 
 /**
- * Ends the staff session on accounts as well as this app's tokens. Without it
- * the next sign-in would finish silently on the still-valid staff cookie.
+ * Ends the staff session on accounts and this app's tokens, then Trustaige's
+ * session too (TRUSTAIGE.md §6.3), so the next person at this browser has to
+ * sign in rather than finishing silently on someone else's session.
  */
 const signOut = async () => {
-  await fetch(`${API_URL}/auth/staff/logout`, { method: "POST", credentials: "include" }).catch(
-    () => undefined,
-  );
-  await auth.signOut();
+  const res = await fetch(`${API_URL}/auth/staff/logout`, {
+    method: "POST",
+    credentials: "include",
+  }).catch(() => null);
+  const body = res?.ok
+    ? ((await res.json().catch(() => null)) as { endSessionUrl?: string | null } | null)
+    : null;
+  // Not auth.signOut(): it navigates to "/" itself, racing the redirect below.
+  await fetch("/api/auth/signout", { method: "POST" }).catch(() => undefined);
+  window.location.assign(body?.endSessionUrl || "/signin");
 };
 
 /** Staff shell. A non-staff session (which accounts shouldn't issue here) gets an explanation, not the app. */
