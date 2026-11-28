@@ -26,6 +26,7 @@ import {
   TableRow,
 } from "@datarango/ui";
 
+import { countryName } from "@/components/org-form";
 import { Notice, formatDate } from "@/components/people-ui";
 import { usePlatformOrg, useSetOrgSuspended } from "@/hooks/operations";
 
@@ -56,6 +57,7 @@ export default function OrganizationPage() {
 
 const OrgDetail = ({ orgId }: { orgId: string }) => {
   const canManage = useStaffPermission("orgs:organizations:manage");
+  const canEdit = useStaffPermission("orgs:organizations:create");
   const canSeeBilling = useStaffPermission("billing:organization:view");
   const canSeeUsers = useStaffPermission("users:accounts:view");
   const { data, isLoading, error } = usePlatformOrg(orgId);
@@ -85,6 +87,11 @@ const OrgDetail = ({ orgId }: { orgId: string }) => {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          {canEdit && (
+            <Button asChild variant="secondary">
+              <Link href={`/organizations/${org.id}/edit`}>Edit details</Link>
+            </Button>
+          )}
           {canSeeBilling && (
             <Button asChild variant="secondary">
               <Link href={`/billing/${org.id}`}>Billing</Link>
@@ -104,16 +111,43 @@ const OrgDetail = ({ orgId }: { orgId: string }) => {
         </div>
       </div>
 
-      <section className="border-hairline bg-card rounded-xs border p-5">
-        <PropertyList
-          items={[
-            { label: "Created", value: formatDate(org.createdAt) },
-            { label: "Active members", value: String(org.memberCount) },
-            { label: "Suspended", value: suspended ? formatDate(org.suspendedAt) : "No" },
-            { label: "Org id", value: <span className="font-mono text-xs">{org.id}</span> },
-          ]}
-        />
-      </section>
+      <div className="grid gap-6 lg:grid-cols-2">
+        <section className="border-hairline bg-card rounded-xs border p-5">
+          <h2 className="text-ink mb-2 text-sm font-medium">Account</h2>
+          <PropertyList
+            items={[
+              { label: "Created", value: formatDate(org.createdAt) },
+              { label: "Active members", value: String(org.memberCount) },
+              { label: "Suspended", value: suspended ? formatDate(org.suspendedAt) : "No" },
+              {
+                label: "Datarango courses",
+                value: org.allowPlatformCourses ? "Shown to members" : "Hidden from members",
+              },
+              { label: "Org id", value: <span className="font-mono text-xs">{org.id}</span> },
+            ]}
+          />
+        </section>
+        <section className="border-hairline bg-card rounded-xs border p-5">
+          <h2 className="text-ink mb-2 text-sm font-medium">Details</h2>
+          <PropertyList
+            items={[
+              { label: "Website", value: org.profile.website ?? "—" },
+              { label: "Industry", value: org.profile.industry ?? "—" },
+              { label: "Size", value: org.profile.size ? `${org.profile.size} people` : "—" },
+              { label: "Country", value: countryName(org.profile.country) ?? "—" },
+              { label: "Billing email", value: org.profile.billingEmail ?? "—" },
+              { label: "Phone", value: org.profile.phone ?? "—" },
+              { label: "Tax ID", value: org.profile.taxId ?? "—" },
+              { label: "Address", value: org.profile.address ?? "—" },
+            ]}
+          />
+          {org.profile.notes && (
+            <p className="bg-background-subtle text-muted-foreground mt-3 rounded-xs p-3 text-sm whitespace-pre-line">
+              {org.profile.notes}
+            </p>
+          )}
+        </section>
+      </div>
 
       <section className="border-hairline bg-card overflow-x-auto rounded-xs border">
         <h2 className="text-ink px-4 pt-4 text-sm font-medium">Members</h2>

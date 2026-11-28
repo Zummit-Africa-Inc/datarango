@@ -220,7 +220,7 @@ export const ADMIN_NAV: NavGroup[] = [
         href: "/courses",
         icon: Library,
         keywords: ["catalogue", "content"],
-        permission: "creator:courses:view",
+        permission: "learning:courses:view",
       },
       {
         label: "Reward Rules",
