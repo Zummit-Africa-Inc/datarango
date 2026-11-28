@@ -1,13 +1,13 @@
 "use client";
 
-import { Copy, MoreHorizontal, UserCog } from "lucide-react";
+import { MoreHorizontal, UserCog } from "lucide-react";
+import Link from "next/link";
 import { useState } from "react";
 
 import { useStaffPermission, useUser } from "@datarango/auth";
 import {
   Badge,
   Button,
-  Checkbox,
   Dialog,
   DialogContent,
   DialogDescription,
@@ -19,25 +19,18 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-  Input,
-  Label,
   PageLayout,
   Skeleton,
 } from "@datarango/ui";
 
 import { Notice, formatDate } from "@/components/people-ui";
+import { RolePicker } from "@/components/role-picker";
 import {
-  conflictsIn,
-  usePermissionCatalog,
-  usePermissionLabel,
-  useInviteStaff,
   useResendInvite,
   useSetStaffActive,
   useSetStaffRoles,
   useStaffAccounts,
-  useStaffRoles,
   type StaffAccount,
-  type StaffInvite,
   type StaffStatus,
 } from "@/hooks/people";
 
@@ -72,9 +65,7 @@ export default function StaffPage() {
 const StaffList = ({ canManage }: { canManage: boolean }) => {
   const me = useUser();
   const { data, isLoading } = useStaffAccounts();
-  const [inviting, setInviting] = useState(false);
   const [editing, setEditing] = useState<StaffAccount | null>(null);
-  const [link, setLink] = useState<StaffInvite | null>(null);
 
   const resend = useResendInvite();
   const setActive = useSetStaffActive();
@@ -83,8 +74,8 @@ const StaffList = ({ canManage }: { canManage: boolean }) => {
     <div className="space-y-4">
       {canManage && (
         <div className="flex justify-end">
-          <Button size="sm" onClick={() => setInviting(true)}>
-            Invite staff
+          <Button asChild size="sm">
+            <Link href="/staff/new">Invite staff</Link>
           </Button>
         </div>
       )}
@@ -156,11 +147,7 @@ const StaffList = ({ canManage }: { canManage: boolean }) => {
                         Change roles
                       </DropdownMenuItem>
                       {account.status === "invited" && (
-                        <DropdownMenuItem
-                          onSelect={() =>
-                            resend.mutate({ accountId: account.id }, { onSuccess: setLink })
-                          }
-                        >
+                        <DropdownMenuItem onSelect={() => resend.mutate({ accountId: account.id })}>
                           Resend invite
                         </DropdownMenuItem>
                       )}
@@ -184,156 +171,8 @@ const StaffList = ({ canManage }: { canManage: boolean }) => {
         </div>
       )}
 
-      {inviting && (
-        <InviteDialog
-          onClose={() => setInviting(false)}
-          onInvited={(invite) => {
-            setInviting(false);
-            setLink(invite);
-          }}
-        />
-      )}
       {editing && <RolesDialog account={editing} onClose={() => setEditing(null)} />}
-      {link && <InviteLinkDialog invite={link} onClose={() => setLink(null)} />}
     </div>
-  );
-};
-
-/**
- * Role checkboxes. Accounts refuses roles carrying permissions the inviter
- * doesn't hold, and any set of roles that together hold both sides of a
- * segregation-of-duties pair, so a role that would complete a pair with the
- * ones already ticked is greyed out with the reason. Super admin is exempt:
- * with it ticked, nothing else is limited.
- */
-const RolePicker = ({
-  selected,
-  onChange,
-}: {
-  selected: string[];
-  onChange: (ids: string[]) => void;
-}) => {
-  const { data: roles, isLoading } = useStaffRoles();
-  const { data: catalog } = usePermissionCatalog();
-  const label = usePermissionLabel();
-  if (isLoading) return <Skeleton skeleton="table" rows={2} columns={1} />;
-
-  const all = roles ?? [];
-  const rules = catalog?.conflicts ?? [];
-  const superAdmin = all.some((r) => r.isSystem && selected.includes(r.id));
-  const permsOf = (ids: string[]) =>
-    all.filter((r) => ids.includes(r.id) && !r.isSystem).flatMap((r) => r.permissions);
-  const broken = superAdmin ? [] : conflictsIn(rules, permsOf(selected));
-
-  return (
-    <fieldset className="space-y-2">
-      <legend className="text-sm font-medium">Roles</legend>
-      {broken.length > 0 && (
-        <p className="text-danger text-sm" role="alert">
-          These roles together break segregation of duties. Untick one to save.
-        </p>
-      )}
-      {all.map((role) => {
-        const id = `role-${role.id}`;
-        const checked = selected.includes(role.id);
-        // What ticking this role would break, given the others.
-        const clash =
-          checked || superAdmin || role.isSystem
-            ? undefined
-            : conflictsIn(rules, [...permsOf(selected), ...role.permissions]).find(
-                (c) => !broken.includes(c),
-              );
-        return (
-          <div key={role.id} className="flex items-start gap-2">
-            <Checkbox
-              id={id}
-              className="mt-0.5"
-              checked={checked}
-              disabled={!!clash}
-              onCheckedChange={(v) =>
-                onChange(
-                  v === true ? [...selected, role.id] : selected.filter((r) => r !== role.id),
-                )
-              }
-            />
-            <Label htmlFor={id} className="leading-tight font-normal">
-              <span className="text-ink block">{role.name}</span>
-              {role.description && (
-                <span className="text-muted-foreground block text-xs">{role.description}</span>
-              )}
-              {clash && (
-                <span className="text-warning mt-1 block text-xs">
-                  Would give both {label(clash.first)} and {label(clash.second)}. {clash.reason}
-                </span>
-              )}
-            </Label>
-          </div>
-        );
-      })}
-    </fieldset>
-  );
-};
-
-const InviteDialog = ({
-  onClose,
-  onInvited,
-}: {
-  onClose: () => void;
-  onInvited: (invite: StaffInvite) => void;
-}) => {
-  const invite = useInviteStaff();
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [roleIds, setRoleIds] = useState<string[]>([]);
-
-  const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) && name.trim().length > 0;
-
-  return (
-    <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Invite staff</DialogTitle>
-          <DialogDescription>
-            They get an email with the admin sign-in link. They sign in with their Trustaige account
-            for this email; there is no password to set. Their first sign-in ties this account to
-            that Trustaige identity.
-          </DialogDescription>
-        </DialogHeader>
-        <div className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="invite-name">Name</Label>
-            <Input id="invite-name" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="invite-email">Work email</Label>
-            <Input
-              id="invite-email"
-              type="email"
-              autoComplete="off"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <RolePicker selected={roleIds} onChange={setRoleIds} />
-        </div>
-        <DialogFooter>
-          <Button variant="ghost" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button
-            disabled={!valid || invite.isPending}
-            onClick={() =>
-              invite.mutate(
-                { email: email.trim(), displayName: name.trim(), roleIds },
-                { onSuccess: onInvited },
-              )
-            }
-          >
-            {invite.isPending ? "Sending…" : "Send invite"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
   );
 };
 
@@ -364,30 +203,3 @@ const RolesDialog = ({ account, onClose }: { account: StaffAccount; onClose: () 
     </Dialog>
   );
 };
-
-/** The link is emailed too; this is for when the email doesn't arrive. */
-const InviteLinkDialog = ({ invite, onClose }: { invite: StaffInvite; onClose: () => void }) => (
-  <Dialog open onOpenChange={(open) => !open && onClose()}>
-    <DialogContent>
-      <DialogHeader>
-        <DialogTitle>Invite sent to {invite.account.email}</DialogTitle>
-        <DialogDescription>
-          If the email doesn&apos;t arrive, send them this link yourself. It is just the admin
-          sign-in page: only the Trustaige account for {invite.account.email} gets in.
-        </DialogDescription>
-      </DialogHeader>
-      <p className="border-border bg-background-subtle rounded-lg border p-3 font-mono text-xs break-all select-all">
-        {invite.inviteLink}
-      </p>
-      <DialogFooter>
-        <Button
-          variant="secondary"
-          onClick={() => navigator.clipboard?.writeText(invite.inviteLink)}
-        >
-          <Copy className="size-4" /> Copy link
-        </Button>
-        <Button onClick={onClose}>Done</Button>
-      </DialogFooter>
-    </DialogContent>
-  </Dialog>
-);

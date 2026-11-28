@@ -51,7 +51,7 @@ export default function ReviewQueuePage() {
 
   return (
     <PageLayout
-      title="Review queue"
+      title="Review Queue"
       subtitle="Courses waiting on a platform decision. Approving publishes them."
     >
       {isLoading ? (

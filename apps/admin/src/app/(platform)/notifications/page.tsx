@@ -80,7 +80,7 @@ export default function DeadLettersPage() {
 
   return (
     <PageLayout
-      title="Failed notifications"
+      title="Failed Notifications"
       subtitle="Retries exhausted or failed permanently. Nothing here is deleted; requeueing gives a fresh retry budget."
     >
       <div className="flex flex-wrap items-center justify-between gap-3">

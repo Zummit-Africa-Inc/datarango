@@ -1,8 +1,9 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { Search } from "lucide-react";
+import { useEffect, useState, type ReactNode } from "react";
 
-import { Button } from "@datarango/ui";
+import { Button, Input } from "@datarango/ui";
 
 export const Pager = ({
   page,
@@ -50,3 +51,47 @@ export const Notice = ({
 
 export const formatDate = (iso: string | null | undefined) =>
   iso ? new Date(iso).toLocaleDateString() : "Never";
+
+/** `value`, settled for `delay` ms, so a search box doesn't query on every keystroke. */
+export const useDebounced = <T,>(value: T, delay = 300) => {
+  const [settled, setSettled] = useState(value);
+  useEffect(() => {
+    const timer = setTimeout(() => setSettled(value), delay);
+    return () => clearTimeout(timer);
+  }, [value, delay]);
+  return settled;
+};
+
+export const SearchBox = ({
+  value,
+  onChange,
+  label,
+  placeholder,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  label: string;
+  placeholder: string;
+}) => (
+  <div className="relative w-full max-w-sm">
+    <Search className="text-muted-foreground pointer-events-none absolute top-1/2 left-3 z-10 size-4 -translate-y-1/2" />
+    <Input
+      aria-label={label}
+      className="pl-9"
+      placeholder={placeholder}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  </div>
+);
+
+/** "3 days ago"-style text for recent dates, the date itself for older ones. */
+export const formatRelative = (iso: string | null | undefined) => {
+  if (!iso) return "Never";
+  const then = new Date(iso).getTime();
+  const days = Math.floor((Date.now() - then) / 86_400_000);
+  if (days < 1) return "Today";
+  if (days === 1) return "Yesterday";
+  if (days < 30) return `${days} days ago`;
+  return new Date(iso).toLocaleDateString();
+};
