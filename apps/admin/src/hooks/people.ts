@@ -25,6 +25,43 @@ export interface StaffPermissionInfo {
   label: string;
 }
 
+/**
+ * A segregation-of-duties rule: two permissions nobody but the Super admin may
+ * hold together, because between them one person could commit fraud alone.
+ * Accounts refuses roles, and role assignments, that would break one.
+ */
+export interface StaffPermissionConflict {
+  id: string;
+  first: StaffPermission;
+  second: StaffPermission;
+  reason: string;
+}
+
+export interface PermissionCatalog {
+  permissions: StaffPermissionInfo[];
+  conflicts: StaffPermissionConflict[];
+}
+
+/** The rules that `permissions`, held together, break. */
+export const conflictsIn = (
+  conflicts: StaffPermissionConflict[],
+  permissions: Iterable<string>,
+) => {
+  const held = new Set(permissions);
+  return conflicts.filter((c) => held.has(c.first) && held.has(c.second));
+};
+
+/** For each permission, the rule that makes it unavailable alongside `selected`, if any. */
+export const blockedBy = (conflicts: StaffPermissionConflict[], selected: Iterable<string>) => {
+  const held = new Set(selected);
+  const out = new Map<string, StaffPermissionConflict>();
+  for (const c of conflicts) {
+    if (held.has(c.first) && !held.has(c.second)) out.set(c.second, c);
+    if (held.has(c.second) && !held.has(c.first)) out.set(c.first, c);
+  }
+  return out;
+};
+
 /** Headings for the role editor's module groups; unknown modules show as named. */
 const MODULE_TITLES: Record<string, string> = {
   platform: "Platform",
@@ -73,6 +110,8 @@ export interface StaffAccount {
   createdAt: string;
   lastSignInAt: string | null;
   roles: StaffRoleRef[];
+  /** Ids of segregation-of-duties rules their roles break between them (set before the rule existed). */
+  conflicts: string[];
 }
 
 export interface StaffRole {
@@ -82,6 +121,8 @@ export interface StaffRole {
   isSystem: boolean;
   permissions: string[];
   memberCount: number;
+  /** Ids of segregation-of-duties rules this role breaks (saved before the rule existed). */
+  conflicts: string[];
 }
 
 /** The account, plus the admin sign-in link the invite email carries. */
@@ -114,7 +155,7 @@ export const useStaffRoles = (enabled = true) =>
   useApi.query<StaffRole[]>(ROLES, "/staff/roles", { orgScoped: false, enabled });
 
 export const usePermissionCatalog = () =>
-  useApi.query<StaffPermissionInfo[]>(["staff-permissions"], "/staff/permissions", {
+  useApi.query<PermissionCatalog>(["staff-permissions"], "/staff/permissions", {
     orgScoped: false,
     staleTime: Infinity,
   });
@@ -122,7 +163,7 @@ export const usePermissionCatalog = () =>
 /** Label for a permission key from the catalog, or the key itself while it loads. */
 export const usePermissionLabel = () => {
   const { data } = usePermissionCatalog();
-  const labels = new Map((data ?? []).map((p) => [p.key as string, p.label]));
+  const labels = new Map((data?.permissions ?? []).map((p) => [p.key as string, p.label]));
   return (key: string) => labels.get(key) ?? key;
 };
 

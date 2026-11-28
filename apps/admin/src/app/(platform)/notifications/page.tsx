@@ -128,7 +128,7 @@ export default function DeadLettersPage() {
         </div>
       ) : (
         <div className="border-hairline bg-card overflow-x-auto rounded-xs border">
-          <div className="border-hairline text-muted-foreground grid min-w-[720px] grid-cols-[auto_1.2fr_1fr_2fr_auto] gap-4 border-b px-4 py-2 text-xs font-medium uppercase">
+          <div className="border-hairline text-muted-foreground grid min-w-180 grid-cols-[auto_1.2fr_1fr_2fr_auto] gap-4 border-b px-4 py-2 text-xs font-medium uppercase">
             {canRequeue ? (
               <input
                 aria-label="Select all on this page"
@@ -196,7 +196,7 @@ const Row = ({
   selected: boolean;
   onToggle: () => void;
 }) => (
-  <div className="border-hairline grid min-w-[720px] grid-cols-[auto_1.2fr_1fr_2fr_auto] items-start gap-4 border-b px-4 py-3 text-sm last:border-0">
+  <div className="border-hairline grid min-w-180 grid-cols-[auto_1.2fr_1fr_2fr_auto] items-start gap-4 border-b px-4 py-3 text-sm last:border-0">
     {selectable ? (
       <input
         aria-label={`Select notification to ${item.recipient}`}
@@ -220,7 +220,7 @@ const Row = ({
         {item.attempts} attempt{item.attempts === 1 ? "" : "s"}
       </p>
     </div>
-    <p className="text-muted-foreground line-clamp-3 text-xs break-words">
+    <p className="text-muted-foreground line-clamp-3 text-xs wrap-break-word">
       {item.lastError ?? "No error recorded."}
     </p>
     <span className="text-muted-foreground text-xs whitespace-nowrap">
