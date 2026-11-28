@@ -169,11 +169,20 @@ export const usePlatformUsers = (
     status?: UserStatusFilter;
     page?: number;
     pageSize?: number;
+    /** Only these users (up to 100), e.g. to name the rows of another list. */
+    ids?: string[];
     enabled?: boolean;
   } = {},
 ) =>
   useApi.query<PlatformUserPage>(
-    [...USERS, options.query ?? "", options.status ?? "", String(options.page ?? 1)],
+    [
+      ...USERS,
+      options.query ?? "",
+      options.status ?? "",
+      String(options.page ?? 1),
+      String(options.pageSize ?? 25),
+      options.ids?.join(",") ?? "",
+    ],
     "/staff/users",
     {
       orgScoped: false,
@@ -181,6 +190,7 @@ export const usePlatformUsers = (
       params: {
         q: options.query || undefined,
         status: options.status || undefined,
+        ids: options.ids?.length ? options.ids.join(",") : undefined,
         page: options.page,
         pageSize: options.pageSize,
       },

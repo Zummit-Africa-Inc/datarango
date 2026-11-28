@@ -40,3 +40,6 @@ const Toaster = ({ ...props }: ToasterProps) => {
 };
 
 export { Toaster };
+
+/** The toast call itself, so apps use the same instance as <Toaster />. */
+export { toast } from "sonner";

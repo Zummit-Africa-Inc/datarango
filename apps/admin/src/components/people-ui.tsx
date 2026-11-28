@@ -49,8 +49,14 @@ export const Notice = ({
   </div>
 );
 
-export const formatDate = (iso: string | null | undefined) =>
-  iso ? new Date(iso).toLocaleDateString() : "Never";
+export const formatDate = (iso: string | null | undefined) => {
+  if (!iso) return "Never";
+  // A bare date ("2026-12-01") is a calendar day, not UTC midnight: read it
+  // as local so it doesn't show as the day before west of Greenwich.
+  const day = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  const date = day ? new Date(Number(day[1]), Number(day[2]) - 1, Number(day[3])) : new Date(iso);
+  return date.toLocaleDateString();
+};
 
 /** `value`, settled for `delay` ms, so a search box doesn't query on every keystroke. */
 export const useDebounced = <T,>(value: T, delay = 300) => {

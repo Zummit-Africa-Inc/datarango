@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { useUser } from "@datarango/auth";
-import { Button, Checkbox, Input, Label, Textarea } from "@datarango/ui";
+import { Button, Checkbox, Input, Label } from "@datarango/ui";
 
 import {
   blockedBy,
@@ -63,22 +63,21 @@ export const RoleForm = ({ role }: { role: StaffRole | null }) => {
 
   return (
     <form
-      className="max-w-3xl space-y-6"
+      className="space-y-6"
       onSubmit={(e) => {
         e.preventDefault();
         save();
       }}
     >
-      <section className="border-hairline bg-card space-y-4 rounded-xs border p-5">
+      <section className="border-hairline bg-card grid gap-4 rounded-xs border p-5 md:grid-cols-3">
         <div className="space-y-2">
           <Label htmlFor="role-name">Name</Label>
           <Input id="role-name" value={name} onChange={(e) => setName(e.target.value)} />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 md:col-span-2">
           <Label htmlFor="role-description">Description</Label>
-          <Textarea
+          <Input
             id="role-description"
-            rows={2}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
           />
@@ -101,7 +100,7 @@ export const RoleForm = ({ role }: { role: StaffRole | null }) => {
           </p>
         )}
 
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {groups.map(([module, items]) => (
             <fieldset key={module} className="space-y-2">
               <legend className="text-muted-foreground mb-1 text-xs font-medium uppercase">

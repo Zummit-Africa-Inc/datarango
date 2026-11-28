@@ -18,6 +18,7 @@ import {
   TableRow,
 } from "@datarango/ui";
 
+import { countryName } from "@/components/org-form";
 import { Notice, Pager, SearchBox, formatDate, useDebounced } from "@/components/people-ui";
 import { usePlatformOrgs } from "@/hooks/operations";
 
@@ -26,7 +27,7 @@ const PAGE_SIZE = 25;
 /** Every organisation on Datarango. */
 export default function OrganizationsPage() {
   const canView = useStaffPermission("orgs:organizations:view");
-  const canManage = useStaffPermission("orgs:organizations:manage");
+  const canManage = useStaffPermission("orgs:organizations:create");
 
   return (
     <PageLayout title="Organisations" subtitle="Every organisation on Datarango and its members.">
@@ -83,6 +84,7 @@ const OrgList = ({ canManage }: { canManage: boolean }) => {
             <TableHeader>
               <TableRow>
                 <TableHead className="min-w-56">Organisation</TableHead>
+                <TableHead>Country</TableHead>
                 <TableHead>Members</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Created</TableHead>
@@ -98,6 +100,11 @@ const OrgList = ({ canManage }: { canManage: boolean }) => {
                         {org.slug}
                       </span>
                     </Link>
+                  </TableCell>
+                  <TableCell className="text-sm">
+                    {countryName(org.profile.country) ?? (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                   <TableCell className="mono-data">{org.memberCount}</TableCell>
                   <TableCell>

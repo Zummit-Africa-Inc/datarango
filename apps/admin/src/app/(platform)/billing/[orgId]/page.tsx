@@ -25,7 +25,6 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-  Textarea,
 } from "@datarango/ui";
 
 import { Notice, formatDate } from "@/components/people-ui";
@@ -216,7 +215,7 @@ const SubscribeForm = ({ orgId }: { orgId: string }) => {
 
   return (
     <form
-      className="mt-4 grid max-w-xl gap-3 sm:grid-cols-[1fr_8rem_auto] sm:items-end"
+      className="mt-4 grid gap-4 md:grid-cols-3 md:items-end"
       onSubmit={(e) => {
         e.preventDefault();
         subscribe.mutate({ orgId, planCode, seats: seatCount });
@@ -271,7 +270,7 @@ const PriceOverrideForm = ({
   const busy = set.isPending || remove.isPending;
 
   return (
-    <section className="border-hairline bg-card max-w-2xl space-y-4 rounded-xs border p-5">
+    <section className="border-hairline bg-card space-y-4 rounded-xs border p-5">
       <div>
         <h2 className="text-ink text-sm font-medium">Negotiated price</h2>
         <p className="text-muted-foreground text-sm">
@@ -279,7 +278,7 @@ const PriceOverrideForm = ({
           reason; it goes into the billing history.
         </p>
       </div>
-      <div className="grid gap-3 sm:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-3">
         <div className="space-y-1.5">
           <Label htmlFor="override-amount">Price per seat ({currency})</Label>
           <Input
@@ -298,15 +297,10 @@ const PriceOverrideForm = ({
             onChange={(e) => setEndsAt(e.target.value)}
           />
         </div>
-      </div>
-      <div className="space-y-1.5">
-        <Label htmlFor="override-reason">Reason</Label>
-        <Textarea
-          id="override-reason"
-          rows={2}
-          value={reason}
-          onChange={(e) => setReason(e.target.value)}
-        />
+        <div className="space-y-1.5">
+          <Label htmlFor="override-reason">Reason</Label>
+          <Input id="override-reason" value={reason} onChange={(e) => setReason(e.target.value)} />
+        </div>
       </div>
       <div className="flex flex-wrap justify-end gap-2">
         {hasOverride && (

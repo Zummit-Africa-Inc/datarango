@@ -5,8 +5,9 @@ import Link from "next/link";
 import { useState } from "react";
 
 import { useStaffPermission } from "@datarango/auth";
-import { Button, Input, Label, PageLayout } from "@datarango/ui";
+import { Button, Input, PageLayout } from "@datarango/ui";
 
+import { Field, FormSection } from "@/components/form";
 import { Notice } from "@/components/people-ui";
 import { RolePicker } from "@/components/role-picker";
 import { useInviteStaff, type StaffInvite } from "@/hooks/people";
@@ -40,7 +41,7 @@ export default function InviteStaffPage() {
           body="This needs the staff:accounts:manage permission."
         />
       ) : sent ? (
-        <section className="border-hairline bg-card max-w-xl space-y-4 rounded-xs border p-5">
+        <section className="border-hairline bg-card space-y-4 rounded-xs border p-5">
           <h2 className="text-ink font-medium">Invite sent to {sent.account.email}</h2>
           <p className="text-muted-foreground text-sm">
             If the email doesn&apos;t arrive, send them this link yourself. It is just the admin
@@ -63,7 +64,7 @@ export default function InviteStaffPage() {
         </section>
       ) : (
         <form
-          className="border-hairline bg-card max-w-xl space-y-5 rounded-xs border p-5"
+          className="space-y-6"
           onSubmit={(e) => {
             e.preventDefault();
             invite.mutate(
@@ -72,25 +73,30 @@ export default function InviteStaffPage() {
             );
           }}
         >
-          <p className="text-muted-foreground text-sm">
-            They get an email with the admin sign-in link and sign in with their Trustaige account
-            for this email. There is no password to set.
-          </p>
-          <div className="space-y-2">
-            <Label htmlFor="invite-name">Name</Label>
-            <Input id="invite-name" value={name} onChange={(e) => setName(e.target.value)} />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="invite-email">Work email</Label>
-            <Input
-              id="invite-email"
-              type="email"
-              autoComplete="off"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <RolePicker selected={roleIds} onChange={setRoleIds} />
+          <FormSection
+            title="Who"
+            description="They get an email with the admin sign-in link and sign in with their Trustaige account for this email. There is no password to set."
+          >
+            <Field label="Name" htmlFor="invite-name">
+              <Input id="invite-name" value={name} onChange={(e) => setName(e.target.value)} />
+            </Field>
+            <Field label="Work email" htmlFor="invite-email">
+              <Input
+                id="invite-email"
+                type="email"
+                autoComplete="off"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Field>
+          </FormSection>
+          <FormSection
+            title="Roles"
+            description="What they can do. Change it any time from Staff."
+            cols={1}
+          >
+            <RolePicker selected={roleIds} onChange={setRoleIds} />
+          </FormSection>
           <div className="flex justify-end gap-2">
             <Button asChild variant="ghost">
               <Link href="/staff">Cancel</Link>
